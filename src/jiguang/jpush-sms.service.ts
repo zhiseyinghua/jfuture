@@ -1,12 +1,13 @@
 import { Base64 } from 'js-base64';
 import * as Axios from 'axios';
-import { from, Observable, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { JPUSH_CONFIG } from 'src/service/jpush.config';
 import {
   JPushSMSCodeVerificationRequest,
   JPushSMSSendCodeRequest,
 } from './jpush.interface';
 import { catchError, map } from 'rxjs/operators';
+import { autherrorCode } from 'src/auth/auth.error_code';
 
 /**
  * 极光发送服务
@@ -52,10 +53,11 @@ export class JPushSMSService {
   public static verifySmsCode(
     verifyInput: JPushSMSCodeVerificationRequest,
   ): Observable<any> {
+    console.log('JPushSMSService verifySmsCode verifyInput', verifyInput);
     let authorizationBase64Header =
       'Basic ' +
       Base64.encode(JPUSH_CONFIG.AppKey + ':' + JPUSH_CONFIG.MasterSecret);
-
+    console.log(authorizationBase64Header);
     let axiosRequestConfig: Axios.AxiosRequestConfig = {
       baseURL:
         JPUSH_CONFIG.EndPoints.SMSSendTextCode +
@@ -75,7 +77,16 @@ export class JPushSMSService {
         return response.data;
       }),
       catchError((error) => {
-        return throwError(new Error(error.response.data.error.message));
+        console.log('error', error.response.data.error.message);
+        if ((error.response.data.error.message = 'invalid code')) {
+          console.log(
+            'yan zheng ma error',
+            
+          );
+          return of(autherrorCode.verification_code_error,);
+        } else {
+          return throwError(new Error(error.response.data.error.message));
+        }
       }),
     );
   }

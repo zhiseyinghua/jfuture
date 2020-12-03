@@ -1,6 +1,13 @@
 import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
+import {
+  logindatainterface,
+  LoginWithSMSVerifyCodeInput,
+  SendPhoneSMS,
+} from './auth.interface';
+import { switchMap } from 'rxjs/operators';
+import { DbElasticService } from 'src/service/es.service';
 
 @Controller('auth')
 export class AuthController {
@@ -20,13 +27,41 @@ export class AuthController {
    * 前端传递一个手机号码和设备号，调用极光服务发送一个手机验证码
    */
   @Post('/seedjpushsms')
-  sendJpushsms(@Body(ValidationPipe) sendData: SendPhone): any {
+  sendJpushsms(@Body(ValidationPipe) sendData: SendPhoneSMS): any {
     console.log(this.log + 'sendJpushsms');
     return JPushSMSService.sendSMSVerficiationCode(sendData.mobile);
   }
 
-  @Post('/verifysmscode')
-  verifysmscode(@Body(ValidationPipe)data): any{
-    console.log(this.log + '');
+  /**
+   * 用户注册或登录
+   * 1.验证手机发送的验证码是否正确
+   * 2.如果不存在用户将用户信息存储到数据库,返回idtoken到用户
+   * @param data
+   */
+  @Post('/verifysmscodelogin')
+  verifysmscodelogin(
+    @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
+  ): any {
+    // console.log(this.log + '');
+    return JPushSMSService.verifySmsCode({
+      code: data.code,
+      msg_id: data.msg_id,
+    }).pipe(
+      switchMap((data) => {
+        if (data['is_valid'] == true) {
+          return data;
+        } else {
+        }
+      }),
+    );
+  }
+
+  /**
+   * 用户注册或登录
+   * @param data
+   */
+  @Post('logontest')
+  setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
+    // return AuthService(data)
   }
 }

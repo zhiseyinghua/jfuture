@@ -33,7 +33,7 @@ export class DbElasticService {
     return from(
       axios({
         method: 'post',
-        url: 'http://127.0.0.3:9200/authtest/1',
+        url: 'http://127.0.0.3:9200',
         data: {
           firstName: 'Fred',
           lastName: 'Flintstone',
