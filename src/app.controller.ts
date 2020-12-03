@@ -10,13 +10,3 @@ export class AppController {
     return this.appService.getHello();
   }
 }
-
-@Controller('auth')
-export class Auth {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-}
