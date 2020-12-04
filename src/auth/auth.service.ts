@@ -21,10 +21,9 @@ export class AuthService {
 
   /**
    * 将用户注册信息存储到数据库
-   * @param data 
+   * @param data
    */
   storageUserlogindata(data: logindatainterface): Observable<any> {
-    console.log();
     let eldata: logindatainterface = {
       hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
       range: uuid.v4(),
