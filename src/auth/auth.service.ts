@@ -17,21 +17,21 @@ export class AuthService {
    * 查询es里的user字段
    * @param user
    */
-  public static getEsdbAuth(userRange: string): Observable<any> {
-    // let eldata: logindatainterface = {
-    //   hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
-    //   range: uuid.v4(),
-    //   index: 'user',
-    //   email: '',
-    //   encodepossword: data.encodepossword,
-    //   phone: data.phone,
-    // };
-    // return DbElasticService.executeInEs(
-    //   'get',
-    //   { huangwenqiang: '123' },
-    //   'auth',
-    // );
-  }
+  // public static getEsdbAuth(userRange: string): Observable<any> {
+  //   let eldata: logindatainterface = {
+  //     hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+  //     range: uuid.v4(),
+  //     index: 'user',
+  //     email: '',
+  //     encodepossword: data.encodepossword,
+  //     phone: data.phone,
+  //   };
+  //   return DbElasticService.executeInEs(
+  //     'get',
+  //     { huangwenqiang: '123' },
+  //     'auth',
+  //   );
+  // }
 
   /**
    * 将用户注册信息存储到数据库
