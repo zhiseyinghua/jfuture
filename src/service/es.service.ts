@@ -26,8 +26,8 @@ export class DbElasticService {
    */
   public static executeInEs(
     method: Method,
-    body: any,
     urlstr: string,
+    body?: any,
   ): Observable<any> {
     console.log('DbElasticService' + ' executeInEs enter',method,body,urlstr)
     return from(
