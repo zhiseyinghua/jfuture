@@ -5,6 +5,12 @@ export interface DbElasticinterface {
   body?: any;
 }
 
+export interface dbinterface {
+  hash:string,
+  ranne:string,
+  index:string
+}
+
 /**
  * 这是一个公共的method接口
  */

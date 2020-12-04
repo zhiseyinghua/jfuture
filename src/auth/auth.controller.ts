@@ -8,6 +8,7 @@ import {
 } from './auth.interface';
 import { switchMap } from 'rxjs/operators';
 import { DbElasticService } from 'src/service/es.service';
+import { throwError } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +20,7 @@ export class AuthController {
   @Post('/signup')
   signUp(): any {
     console.log('AuthController signup mode enter');
-    return this.authService.signUp('authCredentialsDto');
+    return AuthService.signU('authCredentialsDto');
   }
 
   /**
@@ -33,9 +34,9 @@ export class AuthController {
   }
 
   /**
-   * 用户注册或登录
+   * 用户注册
    * 1.验证手机发送的验证码是否正确
-   * 2.如果不存在用户将用户信息存储到数据库,返回idtoken到用户
+   * 2.将用户信息存储到数据库,返回idtoken到用户
    * @param data
    */
   @Post('/verifysmscodelogin')
@@ -47,10 +48,18 @@ export class AuthController {
       code: data.code,
       msg_id: data.msg_id,
     }).pipe(
-      switchMap((data) => {
-        if (data['is_valid'] == true) {
-          return data;
+      switchMap((smsdataResult) => {
+        if (smsdataResult['is_valid'] == true) {
+          return AuthService.storageUserlogindata({
+            hash: '',
+            range: '',
+            index: '',
+            email: '',
+            phone: data.phone,
+            encodepossword: data.encodepossword,
+          });
         } else {
+          return throwError(new Error('ERROR'));
         }
       }),
     );
@@ -62,6 +71,7 @@ export class AuthController {
    */
   @Post('logontest')
   setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
-    // return AuthService(data)
+    console.log('setlocaltest', 'data', data);
+    return AuthService.storageUserlogindata(data);
   }
 }

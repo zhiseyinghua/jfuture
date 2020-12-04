@@ -13,13 +13,15 @@ export interface SendPhoneSMS {
 }
 
 /**
- * 注册/登了，前端发送过来的数据接口
+ * 注册，前端发送过来的数据接口
  * msg_id为调用发送验证码API的返回值
  */
 export interface LoginWithSMSVerifyCodeInput {
+  phone:string
   msg_id: string;
   code: string;
   provider: string;
+  encodepossword: string
 }
 
 /**
@@ -34,4 +36,12 @@ export interface logindatainterface {
   email:string
 }
 
+// const logindatainterfacedata: logindatainterface = {
+//   "hash":"1",
+//   "range":"1",
+//   "index":"1",
+//   "encodepossword":"1234",
+//   "phone":"18779868511",
+//   "email":""
+// }
 
