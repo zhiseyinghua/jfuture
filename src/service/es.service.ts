@@ -26,18 +26,15 @@ export class DbElasticService {
    */
   public static executeInEs(
     method: Method,
-    bpdy: any,
-    url: string,
+    body: any,
+    urlstr: string,
   ): Observable<any> {
-    console.log('DbElasticService' + ' executeInEs enter')
+    console.log('DbElasticService' + ' executeInEs enter',method,body,urlstr)
     return from(
       axios({
         method: 'post',
-        url: 'http://127.0.0.3:9200',
-        data: {
-          firstName: 'Fred',
-          lastName: 'Flintstone',
-        },
+        url: 'http://127.0.0.3:9200' + urlstr ,
+        data: body,
         headers:{
             'Content-Type':'application/json'
         }
