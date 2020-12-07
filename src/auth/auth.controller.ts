@@ -9,20 +9,12 @@ import {
 import { switchMap } from 'rxjs/operators';
 import { DbElasticService } from 'src/service/es.service';
 import { throwError } from 'rxjs';
+import { dbinterface } from 'src/common/db.elasticinterface';
 
 @Controller('auth')
 export class AuthController {
   log = 'AuthController';
   constructor(private authService: AuthService) {}
-  /**
-   * 用户注册
-   */
-  @Post('/signup')
-  signUp(): any {
-    console.log('AuthController signup mode enter');
-    return AuthService.signU('authCredentialsDto');
-  }
-
   /**
    * 发送极光短信
    * 前端传递一个手机号码和设备号，调用极光服务发送一个手机验证码
@@ -39,18 +31,19 @@ export class AuthController {
    * 2.将用户信息存储到数据库,返回idtoken到用户
    * @param data
    */
-  @Post('/verifysmscodelogin')
-  verifysmscodelogin(
+  @Post('/verifysmscoderegister')
+  verifysmscoderegister(
     @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
   ): any {
     // console.log(this.log + '');
     return JPushSMSService.verifySmsCode({
       code: data.code,
       msg_id: data.msg_id,
+      provider:data.provider
     }).pipe(
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
-          return AuthService.storageUserlogindata({
+          return AuthService.storageUserregisterdata({
             hash: '',
             range: '',
             index: '',
@@ -66,12 +59,21 @@ export class AuthController {
   }
 
   /**
-   * 用户注册或登录
+   * 
    * @param data
    */
   @Post('logontest')
   setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
     console.log('setlocaltest', 'data', data);
-    return AuthService.storageUserlogindata(data);
+    return AuthService.storageUserregisterdata(data);
+  }
+
+  /**
+   * 
+   */
+  @Post('/getuserauthtest')
+  signUp(@Body(ValidationPipe) userRange: dbinterface): any {
+    console.log('AuthController signup mode enter');
+    return AuthService.getEsdbAuth(userRange);
   }
 }
