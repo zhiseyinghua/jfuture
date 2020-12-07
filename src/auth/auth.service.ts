@@ -9,8 +9,10 @@ import uuid = require('uuid');
 import {
   DbElasticinterfacePutReturn,
   dbinterface,
+  Queryinterface,
 } from 'src/common/db.elasticinterface';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { autherrorCode } from './auth.code';
 var jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -24,7 +26,7 @@ export class AuthService {
     return DbElasticService.executeInEs(
       'get',
       AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + userRange.range,
-    );
+    )
   }
 
   /**
@@ -33,9 +35,9 @@ export class AuthService {
    */
   public static byphoneNumber(phone: string): Observable<any> {
     let querydata = {
-      query: {
-        term: {
-          'phone.keyword': '18779868511',
+      'query': {
+        'term': {
+          'phone.keyword': phone,
         },
       },
     };
@@ -43,7 +45,17 @@ export class AuthService {
       'get',
       AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.SEARCH,
       querydata,
-    );
+    ).pipe(
+      map((result:Queryinterface)=>{
+        if(result.hits.total.value == 1 && result.hits.hits[0]._source['range']){
+          return result.hits.hits[0]._source
+        } else if(result.hits.total.value > 1) {
+          return autherrorCode.user_error
+        } else if(result.hits.total.value == 0){
+          return false
+        }
+      })
+    )
   }
 
   /**

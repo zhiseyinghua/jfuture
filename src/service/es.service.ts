@@ -1,7 +1,7 @@
 import { Observable, from, of, throwError } from 'rxjs';
 import { Method } from 'src/common/db.elasticinterface';
 import { switchMap, catchError } from 'rxjs/operators';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 // const axios = require('axios');
 
@@ -18,7 +18,7 @@ export class DbElasticService {
   logg = 'DbElasticService';
 
   /**
-   * 这是一个数据库服务 注意body传入的是一个js对象
+   * 这是一个数据库服务 注意body传入的是一个
    * @param method 请求的Method，它是Metod类型
    * @param body   z'AA
    * @param url    请求的url
@@ -34,15 +34,17 @@ export class DbElasticService {
       body,
       urlstr,
     );
+    let axiosData: AxiosRequestConfig = {
+      method: method,
+      url: 'http://127.0.0.3:9200/' + urlstr,
+      data: body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    console.log('DbElasticService ' + 'executeInEs axiosData' + JSON.stringify(axiosData));
     return from(
-      axios({
-        method: 'PUT',
-        url: 'http://127.0.0.3:9200/' + urlstr,
-        data: JSON.stringify(body),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
+      axios(axiosData),
     ).pipe(
       catchError((error) => {
         console.log('DbElasticService ' + 'executeInEs' + error);
