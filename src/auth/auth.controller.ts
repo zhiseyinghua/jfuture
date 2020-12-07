@@ -2,7 +2,8 @@ import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
 import {
-  logindatainterface,
+  GetuserbyphonenumberInterface,
+  Logindatainterface,
   LoginWithSMSVerifyCodeInput,
   SendPhoneSMS,
 } from './auth.interface';
@@ -43,6 +44,7 @@ export class AuthController {
     }).pipe(
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
+          // 这里给的数据都是规范，在服务里重写了
           return AuthService.storageUserregisterdata({
             hash: '',
             range: '',
@@ -50,6 +52,7 @@ export class AuthController {
             email: '',
             phone: data.phone,
             encodepossword: data.encodepossword,
+            timestamp: 0
           });
         } else {
           return throwError(new Error('ERROR'));
@@ -63,7 +66,7 @@ export class AuthController {
    * @param data
    */
   @Post('logontest')
-  setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
+  setlocaltest(@Body(ValidationPipe) data: Logindatainterface): any {
     console.log('setlocaltest', 'data', data);
     return AuthService.storageUserregisterdata(data);
   }
@@ -75,5 +78,14 @@ export class AuthController {
   signUp(@Body(ValidationPipe) userRange: dbinterface): any {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
+  }
+
+  /**
+   * 根据
+   */
+  @Post('getuserbyphonenumber')
+  getUserbyPhoneNumber(@Body(ValidationPipe) phone:GetuserbyphonenumberInterface): any {
+    return AuthService.byphoneNumber(phone.phoneNumber);
+
   }
 }

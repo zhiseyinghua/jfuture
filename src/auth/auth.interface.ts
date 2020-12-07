@@ -27,7 +27,7 @@ export interface LoginWithSMSVerifyCodeInput {
 /**
  * 注册时用的数据
  */
-export interface logindatainterface {
+export interface Logindatainterface {
   hash: string;
   range: string;
   index: string;
@@ -35,7 +35,17 @@ export interface logindatainterface {
   phone: string;
   email:string;
   provider?: 'phone' | 'web';
+  // 注册时间
+  timestamp : number
 }
+
+export interface GetuserbyphonenumberInterface {
+  phoneNumber: string
+}
+
+// expect interface CreateJWTtoken extends Logindatainterface {
+//   JWTTime: number
+// }
 
 // const logindatainterfacedata: logindatainterface = {
 //   "hash":"1",

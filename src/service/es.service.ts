@@ -18,11 +18,10 @@ export class DbElasticService {
   logg = 'DbElasticService';
 
   /**
-   * 这是一个数据库服务
+   * 这是一个数据库服务 注意body传入的是一个js对象
    * @param method 请求的Method，它是Metod类型
    * @param body   z'AA
    * @param url    请求的url
-   * @param debug  是否测试
    */
   public static executeInEs(
     method: Method,
