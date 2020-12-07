@@ -32,6 +32,7 @@
     "elasticsearch": "^16.7.2",
     "i": "^0.3.6",
     "js-base64": "^3.6.0",
+    "jsonwebtoken": "^8.5.1",
     "node-entity": "^0.6.0",
     "npm": "^6.14.9",
     "observe": "^1.4.1",

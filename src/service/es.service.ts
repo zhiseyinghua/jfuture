@@ -38,7 +38,7 @@ export class DbElasticService {
     return from(
       axios({
         method: 'PUT',
-        url: 'http://127.0.0.3:9200/'+ urlstr,
+        url: 'http://127.0.0.3:9200/' + urlstr,
         data: JSON.stringify(body),
         headers: {
           'Content-Type': 'application/json',

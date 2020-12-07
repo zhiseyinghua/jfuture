@@ -7,7 +7,7 @@ import {
   JPushSMSSendCodeRequest,
 } from './jpush.interface';
 import { catchError, map } from 'rxjs/operators';
-import { autherrorCode } from 'src/auth/auth.error_code';
+import { autherrorCode } from 'src/auth/auth.code';
 
 /**
  * 极光发送服务

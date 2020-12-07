@@ -9,6 +9,7 @@ import uuid = require('uuid');
 import { DbElasticinterfacePutReturn, dbinterface } from 'src/common/db.elasticinterface';
 import { switchMap } from 'rxjs/operators';
 
+
 @Injectable()
 export class AuthService {
   public static logger = 'AuthService';
@@ -44,9 +45,19 @@ export class AuthService {
        AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + eldata.range,
       eldata,
     ).pipe(
-      switchMap( (result: DbElasticinterfacePutReturn)=>{
-        if(result.found == true)
+      switchMap((result: DbElasticinterfacePutReturn)=>{
+        if(result.found == true) {
+          return 
+        } else {
+          return 
+        }
       })
     )
   }
+
+  static createjwtToken(authdata: logindatainterface): Observable<any> {
+    const token = 
+  }
+
+
 }
