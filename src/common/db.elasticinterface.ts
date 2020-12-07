@@ -5,10 +5,22 @@ export interface DbElasticinterface {
   body?: any;
 }
 
+export interface DbElasticinterfacePutReturn {
+  _index: string;
+  _type: string;
+  _id: string;
+  _version: string;
+  _seq_no: number;
+  _primary_term: number;
+  found: boolean;
+  _source: any;
+}
+
+
 export interface dbinterface {
-  hash:string,
-  range:string,
-  index:string
+  hash: string;
+  range: string;
+  index: string;
 }
 
 /**

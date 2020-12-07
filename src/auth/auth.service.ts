@@ -6,7 +6,8 @@ import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
 import { logindatainterface } from './auth.interface';
 import uuid = require('uuid');
-import { dbinterface } from 'src/common/db.elasticinterface';
+import { DbElasticinterfacePutReturn, dbinterface } from 'src/common/db.elasticinterface';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +43,10 @@ export class AuthService {
       'put',
        AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + eldata.range,
       eldata,
-    );
+    ).pipe(
+      switchMap( (result: DbElasticinterfacePutReturn)=>{
+        if(result.found == true)
+      })
+    )
   }
 }

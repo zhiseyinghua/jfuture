@@ -20,7 +20,7 @@ export interface LoginWithSMSVerifyCodeInput {
   phone:string
   msg_id: string;
   code: string;
-  provider: string;
+  provider: 'phone' | 'web';
   encodepossword: string
 }
 
@@ -33,7 +33,8 @@ export interface logindatainterface {
   index: string;
   encodepossword: string;
   phone: string;
-  email:string
+  email:string;
+  provider?: 'phone' | 'web';
 }
 
 // const logindatainterfacedata: logindatainterface = {
