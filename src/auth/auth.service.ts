@@ -18,7 +18,7 @@ export class AuthService {
   public static getEsdbAuth(userRange: dbinterface): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + userRange.ranne,
+      AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + userRange.range,
     );
   }
 

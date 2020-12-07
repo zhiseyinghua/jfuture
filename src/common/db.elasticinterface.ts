@@ -7,7 +7,7 @@ export interface DbElasticinterface {
 
 export interface dbinterface {
   hash:string,
-  ranne:string,
+  range:string,
   index:string
 }
 

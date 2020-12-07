@@ -20,7 +20,7 @@ export class DbElasticService {
   /**
    * 这是一个数据库服务
    * @param method 请求的Method，它是Metod类型
-   * @param body   请求的Body
+   * @param body   z'AA
    * @param url    请求的url
    * @param debug  是否测试
    */
@@ -32,7 +32,7 @@ export class DbElasticService {
     console.log('DbElasticService' + ' executeInEs enter',method,body,urlstr)
     return from(
       axios({
-        method: 'post',
+        method: method,
         url: 'http://127.0.0.3:9200' + urlstr ,
         data: body,
         headers:{

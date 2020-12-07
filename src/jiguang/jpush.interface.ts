@@ -3,8 +3,4 @@ export interface JPushSMSSendCodeRequest {
   sign_id?: number;
   temp_id: number;
 }
-
-export interface JPushSMSCodeVerificationRequest {
-  code: string;
-  msg_id: string;
-}
+ 

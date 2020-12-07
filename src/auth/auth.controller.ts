@@ -9,20 +9,12 @@ import {
 import { switchMap } from 'rxjs/operators';
 import { DbElasticService } from 'src/service/es.service';
 import { throwError } from 'rxjs';
+import { dbinterface } from 'src/common/db.elasticinterface';
 
 @Controller('auth')
 export class AuthController {
   log = 'AuthController';
   constructor(private authService: AuthService) {}
-  /**
-   * 用户注册
-   */
-  @Post('/signup')
-  signUp(): any {
-    console.log('AuthController signup mode enter');
-    return AuthService.signU('authCredentialsDto');
-  }
-
   /**
    * 发送极光短信
    * 前端传递一个手机号码和设备号，调用极光服务发送一个手机验证码
@@ -66,12 +58,21 @@ export class AuthController {
   }
 
   /**
-   * 用户注册或登录
+   * 
    * @param data
    */
   @Post('logontest')
   setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
     console.log('setlocaltest', 'data', data);
     return AuthService.storageUserlogindata(data);
+  }
+
+  /**
+   * 
+   */
+  @Post('/getuserauthtest')
+  signUp(@Body(ValidationPipe) userRange: dbinterface): any {
+    console.log('AuthController signup mode enter');
+    return AuthService.getEsdbAuth(userRange);
   }
 }
