@@ -15,7 +15,7 @@ var client = new elasticsearch.Client({
  * 这是一个请求负责处理
  */
 export class DbElasticService {
-   logg = 'DbElasticService';
+  logg = 'DbElasticService';
 
   /**
    * 这是一个数据库服务
@@ -29,24 +29,29 @@ export class DbElasticService {
     urlstr: string,
     body?: any,
   ): Observable<any> {
-    console.log('DbElasticService' + ' executeInEs enter',method,body,urlstr)
+    console.log(
+      'DbElasticService' + ' executeInEs enter',
+      method,
+      body,
+      urlstr,
+    );
     return from(
       axios({
-        method: method,
-        url: 'http://127.0.0.3:9200' + urlstr ,
-        data: body,
-        headers:{
-            'Content-Type':'application/json'
-        }
+        method: 'PUT',
+        url: 'http://127.0.0.3:9200/'+ urlstr,
+        data: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }),
     ).pipe(
       catchError((error) => {
-          console.log('DbElasticService ' + 'executeInEs'+error)
+        console.log('DbElasticService ' + 'executeInEs' + error);
         // return throwError(error);
         return throwError(error);
       }),
       switchMap((result) => {
-        console.log(result)
+        console.log(result);
         return of(result['data']);
       }),
     );

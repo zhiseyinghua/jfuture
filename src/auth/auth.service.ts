@@ -40,7 +40,7 @@ export class AuthService {
     console.log(this.logger, 'storageUserlogindata eldata', eldata);
     return DbElasticService.executeInEs(
       'put',
-      AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + eldata.range,
+       AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + eldata.range,
       eldata,
     );
   }
