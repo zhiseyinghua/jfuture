@@ -31,18 +31,19 @@ export class AuthController {
    * 2.将用户信息存储到数据库,返回idtoken到用户
    * @param data
    */
-  @Post('/verifysmscodelogin')
-  verifysmscodelogin(
+  @Post('/verifysmscoderegister')
+  verifysmscoderegister(
     @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
   ): any {
     // console.log(this.log + '');
     return JPushSMSService.verifySmsCode({
       code: data.code,
       msg_id: data.msg_id,
+      provider:data.provider
     }).pipe(
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
-          return AuthService.storageUserlogindata({
+          return AuthService.storageUserregisterdata({
             hash: '',
             range: '',
             index: '',
@@ -64,7 +65,7 @@ export class AuthController {
   @Post('logontest')
   setlocaltest(@Body(ValidationPipe) data: logindatainterface): any {
     console.log('setlocaltest', 'data', data);
-    return AuthService.storageUserlogindata(data);
+    return AuthService.storageUserregisterdata(data);
   }
 
   /**
