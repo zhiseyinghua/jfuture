@@ -8,9 +8,10 @@ import {
   SendPhoneSMS,
 } from './auth.interface';
 import { switchMap } from 'rxjs/operators';
-import { DbElasticService } from 'src/service/es.service';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { dbinterface } from 'src/common/db.elasticinterface';
+import { BackCode } from 'src/common/back.codeinterface';
+import { autherrorCode } from './auth.code';
 
 @Controller('auth')
 export class AuthController {
@@ -37,11 +38,23 @@ export class AuthController {
     @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
   ): any {
     // console.log(this.log + '');
-    return JPushSMSService.verifySmsCode({
-      code: data.code,
-      msg_id: data.msg_id,
-      provider:data.provider
-    }).pipe(
+
+    return AuthService.byphoneNumber(data.phone).pipe(
+      switchMap((result) => {
+        if (result == false) {
+          return JPushSMSService.verifySmsCode({
+            code: data.code,
+            msg_id: data.msg_id,
+            provider: data.provider,
+          });
+        } else {
+          let backMessage: BackCode = {
+            code:'auth0001',
+            message: autherrorCode.the_user_already_exists
+          }
+          return of(backMessage)
+        }
+      }),
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
           // 这里给的数据都是规范，在服务里重写了
@@ -52,7 +65,7 @@ export class AuthController {
             email: '',
             phone: data.phone,
             encodepossword: data.encodepossword,
-            timestamp: 0
+            timestamp: 0,
           });
         } else {
           return throwError(new Error('ERROR'));
@@ -62,7 +75,7 @@ export class AuthController {
   }
 
   /**
-   * 
+   *
    * @param data
    */
   @Post('logontest')
@@ -72,7 +85,7 @@ export class AuthController {
   }
 
   /**
-   * 
+   *
    */
   @Post('/getuserauthtest')
   signUp(@Body(ValidationPipe) userRange: dbinterface): any {
@@ -81,11 +94,12 @@ export class AuthController {
   }
 
   /**
-   * 根据
+   * 根据手机号码
    */
   @Post('getuserbyphonenumber')
-  getUserbyPhoneNumber(@Body(ValidationPipe) phone:GetuserbyphonenumberInterface): any {
+  getUserbyPhoneNumber(
+    @Body(ValidationPipe) phone: GetuserbyphonenumberInterface,
+  ): any {
     return AuthService.byphoneNumber(phone.phoneNumber);
-
   }
 }
