@@ -48,17 +48,17 @@ export class AuthController {
             provider: data.provider,
           });
         } else {
-          console.log(this.log + 'verifysmscoderegister yicunz')
+          console.log(this.log + 'verifysmscoderegister yicunz');
           // let backMessage: BackCodeMessage = {
           //   code: 'auth0001',
           //   message: autherrorCode.the_user_already_exists,
           // };
-          return throwError(new Error('cuowu'));
+          return throwError(new Error(autherrorCode.the_user_already_exists));
         }
       }),
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
-          // 这里给的数据都是规范，在服务里重写了
+          // 这里给的数据都是规范，在服务里重写了 
           return AuthService.storageUserregisterdata({
             hash: '',
             range: '',
@@ -72,11 +72,12 @@ export class AuthController {
           return throwError(new Error('ERROR'));
         }
       }),
-      catchError((err)=>{
-        console.log(this.log + 'verifysmscoderegister yicunz catcherror',err,typeof err)
-        return of(JSON.stringify(err))
+      catchError((err) => {
+        console.log(this.log + 'verifysmscoderegister yicunz catcherror', JSON.stringify(err), typeof err,err.message);
+        return of(err.message);
       })
-    );
+    )
+    
   }
 
   /**
