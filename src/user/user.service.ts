@@ -14,12 +14,17 @@ export class UserService {
         let eldata: UserInfoInterface = {
           hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
           range: uuid.v4(),
-          index: '',
+          index: 'user',
           userid:'',
           usernickname:'',
           telephone:'',
           usermail:'',
           userico:'',
+          authKey:{
+            hash: "",
+            range: "",
+            index: "",
+          }
         };
         console.log(this.logger + 'storeUserinfo data', data);
         console.log(this.logger, 'storeUserinformation eldata', eldata);
@@ -29,5 +34,42 @@ export class UserService {
            eldata,
         );
       }
+      static UpdateUserInfo(data: UserInfoInterface): Observable<any> {
+        console.log(this.logger + 'updateUserinfo data', data);
+        let eldata: UserInfoInterface = {
+          hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+          range: uuid.v4(),
+          index: 'user',
+          userid:'',
+          usernickname:'',
+          telephone:'',
+          usermail:'',
+          userico:'',
+          authKey:{
+            hash: "",
+            range: "",
+            index: "",
+          }
+        };
+        console.log(this.logger + 'updateUserinfo data', data);
+        console.log(this.logger, 'updateUserinformation eldata', eldata);
+        return DbElasticService.executeInEs(
+          'post',
+           AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + eldata.range,
+           eldata,
+        );
+      }
+      public static SearchUserInfo(userid: string): Observable<any> {
+        let querydata = {
+          'query': {
+            'term': {
+              'phone.keyword': userid,
+            },
+          },
+        };
+        return DbElasticService.executeInEs(
+          'get',
+          AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.SEARCH,
+          querydata,)
 }
-
+}

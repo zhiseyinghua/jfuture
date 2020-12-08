@@ -1,3 +1,6 @@
+import { dbinterface } from "src/common/db.elasticinterface";
+
+
 interface UserInfo {
     hash: string;
     range: string;
@@ -14,4 +17,6 @@ interface UserInfo {
     telephone:string;
     usermail:string;
     userico:string;
+    authKey: dbinterface;
   }
+  
