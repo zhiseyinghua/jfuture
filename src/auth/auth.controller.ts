@@ -74,7 +74,11 @@ export class AuthController {
       }),
       catchError((err) => {
         console.log(this.log + 'verifysmscoderegister yicunz catcherror', JSON.stringify(err), typeof err,err.message);
-        return of(err.message);
+        let redata: BackCodeMessage = {
+          code: "000001",
+          message: err.message
+        }
+        return of(redata);
       })
     )
     

@@ -4,5 +4,4 @@ export const autherrorCode = {
   // 该用户已存在
   the_user_already_exists: 'the_user_already_exists',
   user_error: 'user_error'
-  
 };
