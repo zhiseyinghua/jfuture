@@ -7,10 +7,10 @@ import {
   LoginWithSMSVerifyCodeInput,
   SendPhoneSMS,
 } from './auth.interface';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { dbinterface } from 'src/common/db.elasticinterface';
-import { BackCode } from 'src/common/back.codeinterface';
+import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { autherrorCode } from './auth.code';
 
 @Controller('auth')
@@ -37,7 +37,7 @@ export class AuthController {
   verifysmscoderegister(
     @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
   ): any {
-    // console.log(this.log + '');
+    console.log(this.log + 'verifysmscoderegister start');
 
     return AuthService.byphoneNumber(data.phone).pipe(
       switchMap((result) => {
@@ -48,11 +48,12 @@ export class AuthController {
             provider: data.provider,
           });
         } else {
-          let backMessage: BackCode = {
-            code:'auth0001',
-            message: autherrorCode.the_user_already_exists
-          }
-          return of(backMessage)
+          console.log(this.log + 'verifysmscoderegister yicunz')
+          // let backMessage: BackCodeMessage = {
+          //   code: 'auth0001',
+          //   message: autherrorCode.the_user_already_exists,
+          // };
+          return throwError(new Error('cuowu'));
         }
       }),
       switchMap((smsdataResult) => {
@@ -71,6 +72,10 @@ export class AuthController {
           return throwError(new Error('ERROR'));
         }
       }),
+      catchError((err)=>{
+        console.log(this.log + 'verifysmscoderegister yicunz catcherror',err,typeof err)
+        return of(JSON.stringify(err))
+      })
     );
   }
 
