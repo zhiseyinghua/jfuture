@@ -4,7 +4,8 @@ interface Authuser {
   index: string;
   username: string;
   phoneNumber: string;
-  // possword:string,
+  role: 'menber' | 'admin' | 'our',
+  // encodepossword: string;
 }
 
 export interface SendPhoneSMS {
@@ -36,7 +37,9 @@ export interface Logindatainterface {
   email:string;
   provider?: 'phone' | 'web';
   // 注册时间
-  timestamp : number
+  timestamp : number,
+  role: 'menber' | 'admin' | 'our'
+
 }
 
 export interface GetuserbyphonenumberInterface {
@@ -48,11 +51,11 @@ export interface GetuserbyphonenumberInterface {
 // }
 
 // const logindatainterfacedata: logindatainterface = {
-//   "hash":"1",
-//   "range":"1",
-//   "index":"1",
-//   "encodepossword":"1234",
-//   "phone":"18779868511",
-//   "email":""
+//   'hash':'1',
+//   'range':'1',
+//   'index':'1',
+//   'encodepossword':'1234',
+//   'phone':'18779868511',
+//   'email':''
 // }
 

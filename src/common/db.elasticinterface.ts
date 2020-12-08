@@ -12,8 +12,14 @@ export interface DbElasticinterfacePutReturn {
   _version: string;
   _seq_no: number;
   _primary_term: number;
-  found: boolean;
-  _source: any;
+  found?: boolean;
+  _source?: any;
+  result?: string;
+  _shards?: {
+    total: 2,
+    successful: 1,
+    failed: 0
+},
 }
 
 export interface dbinterface {

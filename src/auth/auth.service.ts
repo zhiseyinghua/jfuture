@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
@@ -19,14 +19,14 @@ var jwt = require('jsonwebtoken');
 export class AuthService {
   public static logger = 'AuthService';
   /**
-   * 查询es里的user字段
+   * 根据uuid查询es里的user字段,返回es里auth里所有的字段
    * @param user
    */
   public static getEsdbAuth(userRange: dbinterface): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
       AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + userRange.range,
-    )
+    );
   }
 
   /**
@@ -35,8 +35,8 @@ export class AuthService {
    */
   public static byphoneNumber(phone: string): Observable<any> {
     let querydata = {
-      'query': {
-        'term': {
+      query: {
+        term: {
           'phone.keyword': phone,
         },
       },
@@ -46,20 +46,23 @@ export class AuthService {
       AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.SEARCH,
       querydata,
     ).pipe(
-      map((result:Queryinterface)=>{
-        if(result.hits.total.value == 1 && result.hits.hits[0]._source['range']){
-          return result.hits.hits[0]._source
-        } else if(result.hits.total.value > 1) {
-          return autherrorCode.user_error
-        } else if(result.hits.total.value == 0){
-          return false
+      map((result: Queryinterface) => {
+        if (
+          result.hits.total.value == 1 &&
+          result.hits.hits[0]._source['range']
+        ) {
+          return result.hits.hits[0]._source;
+        } else if (result.hits.total.value > 1) {
+          return autherrorCode.user_error;
+        } else if (result.hits.total.value == 0) {
+          return false;
         }
-      })
-    )
+      }),
+    );
   }
 
   /**
-   * 将用户注册信息存储到数据库
+   * 将用户注册信息存储到数据库,注册成功返回true,否则抛出一个error
    * @param data
    */
   static storageUserregisterdata(data: Logindatainterface): Observable<any> {
@@ -72,9 +75,10 @@ export class AuthService {
       encodepossword: data.encodepossword,
       phone: data.phone,
       timestamp: new Date().valueOf(),
+      role:'menber'
     };
-    console.log(this.logger + 'storageUserlogindata data', data);
-    console.log(this.logger, 'storageUserlogindata eldata', eldata);
+    // console.log(this.logger + 'storageUserlogindata data', data);
+    // console.log(this.logger, 'storageUserlogindata eldata', eldata);
 
     return DbElasticService.executeInEs(
       'put',
@@ -82,17 +86,26 @@ export class AuthService {
       eldata,
     ).pipe(
       // 查询
-      switchMap((result: DbElasticinterfacePutReturn) => {
-        if (result.found == true) {
-          return result._source;
+      map((result: DbElasticinterfacePutReturn) => {
+        if (result.result == 'created' && result._shards.successful == 1) {
+          return true;
         } else {
-          return;
+          return throwError(new Error(autherrorCode.database_storage_failed));
         }
       }),
     );
   }
 
-  // static createjwtToken(authdata: Logindatainterface): Observable<any> {
-  //   const token = jwt.sign(authdata)
-  // }
+  public static createjwtToken(): Observable<any> {
+    const user = {
+      jti: 1,
+      iss: 'gumt.top',
+      user: 'goolge',
+    };
+
+    return
+    var older_token = jwt.sign({ foo: 'bar', iat: Math.floor(Date.now() / 1000) - 30 }, 'shhhhh');
+    // return older_token
+
+  }
 }

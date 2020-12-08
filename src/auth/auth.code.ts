@@ -3,5 +3,7 @@ export const autherrorCode = {
   verification_code_error: 'verification_code_error',
   // 该用户已存在
   the_user_already_exists: 'the_user_already_exists',
-  user_error: 'user_error'
+  user_error: 'user_error',
+  // 用户存储数据库失败
+  database_storage_failed:  'database_storage_failed'
 };

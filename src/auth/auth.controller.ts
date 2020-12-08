@@ -12,6 +12,7 @@ import { of, throwError } from 'rxjs';
 import { dbinterface } from 'src/common/db.elasticinterface';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { autherrorCode } from './auth.code';
+import { Errorcode } from 'src/common/error.code';
 
 @Controller('auth')
 export class AuthController {
@@ -48,7 +49,6 @@ export class AuthController {
             provider: data.provider,
           });
         } else {
-          console.log(this.log + 'verifysmscoderegister yicunz');
           // let backMessage: BackCodeMessage = {
           //   code: 'auth0001',
           //   message: autherrorCode.the_user_already_exists,
@@ -58,7 +58,7 @@ export class AuthController {
       }),
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
-          // 这里给的数据都是规范，在服务里重写了 
+          // 这里给的数据都是规范，在服务里重写了
           return AuthService.storageUserregisterdata({
             hash: '',
             range: '',
@@ -67,21 +67,26 @@ export class AuthController {
             phone: data.phone,
             encodepossword: data.encodepossword,
             timestamp: 0,
+            role:'menber'
           });
         } else {
-          return throwError(new Error('ERROR'));
+          return throwError(new Error(autherrorCode.verification_code_error));
         }
       }),
       catchError((err) => {
-        console.log(this.log + 'verifysmscoderegister yicunz catcherror', JSON.stringify(err), typeof err,err.message);
+        console.log(
+          this.log + 'verifysmscoderegister yicunz catcherror',
+          JSON.stringify(err),
+          typeof err,
+          err.message,
+        );
         let redata: BackCodeMessage = {
-          code: "000001",
-          message: err.message
-        }
+          code: Errorcode[err.message],
+          message: err.message,
+        };
         return of(redata);
-      })
-    )
-    
+      }),
+    );
   }
 
   /**
@@ -97,7 +102,7 @@ export class AuthController {
   /**
    *
    */
-  @Post('/getuserauthtest')
+  @Post('getuserauthtest')
   signUp(@Body(ValidationPipe) userRange: dbinterface): any {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
@@ -111,5 +116,16 @@ export class AuthController {
     @Body(ValidationPipe) phone: GetuserbyphonenumberInterface,
   ): any {
     return AuthService.byphoneNumber(phone.phoneNumber);
+  }
+
+  @Post('shengchengidtokentest') 
+  shengchengidtokentest(
+    @Body(ValidationPipe) phone: any,
+  ): any {
+    return AuthService.getEsdbAuth({
+      hash: '',
+      range:'32d75c79-528a-4a64-a67c-de133f06a4ae',
+      index:'auth'
+    })
   }
 }
