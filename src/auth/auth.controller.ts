@@ -113,6 +113,10 @@ export class AuthController {
     return AuthService.byphoneNumber(phone.phoneNumber);
   }
 
+
+
+
+
   @Post('shengchengidtokentest')
   shengchengidtokentest(): any {
     return AuthService.getEsdbAuth({
@@ -149,7 +153,6 @@ export class AuthController {
       index: 'user',
     });
   }
-
   /**
    *
    * @param data
@@ -159,6 +162,7 @@ export class AuthController {
     console.log('setlocaltest', 'data', data);
     return AuthService.storageUserregisterdata(data);
   }
+
   /**
    *
    */
@@ -166,5 +170,10 @@ export class AuthController {
   signUp(@Body(ValidationPipe) userRange: Dbinterface): any {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
+  }
+
+  @Post('verify')
+  verify(): any {
+    return AuthService.verifyIdtoken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiYXV0aC0yMDIwLTEyLTA5IiwicmFuZ2UiOiI4ZWQwNTU1Yy1jYTc5LTQ1OGYtYWEyMi1hNjZkMGM2NGE5MjkiLCJpbmRleCI6IjhlZDA1NTVjLWNhNzktNDU4Zi1hYTIyLWE2NmQwYzY0YTkyOSIsInBob25lIjoiMTg3Nzk4Njg1MTEiLCJyb2xlIjoibWVuYmVyIiwidGltZXN0YW1wIjoxNjA3NDkwMDMxNzg4LCJpYXQiOjE2MDc0OTAwMzE4MTUsImlzcyI6ImZ1dHVyZV90aW1lIiwic3ViIjoibWVtYmVyIiwiZXhwIjoxNjA3NTc2NDMxODE1fQ.G71h7lLdAyE0Vvc3_mOhRhQE8GTMzBRszzMST1QWuTo')
   }
 }

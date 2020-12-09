@@ -1,3 +1,5 @@
+import { Dbinterface } from "src/common/db.elasticinterface";
+
 export interface AuthuserInterface {
   hash: string;
   range: string;
@@ -20,7 +22,16 @@ export interface AuthuserIdtokenInterface extends AuthuserInterface{
   sub: "member";
   // 签发时间
   iat: number;
+}
 
+export interface idToken extends Dbinterface {
+    phone: string,
+    role: string,
+    timestamp: number,
+    iat: number,
+    iss: "future_time",
+    sub: "member",
+    exp: number
 }
 
 export interface SendPhoneSMS {

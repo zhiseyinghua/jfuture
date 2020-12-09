@@ -156,4 +156,13 @@ export class AuthService {
       }),
     );
   }
+
+  /**
+   * 
+   * @param token 
+   */
+  static verifyIdtoken(token: string){
+    var decoded = jwt.decode(token)
+    return decoded
+  }
 }
