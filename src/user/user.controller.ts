@@ -23,7 +23,7 @@ export class UserController {
       hash: '',
       range: '',
       index: '',
-      userid: '',
+      userid: '4',
       usernickname: '',
       telephone: '',
       usermail: '',
@@ -41,19 +41,19 @@ export class UserController {
       hash: '',
       range: '',
       index: '',
-      userid: '',
+      userid: '4',
       usernickname: '',
       telephone: '',
       usermail: '',
       userico: '',
       authKey: {
-        hash: 'DynamoDBService.computeHash(AUTH_CONFIG.INDEX)',
-        range: 'uuid.v4()',
-        index: 'user',
+        hash: '12345',
+        range: '457',
+        index: '789',
       }
     });
   }
-  @Get('searchbyuserid')
+  @Post('searchbyuserid')
   searchbyuserid(
     @Body(ValidationPipe) userid: SearchByUserid,
   ): any {
