@@ -12,6 +12,16 @@ export interface AuthuserInterface {
   realname:any
 }
 
+export interface CreateIdtokenInterface{
+  hash: string,
+  range: string,
+  index: string,
+  role:  'menber' | 'admin' | 'our',
+  phone: string,
+  timestamp: number,
+  realname: string
+}
+
 /**
  * indoken Payload 部分的信息 
  */

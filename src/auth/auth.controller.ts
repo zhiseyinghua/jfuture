@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, UseGuards, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
 import {
@@ -7,6 +7,8 @@ import {
   LoginWithSMSVerifyCodeInput,
   SendPhoneSMS,
   AuthuserInterface,
+  CreateIdtokenInterface,
+  AuthuserIdtokenInterface,
 } from './auth.interface';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
@@ -14,6 +16,8 @@ import { Dbinterface } from 'src/common/db.elasticinterface';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { autherrorCode } from './auth.code';
 import { Errorcode } from 'src/common/error.code';
+import { AuthGuard } from './auth.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -128,7 +132,7 @@ export class AuthController {
        * 获取用户的信息
        */
       switchMap((data: AuthuserInterface) => {
-        let authData: AuthuserInterface = {
+        let authData: CreateIdtokenInterface = {
           hash: data.hash,
           range: data.range,
           index: data.index,
@@ -172,8 +176,42 @@ export class AuthController {
     return AuthService.getEsdbAuth(userRange);
   }
 
-  @Post('verify')
-  verify(): any {
-    return AuthService.verifyIdtoken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiYXV0aC0yMDIwLTEyLTA5IiwicmFuZ2UiOiI4ZWQwNTU1Yy1jYTc5LTQ1OGYtYWEyMi1hNjZkMGM2NGE5MjkiLCJpbmRleCI6IjhlZDA1NTVjLWNhNzktNDU4Zi1hYTIyLWE2NmQwYzY0YTkyOSIsInBob25lIjoiMTg3Nzk4Njg1MTEiLCJyb2xlIjoibWVuYmVyIiwidGltZXN0YW1wIjoxNjA3NDkwMDMxNzg4LCJpYXQiOjE2MDc0OTAwMzE4MTUsImlzcyI6ImZ1dHVyZV90aW1lIiwic3ViIjoibWVtYmVyIiwiZXhwIjoxNjA3NTc2NDMxODE1fQ.G71h7lLdAyE0Vvc3_mOhRhQE8GTMzBRszzMST1QWuTo')
+  
+  // @UseGuards(AuthGuard)
+  /**
+   * 通过一个快过期的有效的token换取一个新的token
+   * @param headers 
+   */
+  @Post('bytokengettoken')
+  verify(@Headers() headers): any {
+    let idtoken = headers['authorization']
+    console.log("auth_controller bytokengettoken idtoken",idtoken,headers)
+    return AuthService.verifyIdtoken(idtoken).pipe(
+      switchMap((data)=>{
+        return AuthService.getEsdbAuth({
+          hash: data.hash,
+          range: data.range,
+          index: data.index,
+        })
+      }),
+      switchMap((data: AuthuserInterface) => {
+        let authData: CreateIdtokenInterface = {
+          hash: data.hash,
+          range: data.range,
+          index: data.index,
+          role: data.role,
+          phone: data.phone,
+          timestamp: data.timestamp,
+          realname: data.realname
+        };
+        return of(authData);
+      }),
+      switchMap((data: AuthuserInterface) => {
+        return AuthService.createjwtToken(data);
+      }),
+      catchError((err)=>{
+        return of('123')
+      })
+    )
   }
 }

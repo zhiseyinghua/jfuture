@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, range, throwError } from 'rxjs';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
 import {
   AuthuserIdtokenInterface,
   AuthuserInterface,
+  CreateIdtokenInterface,
   idToken,
   Logindatainterface,
 } from './auth.interface';
@@ -18,7 +19,6 @@ import {
 import { map, switchMap } from 'rxjs/operators';
 import { autherrorCode } from './auth.code';
 import { Base64 } from 'js-base64';
-
 var jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -110,7 +110,7 @@ export class AuthService {
    * 创建一个idtoken
    * @param authdata
    */
-  public static createjwtToken(authdata: AuthuserInterface): Observable<any> {
+  public static createjwtToken(authdata: CreateIdtokenInterface): Observable<any> {
     let time = Date.now();
     const idtoken: AuthuserIdtokenInterface = {
       ...authdata,
@@ -160,20 +160,59 @@ export class AuthService {
 
   /**
    * 验证一个idtoken是否有效，有效返回token解析后的信息，无效抛出一个错误
-   * @param token 
+   * @param token
    */
-  static verifyIdtoken(token: string){
-    var decoded = jwt.decode(token) as idToken
+  static verifyIdtoken(token: string) {
+    var decoded = jwt.decode(token) as idToken;
     return AuthService.getEsdbAuth({
       hash: decoded.hash,
       range: decoded.range,
-      index: decoded.index
+      index: decoded.index,
     }).pipe(
-      map((result)=>{
+      map((result) => {
         // return result['webbase64key']
-        console.log()
-        return jwt.verify(token,result['webbase64key'])
+        console.log();
+        return jwt.verify(token, result['webbase64key']);
+      }),
+    );
+  }
+
+  /**
+   * 根据一个快过期的token得到一个新的token
+   * @param token
+   */
+  static byTokenGetToken(token: string) {
+    return AuthService.verifyIdtoken(token).pipe(
+      switchMap((result: idToken) => {
+        return AuthService.getEsdbAuth(
+          {
+            hash: result.hash,
+            range: result.range,
+            index: result.index
+          }
+        )
+
+      }),
+      switchMap((result) => {
+        let createIdtoken:CreateIdtokenInterface = {
+            hash: result.hash,
+            range: result.range,
+            index: result.index,
+            role: result.role,
+            phone: result.phone,
+            timestamp: result.timestamp,
+            realname: result.realname
+        }
+        return AuthService.createjwtToken(createIdtoken)
       })
-    )
+    );
+  }
+
+  /**
+   * 解码token
+   * @param token 
+   */
+  static decodeIdtoken(token: string ){
+    return  jwt.decode(token) as idToken;
   }
 }
