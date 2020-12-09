@@ -85,7 +85,7 @@ export interface GetuserbyphonenumberInterface {
   encodepossword: string
 }
 
-export interface data
+// export interface data
 
 // expect interface CreateJWTtoken extends Logindatainterface {
 //   JWTTime: number
