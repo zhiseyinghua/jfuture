@@ -17,7 +17,7 @@ import {
   Queryinterface,
 } from 'src/common/db.elasticinterface';
 import { map, switchMap } from 'rxjs/operators';
-import { autherrorCode } from './auth.code';
+import { AutherrorCode } from './auth.code';
 import { Base64 } from 'js-base64';
 var jwt = require('jsonwebtoken');
 
@@ -63,7 +63,7 @@ export class AuthService {
         ) {
           return result.hits.hits[0]._source;
         } else if (result.hits.total.value > 1) {
-          return autherrorCode.user_error;
+          return AutherrorCode.user_error;
         } else if (result.hits.total.value == 0) {
           return false;
         }
@@ -100,7 +100,7 @@ export class AuthService {
         if (result.result == 'created' && result._shards.successful == 1) {
           return eldata;
         } else {
-          return throwError(new Error(autherrorCode.database_storage_failed));
+          return throwError(new Error(AutherrorCode.database_storage_failed));
         }
       }),
     );
@@ -214,5 +214,9 @@ export class AuthService {
    */
   static decodeIdtoken(token: string ){
     return  jwt.decode(token) as idToken;
+  }
+
+  static loginMima() {
+    
   }
 }

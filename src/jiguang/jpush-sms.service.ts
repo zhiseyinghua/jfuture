@@ -7,7 +7,7 @@ import {
   JPushSMSSendCodeRequest,
 } from './jpush.interface';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { autherrorCode } from 'src/auth/auth.code';
+import { AutherrorCode } from 'src/auth/auth.code';
 
 /**
  * 极光发送服务
@@ -83,7 +83,7 @@ export class JPushSMSService {
             'yan zheng ma error',
             
           );
-          return of(autherrorCode.verification_code_error,);
+          return of(AutherrorCode.verification_code_error,);
         } else {
           return throwError(new Error(error.response.data.error.message));
         }

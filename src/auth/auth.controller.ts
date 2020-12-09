@@ -14,7 +14,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { Dbinterface } from 'src/common/db.elasticinterface';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
-import { autherrorCode } from './auth.code';
+import { AutherrorCode } from './auth.code';
 import { Errorcode } from 'src/common/error.code';
 import { AuthGuard } from './auth.guard';
 
@@ -58,7 +58,7 @@ export class AuthController {
           //   code: 'auth0001',
           //   message: autherrorCode.the_user_already_exists,
           // };
-          return throwError(new Error(autherrorCode.the_user_already_exists));
+          return throwError(new Error(AutherrorCode.the_user_already_exists));
         }
       }),
       switchMap((smsdataResult) => {
@@ -75,7 +75,7 @@ export class AuthController {
             role: 'menber',
           });
         } else {
-          return throwError(new Error(autherrorCode.verification_code_error));
+          return throwError(new Error(AutherrorCode.verification_code_error));
         }
       }),
       switchMap((authdata:AuthuserInterface)=>{
@@ -108,13 +108,37 @@ export class AuthController {
   }
 
   /**
-   * 根据手机号码
+   * 根据手机号码登录
    */
   @Post('getuserbyphonenumber')
   getUserbyPhoneNumber(
-    @Body(ValidationPipe) phone: GetuserbyphonenumberInterface,
+    @Body(ValidationPipe) mimaLogindata: GetuserbyphonenumberInterface,
   ): any {
-    return AuthService.byphoneNumber(phone.phoneNumber);
+    return AuthService.byphoneNumber(mimaLogindata.phone).pipe(
+      map(resultdata =>{
+        if(resultdata.encodepossword && resultdata.encodepossword ==mimaLogindata.encodepossword){
+          return resultdata
+        } else if(resultdata == false){
+          return throwError(new Error('该用户不存在'))
+        }else if(resultdata.encodepossword && resultdata.encodepossword != mimaLogindata.encodepossword){
+          return throwError(new Error('密码错误'))
+        }  
+      }),
+      // 给用户办法token
+      switchMap((authdata:AuthuserInterface)=>{
+        return AuthService.createjwtToken(
+          {
+            hash:authdata.hash,
+            range:authdata.range,
+            index: authdata.range,
+            phone: authdata.phone,
+            role: authdata.role,
+            timestamp: authdata.timestamp,
+            realname: authdata.realname
+          }
+        )
+      })
+    )
   }
 
 
@@ -210,7 +234,7 @@ export class AuthController {
         return AuthService.createjwtToken(data);
       }),
       catchError((err)=>{
-        return of('123')
+        return of(AutherrorCode.toeken_expired)
       })
     )
   }

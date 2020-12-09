@@ -1,4 +1,4 @@
-export const autherrorCode = {
+export const AutherrorCode = {
   // 验证码错误
   verification_code_error: 'verification_code_error',
   // 该用户已存在

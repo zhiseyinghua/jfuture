@@ -77,9 +77,15 @@ export interface Logindatainterface {
   role: 'menber' | 'admin' | 'our'
 }
 
+/**
+ * 密码登录的接口
+ */
 export interface GetuserbyphonenumberInterface {
-  phoneNumber: string
+  phone: string,
+  encodepossword: string
 }
+
+export interface data
 
 // expect interface CreateJWTtoken extends Logindatainterface {
 //   JWTTime: number
