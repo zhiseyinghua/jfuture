@@ -74,6 +74,19 @@ export class AuthController {
           return throwError(new Error(autherrorCode.verification_code_error));
         }
       }),
+      switchMap((authdata:AuthuserInterface)=>{
+        return AuthService.createjwtToken(
+          {
+            hash:authdata.hash,
+            range:authdata.range,
+            index: authdata.range,
+            phone: authdata.phone,
+            role: authdata.role,
+            timestamp: authdata.timestamp,
+            realname: authdata.realname
+          }
+        )
+      }), 
       catchError((err) => {
         console.log(
           this.log + 'verifysmscoderegister yicunz catcherror',

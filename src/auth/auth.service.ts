@@ -71,7 +71,7 @@ export class AuthService {
   }
 
   /**
-   * 将用户注册信息存储到数据库,注册成功返回true,否则抛出一个error
+   * 将用户注册信息存储到数据库,注册成功返回用户数据,否则抛出一个error
    * @param data
    */
   static storageUserregisterdata(data: Logindatainterface): Observable<any> {
@@ -97,7 +97,7 @@ export class AuthService {
       // 查询
       map((result: DbElasticinterfacePutReturn) => {
         if (result.result == 'created' && result._shards.successful == 1) {
-          return true;
+          return eldata;
         } else {
           return throwError(new Error(autherrorCode.database_storage_failed));
         }
@@ -121,10 +121,9 @@ export class AuthService {
       hash: authdata.hash,
       range: authdata.range,
       index: authdata.index,
-    })
-    .pipe(
+    }).pipe(
       map((data) => {
-        return jwt.sign(idtoken, data,{  expiresIn: 3600000 * 24,})
+        return jwt.sign(idtoken, data, { expiresIn: 3600000 * 24 });
       }),
     );
   }
