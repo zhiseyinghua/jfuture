@@ -6,8 +6,9 @@ import {
   Logindatainterface,
   LoginWithSMSVerifyCodeInput,
   SendPhoneSMS,
+  AuthuserInterface,
 } from './auth.interface';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { dbinterface } from 'src/common/db.elasticinterface';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
@@ -67,7 +68,7 @@ export class AuthController {
             phone: data.phone,
             encodepossword: data.encodepossword,
             timestamp: 0,
-            role:'menber'
+            role: 'menber',
           });
         } else {
           return throwError(new Error(autherrorCode.verification_code_error));
@@ -118,14 +119,31 @@ export class AuthController {
     return AuthService.byphoneNumber(phone.phoneNumber);
   }
 
-  @Post('shengchengidtokentest') 
-  shengchengidtokentest(
-    @Body(ValidationPipe) phone: any,
-  ): any {
+  @Post('shengchengidtokentest')
+  shengchengidtokentest(@Body(ValidationPipe) phone: any): any {
     return AuthService.getEsdbAuth({
       hash: '',
-      range:'32d75c79-528a-4a64-a67c-de133f06a4ae',
-      index:'auth'
-    })
+      range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
+      index: 'auth',
+    }).pipe(
+      /**
+       * 获取用户的信息
+       */
+      switchMap((data:AuthuserInterface) => {
+        let authData: AuthuserInterface = {
+          hash: data.hash,
+          range: data.range,
+          index: data.index,
+          username: data.username,
+          role:data.role,
+          phoneNumber: data.phoneNumber,
+          timestamp:data.timestamp
+        };
+        return of(authData);
+      }),
+      map((data:AuthuserInterface)=>{
+        return AuthService.createjwtToken(data)
+      })
+    );
   }
 }

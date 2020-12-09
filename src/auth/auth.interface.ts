@@ -1,11 +1,25 @@
-interface Authuser {
+export interface AuthuserInterface {
   hash: string;
   range: string;
   index: string;
   username: string;
   phoneNumber: string;
   role: 'menber' | 'admin' | 'our',
-  // encodepossword: string;
+  encodepossword?: string;
+  timestamp : number,
+}
+
+/**
+ * indoken Payload 部分的信息 
+ */
+export interface AuthuserIdtokenInterface extends AuthuserInterface{
+  // 签发人
+  iss: "future_time";
+  // 受众
+  sub: "member";
+  // 签发时间
+  iat: number;
+
 }
 
 export interface SendPhoneSMS {

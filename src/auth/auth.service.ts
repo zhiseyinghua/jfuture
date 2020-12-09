@@ -1,10 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable, throwError } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import { Observable, throwError } from 'rxjs';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
-import { Logindatainterface } from './auth.interface';
+import { AuthuserIdtokenInterface, AuthuserInterface, Logindatainterface } from './auth.interface';
 import uuid = require('uuid');
 import {
   DbElasticinterfacePutReturn,
@@ -25,8 +24,12 @@ export class AuthService {
   public static getEsdbAuth(userRange: dbinterface): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      AUTH_CONFIG.DOC + '/' + AUTH_CONFIG.INDEX + '/' + userRange.range,
-    );
+      AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC  + '/' + userRange.range,
+    ).pipe(
+      map((result)=>{
+        return result['_source']
+      })
+    )
   }
 
   /**
@@ -96,16 +99,15 @@ export class AuthService {
     );
   }
 
-  public static createjwtToken(): Observable<any> {
-    const user = {
-      jti: 1,
-      iss: 'gumt.top',
-      user: 'goolge',
+  
+  public static createjwtToken(authdata:AuthuserInterface): Observable<any> {
+    let time = Date.now()
+    const idtoken:AuthuserIdtokenInterface = {
+      ...authdata,
+      iat: time,
+      iss: 'future_time',
+      sub: 'member',
     };
-
-    return
-    var older_token = jwt.sign({ foo: 'bar', iat: Math.floor(Date.now() / 1000) - 30 }, 'shhhhh');
-    // return older_token
-
+    return jwt.sign(idtoken, 'secret',{algorithm: 'RS256', expiresIn: 3600000*24 });
   }
 }
