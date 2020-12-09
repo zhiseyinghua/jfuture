@@ -23,7 +23,7 @@ export class UserController {
       hash: '',
       range: '',
       index: '',
-      userid: '4',
+      userid: '',
       usernickname: '',
       telephone: '',
       usermail: '',
@@ -41,15 +41,15 @@ export class UserController {
       hash: '',
       range: '',
       index: '',
-      userid: '4',
+      userid: '',
       usernickname: '',
       telephone: '',
       usermail: '',
       userico: '',
       authKey: {
-        hash: '12345',
-        range: '457',
-        index: '789',
+        hash: '',
+        range: '',
+        index: '',
       }
     });
   }
