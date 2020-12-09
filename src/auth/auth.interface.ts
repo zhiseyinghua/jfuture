@@ -2,11 +2,12 @@ export interface AuthuserInterface {
   hash: string;
   range: string;
   index: string;
-  username: string;
-  phoneNumber: string;
+  phone: string;
   role: 'menber' | 'admin' | 'our',
   encodepossword?: string;
+  webbase64key?: string,
   timestamp : number,
+  realname:any
 }
 
 /**

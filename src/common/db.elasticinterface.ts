@@ -22,7 +22,7 @@ export interface DbElasticinterfacePutReturn {
 },
 }
 
-export interface dbinterface {
+export interface Dbinterface {
   hash: string;
   range: string;
   index: string;

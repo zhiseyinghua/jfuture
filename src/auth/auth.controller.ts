@@ -10,7 +10,7 @@ import {
 } from './auth.interface';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
-import { dbinterface } from 'src/common/db.elasticinterface';
+import { Dbinterface } from 'src/common/db.elasticinterface';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { autherrorCode } from './auth.code';
 import { Errorcode } from 'src/common/error.code';
@@ -91,25 +91,6 @@ export class AuthController {
   }
 
   /**
-   *
-   * @param data
-   */
-  @Post('logontest')
-  setlocaltest(@Body(ValidationPipe) data: Logindatainterface): any {
-    console.log('setlocaltest', 'data', data);
-    return AuthService.storageUserregisterdata(data);
-  }
-
-  /**
-   *
-   */
-  @Post('getuserauthtest')
-  signUp(@Body(ValidationPipe) userRange: dbinterface): any {
-    console.log('AuthController signup mode enter');
-    return AuthService.getEsdbAuth(userRange);
-  }
-
-  /**
    * 根据手机号码
    */
   @Post('getuserbyphonenumber')
@@ -120,7 +101,7 @@ export class AuthController {
   }
 
   @Post('shengchengidtokentest')
-  shengchengidtokentest(@Body(ValidationPipe) phone: any): any {
+  shengchengidtokentest(): any {
     return AuthService.getEsdbAuth({
       hash: '',
       range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
@@ -129,21 +110,48 @@ export class AuthController {
       /**
        * 获取用户的信息
        */
-      switchMap((data:AuthuserInterface) => {
+      switchMap((data: AuthuserInterface) => {
         let authData: AuthuserInterface = {
           hash: data.hash,
           range: data.range,
           index: data.index,
-          username: data.username,
-          role:data.role,
-          phoneNumber: data.phoneNumber,
-          timestamp:data.timestamp
+          role: data.role,
+          phone: data.phone,
+          timestamp: data.timestamp,
+          realname: data.realname
         };
         return of(authData);
       }),
-      map((data:AuthuserInterface)=>{
-        return AuthService.createjwtToken(data)
-      })
+      switchMap((data: AuthuserInterface) => {
+        return AuthService.createjwtToken(data);
+      }),
     );
+  }
+
+  @Post('upidtokentest')
+  upidtoken(): any {
+    return AuthService.upjwttokenkey({
+      hash: 'auth-2020-12-08',
+      range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
+      index: 'user',
+    });
+  }
+
+  /**
+   *
+   * @param data
+   */
+  @Post('logontest')
+  setlocaltest(@Body(ValidationPipe) data: Logindatainterface): any {
+    console.log('setlocaltest', 'data', data);
+    return AuthService.storageUserregisterdata(data);
+  }
+  /**
+   *
+   */
+  @Post('getuserauthtest')
+  signUp(@Body(ValidationPipe) userRange: Dbinterface): any {
+    console.log('AuthController signup mode enter');
+    return AuthService.getEsdbAuth(userRange);
   }
 }
