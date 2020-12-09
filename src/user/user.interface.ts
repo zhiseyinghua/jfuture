@@ -19,4 +19,7 @@ interface UserInfo {
     userico:string;
     authKey: dbinterface;
   }
+  export interface SearchByUserid{
+    userid:string;
+  }
   

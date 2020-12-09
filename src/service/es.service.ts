@@ -1,13 +1,13 @@
 import { Observable, from, of, throwError } from 'rxjs';
 import { Method } from 'src/common/db.elasticinterface';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import axios, { AxiosRequestConfig } from 'axios';
 
 // const axios = require('axios');
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'http://127.0.0.3:9200/',
+  host: 'http://localhost.0.0.3:9200/',
   log: 'trace',
 });
 
@@ -36,7 +36,7 @@ export class DbElasticService {
     );
     let axiosData: AxiosRequestConfig = {
       method: method,
-      url: 'http://192.168.31.126:9400/' + urlstr,
+      url: 'http://localhost:9200/' + urlstr,
       data: body,
       headers: {
         'Content-Type': 'application/json',
@@ -46,13 +46,17 @@ export class DbElasticService {
     return from(
       axios(axiosData),
     ).pipe(
+      map(data=>{
+        console.log('11111111111111111111111111',data)
+        return data
+      }),
       catchError((error) => {
-        // console.log('DbElasticService ' + 'executeInEs' + error);
+        console.log('DbElasticService ' + 'executeInEs error' + error);
         // return throwError(error);
         return throwError(error);
       }),
       switchMap((result) => {
-        // console.log(result);
+        // console.log('DbElasticService ' + 'executeInEs error',result);
         return of(result['data']);
       }),
     );
