@@ -65,7 +65,6 @@ export interface Logindatainterface {
   // 注册时间
   timestamp : number,
   role: 'menber' | 'admin' | 'our'
-
 }
 
 export interface GetuserbyphonenumberInterface {

@@ -6,6 +6,7 @@ import { AUTH_CONFIG } from './auth.config';
 import {
   AuthuserIdtokenInterface,
   AuthuserInterface,
+  idToken,
   Logindatainterface,
 } from './auth.interface';
 import uuid = require('uuid');
@@ -158,11 +159,21 @@ export class AuthService {
   }
 
   /**
-   * 
+   * 验证一个idtoken是否有效，有效返回token解析后的信息，无效抛出一个错误
    * @param token 
    */
   static verifyIdtoken(token: string){
-    var decoded = jwt.decode(token)
-    return decoded
+    var decoded = jwt.decode(token) as idToken
+    return AuthService.getEsdbAuth({
+      hash: decoded.hash,
+      range: decoded.range,
+      index: decoded.index
+    }).pipe(
+      map((result)=>{
+        // return result['webbase64key']
+        console.log()
+        return jwt.verify(token,result['webbase64key'])
+      })
+    )
   }
 }
