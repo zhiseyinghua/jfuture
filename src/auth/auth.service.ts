@@ -111,7 +111,9 @@ export class AuthService {
    * 创建一个idtoken
    * @param authdata
    */
-  public static createjwtToken(authdata: CreateIdtokenInterface): Observable<any> {
+  public static createjwtToken(
+    authdata: CreateIdtokenInterface,
+  ): Observable<any> {
     let time = Date.now();
     const idtoken: AuthuserIdtokenInterface = {
       ...authdata,
@@ -126,10 +128,10 @@ export class AuthService {
     }).pipe(
       map((data) => {
         let idtokenbackdata: BackidtokenInterface = {
-          status:'success',
-          idtoken:jwt.sign(idtoken, data, { expiresIn: 3600000 * 24 })
-        }
-        return idtokenbackdata
+          status: 'success',
+          idtoken: jwt.sign(idtoken, data, { expiresIn: 3600000 * 24 }),
+        };
+        return idtokenbackdata;
       }),
     );
   }
@@ -189,39 +191,63 @@ export class AuthService {
   static byTokenGetToken(token: string) {
     return AuthService.verifyIdtoken(token).pipe(
       switchMap((result: idToken) => {
-        return AuthService.getEsdbAuth(
-          {
-            hash: result.hash,
-            range: result.range,
-            index: result.index
-          }
-        )
-
+        return AuthService.getEsdbAuth({
+          hash: result.hash,
+          range: result.range,
+          index: result.index,
+        });
       }),
       switchMap((result) => {
-        let createIdtoken:CreateIdtokenInterface = {
-            hash: result.hash,
-            range: result.range,
-            index: result.index,
-            role: result.role,
-            phone: result.phone,
-            timestamp: result.timestamp,
-            realname: result.realname
-        }
-        return AuthService.createjwtToken(createIdtoken)
-      })
+        let createIdtoken: CreateIdtokenInterface = {
+          hash: result.hash,
+          range: result.range,
+          index: result.index,
+          role: result.role,
+          phone: result.phone,
+          timestamp: result.timestamp,
+          realname: result.realname,
+        };
+        return AuthService.createjwtToken(createIdtoken);
+      }),
     );
   }
 
   /**
    * 解码token
-   * @param token 
+   * @param token
    */
-  static decodeIdtoken(token: string ){
-    return  jwt.decode(token) as idToken;
+  static decodeIdtoken(token: string) {
+    return jwt.decode(token) as idToken;
   }
 
-  static resetpossword(phone: string,possword: string){
-
+  /**
+   * 这是一个改变密码的方法 
+   * @param phone 电话号码
+   * @param possword 密码
+   */
+  static resetpossword(phone: string, possword: string) {
+    return AuthService.byphoneNumber(phone).pipe(
+      switchMap((byphoneResult) => {
+        if (byphoneResult && byphoneResult.range) {
+          return DbElasticService.executeInEs(
+            'post',
+            AUTH_CONFIG.INDEX +
+              '/' +
+              AUTH_CONFIG.DOC +
+              '/' +
+              byphoneResult.range +
+              '/' +
+              AUTH_CONFIG.UPDATA,
+            {
+              doc: {
+                encodepossword: possword,
+              },
+            },
+          );
+        } else {
+          return throwError(new Error(AutherrorCode.The_user_does_not_exist))
+        }
+      }),
+    );
   }
 }

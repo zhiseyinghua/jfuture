@@ -157,8 +157,14 @@ export class AuthController {
     );
   }
 
+  /**
+   * 通过电话号码验证更换密码
+   * @param data
+   */
   @Post('byphoneresetpossword')
-  byphoneResetPossword(@Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput) {
+  byphoneResetPossword(
+    @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
+  ) {
     return AuthService.byphoneNumber(data.phone).pipe(
       switchMap((result) => {
         if (result == true) {
@@ -178,16 +184,7 @@ export class AuthController {
       switchMap((smsdataResult) => {
         if (smsdataResult['is_valid'] == true) {
           // 更新密码
-          return AuthService.storageUserregisterdata({
-            hash: '',
-            range: '',
-            index: '',
-            email: '',
-            phone: data.phone,
-            encodepossword: data.encodepossword,
-            timestamp: 0,
-            role: 'menber',
-          });
+          return AuthService.resetpossword(data.phone, data.encodepossword);
         } else {
           return throwError(new Error(AutherrorCode.verification_code_error));
         }
@@ -219,7 +216,55 @@ export class AuthController {
     );
   }
 
+  /**
+   * 通过一个快过期的有效的token换取一个新的token
+   * @param headers
+   */
+  @Post('bytokengettoken')
+  verify(@Headers() headers): any {
+    let idtoken = headers['authorization'];
+    console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
+    return AuthService.verifyIdtoken(idtoken).pipe(
+      switchMap((data) => {
+        return AuthService.getEsdbAuth({
+          hash: data.hash,
+          range: data.range,
+          index: data.index,
+        });
+      }),
+      switchMap((data: AuthuserInterface) => {
+        let authData: CreateIdtokenInterface = {
+          hash: data.hash,
+          range: data.range,
+          index: data.index,
+          role: data.role,
+          phone: data.phone,
+          timestamp: data.timestamp,
+          realname: data.realname,
+        };
+        return of(authData);
+      }),
+      switchMap((data: AuthuserInterface) => {
+        return AuthService.createjwtToken(data);
+      }),
+      catchError((err) => {
+        return of(AutherrorCode.toeken_expired);
+      }),
+    );
+  }
 
+  @Post('phonereasttest')
+  reastPossword(): any {
+    return AuthService.resetpossword('18779868515', '123654').pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    );
+  }
 
   @Post('shengchengidtokentest')
   shengchengidtokentest(): any {
@@ -274,42 +319,5 @@ export class AuthController {
   signUp(@Body(ValidationPipe) userRange: Dbinterface): any {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
-  }
-
-  /**
-   * 通过一个快过期的有效的token换取一个新的token
-   * @param headers
-   */
-  @Post('bytokengettoken')
-  verify(@Headers() headers): any {
-    let idtoken = headers['authorization'];
-    console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
-    return AuthService.verifyIdtoken(idtoken).pipe(
-      switchMap((data) => {
-        return AuthService.getEsdbAuth({
-          hash: data.hash,
-          range: data.range,
-          index: data.index,
-        });
-      }),
-      switchMap((data: AuthuserInterface) => {
-        let authData: CreateIdtokenInterface = {
-          hash: data.hash,
-          range: data.range,
-          index: data.index,
-          role: data.role,
-          phone: data.phone,
-          timestamp: data.timestamp,
-          realname: data.realname,
-        };
-        return of(authData);
-      }),
-      switchMap((data: AuthuserInterface) => {
-        return AuthService.createjwtToken(data);
-      }),
-      catchError((err) => {
-        return of(AutherrorCode.toeken_expired);
-      }),
-    );
   }
 }
