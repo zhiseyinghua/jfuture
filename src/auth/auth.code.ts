@@ -7,5 +7,9 @@ export const AutherrorCode = {
   // 用户存储数据库失败
   database_storage_failed:  'database_storage_failed',
   //  token 过期
-  toeken_expired: 'toeken_expired'
+  toeken_expired: 'toeken_expired',
+  // 密码错误
+  wrong_password: 'wrong_password',
+  // 该用户不存在
+  The_user_does_not_exist: 'The_user_does_not_exist'
 };

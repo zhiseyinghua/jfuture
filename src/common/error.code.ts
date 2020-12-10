@@ -7,5 +7,13 @@ export const Errorcode = {
      * 验证码error
      */
     verification_code_error: "000002",
-    database_storage_failed: "000003"
+    database_storage_failed: "000003",
+    /**
+     * 密码错误
+     */
+    wrong_password: '000004',
+    /**
+     * 该用户不存在
+     */
+    The_user_does_not_exist: '000006'
 }

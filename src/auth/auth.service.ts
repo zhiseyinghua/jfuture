@@ -6,6 +6,7 @@ import { AUTH_CONFIG } from './auth.config';
 import {
   AuthuserIdtokenInterface,
   AuthuserInterface,
+  BackidtokenInterface,
   CreateIdtokenInterface,
   idToken,
   Logindatainterface,
@@ -124,7 +125,11 @@ export class AuthService {
       index: authdata.index,
     }).pipe(
       map((data) => {
-        return jwt.sign(idtoken, data, { expiresIn: 3600000 * 24 });
+        let idtokenbackdata: BackidtokenInterface = {
+          status:'success',
+          idtoken:jwt.sign(idtoken, data, { expiresIn: 3600000 * 24 })
+        }
+        return idtokenbackdata
       }),
     );
   }
@@ -216,7 +221,7 @@ export class AuthService {
     return  jwt.decode(token) as idToken;
   }
 
-  static loginMima() {
-    
+  static resetpossword(phone: string,possword: string){
+
   }
 }

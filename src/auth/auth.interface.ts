@@ -50,7 +50,7 @@ export interface SendPhoneSMS {
 }
 
 /**
- * 注册，前端发送过来的数据接口
+ * 注册，重置密码前端发送过来的数据接口
  * msg_id为调用发送验证码API的返回值
  */
 export interface LoginWithSMSVerifyCodeInput {
@@ -85,18 +85,12 @@ export interface GetuserbyphonenumberInterface {
   encodepossword: string
 }
 
-// export interface data
+// export interface ResetposswordInterface {
 
-// expect interface CreateJWTtoken extends Logindatainterface {
-//   JWTTime: number
 // }
 
-// const logindatainterfacedata: logindatainterface = {
-//   'hash':'1',
-//   'range':'1',
-//   'index':'1',
-//   'encodepossword':'1234',
-//   'phone':'18779868511',
-//   'email':''
-// }
 
+export interface BackidtokenInterface{
+  idtoken: string
+  status: 'success'
+}

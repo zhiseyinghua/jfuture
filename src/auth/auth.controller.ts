@@ -1,4 +1,11 @@
-import { Controller, Post, Body, ValidationPipe, UseGuards, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  UseGuards,
+  Headers,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
 import {
@@ -17,7 +24,6 @@ import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { AutherrorCode } from './auth.code';
 import { Errorcode } from 'src/common/error.code';
 import { AuthGuard } from './auth.guard';
-
 
 @Controller('auth')
 export class AuthController {
@@ -78,19 +84,17 @@ export class AuthController {
           return throwError(new Error(AutherrorCode.verification_code_error));
         }
       }),
-      switchMap((authdata:AuthuserInterface)=>{
-        return AuthService.createjwtToken(
-          {
-            hash:authdata.hash,
-            range:authdata.range,
-            index: authdata.range,
-            phone: authdata.phone,
-            role: authdata.role,
-            timestamp: authdata.timestamp,
-            realname: authdata.realname
-          }
-        )
-      }), 
+      switchMap((authdata: AuthuserInterface) => {
+        return AuthService.createjwtToken({
+          hash: authdata.hash,
+          range: authdata.range,
+          index: authdata.range,
+          phone: authdata.phone,
+          role: authdata.role,
+          timestamp: authdata.timestamp,
+          realname: authdata.realname,
+        });
+      }),
       catchError((err) => {
         console.log(
           this.log + 'verifysmscoderegister yicunz catcherror',
@@ -110,38 +114,110 @@ export class AuthController {
   /**
    * 根据手机号码登录
    */
-  @Post('getuserbyphonenumber')
+  @Post('byusermimalogin')
   getUserbyPhoneNumber(
     @Body(ValidationPipe) mimaLogindata: GetuserbyphonenumberInterface,
   ): any {
     return AuthService.byphoneNumber(mimaLogindata.phone).pipe(
-      map(resultdata =>{
-        if(resultdata.encodepossword && resultdata.encodepossword ==mimaLogindata.encodepossword){
-          return resultdata
-        } else if(resultdata == false){
-          return throwError(new Error('该用户不存在'))
-        }else if(resultdata.encodepossword && resultdata.encodepossword != mimaLogindata.encodepossword){
-          return throwError(new Error('密码错误'))
-        }  
+      switchMap((resultdata) => {
+        if (
+          resultdata.encodepossword &&
+          resultdata.encodepossword == mimaLogindata.encodepossword
+        ) {
+          return of(resultdata);
+        } else if (resultdata == false) {
+          return throwError(new Error(AutherrorCode.The_user_does_not_exist));
+        } else if (
+          resultdata.encodepossword &&
+          resultdata.encodepossword != mimaLogindata.encodepossword
+        ) {
+          return throwError(new Error(AutherrorCode.wrong_password));
+        }
       }),
       // 给用户办法token
-      switchMap((authdata:AuthuserInterface)=>{
-        return AuthService.createjwtToken(
-          {
-            hash:authdata.hash,
-            range:authdata.range,
-            index: authdata.range,
-            phone: authdata.phone,
-            role: authdata.role,
-            timestamp: authdata.timestamp,
-            realname: authdata.realname
-          }
-        )
-      })
-    )
+      switchMap((authdata: AuthuserInterface) => {
+        return AuthService.createjwtToken({
+          hash: authdata.hash,
+          range: authdata.range,
+          index: authdata.range,
+          phone: authdata.phone,
+          role: authdata.role,
+          timestamp: authdata.timestamp,
+          realname: authdata.realname,
+        });
+      }),
+      catchError((err) => {
+        console.log(err);
+        let backMessage: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(backMessage);
+      }),
+    );
   }
 
-
+  @Post('byphoneresetpossword')
+  byphoneResetPossword(@Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput) {
+    return AuthService.byphoneNumber(data.phone).pipe(
+      switchMap((result) => {
+        if (result == true) {
+          return JPushSMSService.verifySmsCode({
+            code: data.code,
+            msg_id: data.msg_id,
+            provider: data.provider,
+          });
+        } else {
+          // let backMessage: BackCodeMessage = {
+          //   code: 'auth0001',
+          //   message: autherrorCode.the_user_already_exists,
+          // };
+          return throwError(new Error(AutherrorCode.The_user_does_not_exist));
+        }
+      }),
+      switchMap((smsdataResult) => {
+        if (smsdataResult['is_valid'] == true) {
+          // 更新密码
+          return AuthService.storageUserregisterdata({
+            hash: '',
+            range: '',
+            index: '',
+            email: '',
+            phone: data.phone,
+            encodepossword: data.encodepossword,
+            timestamp: 0,
+            role: 'menber',
+          });
+        } else {
+          return throwError(new Error(AutherrorCode.verification_code_error));
+        }
+      }),
+      switchMap((authdata: AuthuserInterface) => {
+        return AuthService.createjwtToken({
+          hash: authdata.hash,
+          range: authdata.range,
+          index: authdata.range,
+          phone: authdata.phone,
+          role: authdata.role,
+          timestamp: authdata.timestamp,
+          realname: authdata.realname,
+        });
+      }),
+      catchError((err) => {
+        console.log(
+          this.log + 'verifysmscoderegister yicunz catcherror',
+          JSON.stringify(err),
+          typeof err,
+          err.message,
+        );
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    );
+  }
 
 
 
@@ -163,7 +239,7 @@ export class AuthController {
           role: data.role,
           phone: data.phone,
           timestamp: data.timestamp,
-          realname: data.realname
+          realname: data.realname,
         };
         return of(authData);
       }),
@@ -200,23 +276,21 @@ export class AuthController {
     return AuthService.getEsdbAuth(userRange);
   }
 
-  
-  // @UseGuards(AuthGuard)
   /**
    * 通过一个快过期的有效的token换取一个新的token
-   * @param headers 
+   * @param headers
    */
   @Post('bytokengettoken')
   verify(@Headers() headers): any {
-    let idtoken = headers['authorization']
-    console.log("auth_controller bytokengettoken idtoken",idtoken,headers)
+    let idtoken = headers['authorization'];
+    console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
     return AuthService.verifyIdtoken(idtoken).pipe(
-      switchMap((data)=>{
+      switchMap((data) => {
         return AuthService.getEsdbAuth({
           hash: data.hash,
           range: data.range,
           index: data.index,
-        })
+        });
       }),
       switchMap((data: AuthuserInterface) => {
         let authData: CreateIdtokenInterface = {
@@ -226,16 +300,16 @@ export class AuthController {
           role: data.role,
           phone: data.phone,
           timestamp: data.timestamp,
-          realname: data.realname
+          realname: data.realname,
         };
         return of(authData);
       }),
       switchMap((data: AuthuserInterface) => {
         return AuthService.createjwtToken(data);
       }),
-      catchError((err)=>{
-        return of(AutherrorCode.toeken_expired)
-      })
-    )
+      catchError((err) => {
+        return of(AutherrorCode.toeken_expired);
+      }),
+    );
   }
 }
