@@ -93,6 +93,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          device:data.device,
+          platform: data.phone
         });
       }),
       catchError((err) => {
@@ -144,6 +146,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          platform:mimaLogindata.platform,
+          device: mimaLogindata.platform
         });
       }),
       catchError((err) => {
@@ -167,7 +171,7 @@ export class AuthController {
   ) {
     return AuthService.byphoneNumber(data.phone).pipe(
       switchMap((result) => {
-        if (result == true) {
+        if (result &&  result.range) {
           return JPushSMSService.verifySmsCode({
             code: data.code,
             msg_id: data.msg_id,
@@ -198,6 +202,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          platform: data.platform,
+          device: data.device
         });
       }),
       catchError((err) => {
@@ -222,6 +228,7 @@ export class AuthController {
    */
   @Post('bytokengettoken')
   verify(@Headers() headers): any {
+    let idtokendata;
     let idtoken = headers['authorization'];
     console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
     return AuthService.verifyIdtoken(idtoken).pipe(
@@ -233,7 +240,8 @@ export class AuthController {
         });
       }),
       switchMap((data: AuthuserInterface) => {
-        let authData: CreateIdtokenInterface = {
+        idtokendata = data
+        let authData = {
           hash: data.hash,
           range: data.range,
           index: data.index,
@@ -245,13 +253,20 @@ export class AuthController {
         return of(authData);
       }),
       switchMap((data: AuthuserInterface) => {
-        return AuthService.createjwtToken(data);
+        console.log('111111111111111111111111111111111111111111',data)
+        return AuthService.createjwtToken({
+          ...data,
+          platform: idtokendata['platform'],
+          device:idtokendata['device']
+        });
       }),
       catchError((err) => {
         return of(AutherrorCode.toeken_expired);
       }),
     );
   }
+
+  @Post('Verificationcodelogin')
 
   @Post('phonereasttest')
   reastPossword(): any {
@@ -266,33 +281,33 @@ export class AuthController {
     );
   }
 
-  @Post('shengchengidtokentest')
-  shengchengidtokentest(): any {
-    return AuthService.getEsdbAuth({
-      hash: '',
-      range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
-      index: 'auth',
-    }).pipe(
-      /**
-       * 获取用户的信息
-       */
-      switchMap((data: AuthuserInterface) => {
-        let authData: CreateIdtokenInterface = {
-          hash: data.hash,
-          range: data.range,
-          index: data.index,
-          role: data.role,
-          phone: data.phone,
-          timestamp: data.timestamp,
-          realname: data.realname,
-        };
-        return of(authData);
-      }),
-      switchMap((data: AuthuserInterface) => {
-        return AuthService.createjwtToken(data);
-      }),
-    );
-  }
+  // @Post('shengchengidtokentest')
+  // shengchengidtokentest(): any {
+  //   return AuthService.getEsdbAuth({
+  //     hash: '',
+  //     range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
+  //     index: 'auth',
+  //   }).pipe(
+  //     /**
+  //      * 获取用户的信息
+  //      */
+  //     switchMap((data: AuthuserInterface) => {
+  //       let authData: CreateIdtokenInterface = {
+  //         hash: data.hash,
+  //         range: data.range,
+  //         index: data.index,
+  //         role: data.role,
+  //         phone: data.phone,
+  //         timestamp: data.timestamp,
+  //         realname: data.realname,
+  //       };
+  //       return of(authData);
+  //     }),
+  //     switchMap((data: AuthuserInterface) => {
+  //       return AuthService.createjwtToken(data);
+  //     }),
+  //   );
+  // }
 
   @Post('upidtokentest')
   upidtoken(): any {

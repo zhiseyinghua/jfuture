@@ -19,19 +19,31 @@ export interface CreateIdtokenInterface{
   role:  'menber' | 'admin' | 'our',
   phone: string,
   timestamp: number,
-  realname: string
+  realname: string,
+  device: string;
+  platform: string
 }
 
 /**
  * indoken Payload 部分的信息 
  */
-export interface AuthuserIdtokenInterface extends AuthuserInterface{
+export interface AuthuserIdtokenInterface{
+  role:  'menber' | 'admin' | 'our',
+  timestamp: number,
+  realname: string,
+  hash: string;
+  range: string;
+  index: string;
+  phone: string;
   // 签发人
   iss: "future_time";
   // 受众
   sub: "member";
   // 签发时间
   iat: number;
+  // 设备码
+  device: string;
+  platform: string
 }
 
 export interface idToken extends Dbinterface {
@@ -59,6 +71,8 @@ export interface LoginWithSMSVerifyCodeInput {
   code: string;
   provider: 'phone' | 'web';
   encodepossword: string
+  device: string;
+  platform: string
 }
 
 /**
@@ -83,7 +97,13 @@ export interface Logindatainterface {
 export interface GetuserbyphonenumberInterface {
   phone: string,
   encodepossword: string
+  device: string;
+  platform: string
 }
+
+
+
+
 
 // export interface ResetposswordInterface {
 
