@@ -81,7 +81,7 @@ export class AuthService {
     let eldata: Logindatainterface = {
       hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
       range: uuid.v4(),
-      index: 'user',
+      index: AUTH_CONFIG.INDEX,
       email: '',
       encodepossword: data.encodepossword,
       phone: data.phone,
