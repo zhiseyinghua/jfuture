@@ -231,7 +231,6 @@ export class AuthService {
    */
   static resetpossword(phone: string, possword: string) {
     let authadata;
-    console.log('111111111111111111111111111',authadata)
     return AuthService.byphoneNumber(phone).pipe(
       switchMap((byphoneResult) => {
         if (byphoneResult && byphoneResult.range) {
