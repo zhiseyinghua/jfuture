@@ -5,7 +5,6 @@ import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
 import {
   AuthuserIdtokenInterface,
-  AuthuserInterface,
   BackidtokenInterface,
   CreateIdtokenInterface,
   idToken,
