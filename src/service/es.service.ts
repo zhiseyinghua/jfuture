@@ -7,7 +7,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'http://127.0.0.3:9200/',
+  host: 'http://localhost:9200/',
   log: 'trace',
 });
 
@@ -36,7 +36,7 @@ export class DbElasticService {
     );
     let axiosData: AxiosRequestConfig = {
       method: method,
-      url: 'http://192.168.31.126:9400/' + urlstr,
+      url: 'http://localhost:9200/' + urlstr,
       data: body,
       headers: {
         'Content-Type': 'application/json',

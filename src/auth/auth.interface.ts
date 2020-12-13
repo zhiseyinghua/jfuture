@@ -1,3 +1,4 @@
+import { OperatorFunction } from "rxjs";
 import { Dbinterface } from "src/common/db.elasticinterface";
 
 export interface AuthuserInterface {
@@ -35,6 +36,7 @@ export interface AuthuserIdtokenInterface extends AuthuserInterface{
 }
 
 export interface idToken extends Dbinterface {
+    pipe(arg0: OperatorFunction<unknown, unknown>): any;
     phone: string,
     role: string,
     timestamp: number,
