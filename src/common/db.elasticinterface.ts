@@ -12,11 +12,31 @@ export interface DbElasticinterfacePutReturn {
   _version: string;
   _seq_no: number;
   _primary_term: number;
-  found: boolean;
-  _source: any;
+  found?: boolean;
+  _source?: any;
+  result?: string;
+  _shards?: {
+    total: 2,
+    successful: 1,
+    failed: 0
+},
+}
+export interface DbElasticinterPutReturn {
+  _index: string;
+  _type: string;
+  _id: string;
+  _version: string;
+  result?: string;
+  _shards?: {
+    total: 2,
+    successful: 1,
+    failed: 0
+},
+_seq_no: number;
+_primary_term: number;
 }
 
-export interface dbinterface {
+export interface Dbinterface {
   hash: string;
   range: string;
   index: string;

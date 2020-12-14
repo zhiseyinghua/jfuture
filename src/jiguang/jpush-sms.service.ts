@@ -6,8 +6,8 @@ import {
   JPushSMSCodeVerificationRequest,
   JPushSMSSendCodeRequest,
 } from './jpush.interface';
-import { catchError, map } from 'rxjs/operators';
-import { autherrorCode } from 'src/auth/auth.code';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { AutherrorCode } from 'src/auth/auth.code';
 
 /**
  * 极光发送服务
@@ -35,12 +35,12 @@ export class JPushSMSService {
     };
     console.log('auth', authorizationBase64Header);
     return from(Axios.default.request(axiosRequestConfig)).pipe(
-      map((response) => {
-        console.log(this.TAG, 'sendSMSVerficiationCode', response);
-        return response.data;
+      switchMap((response) => {
+        // console.log(this.TAG, 'sendSMSVerficiationCode', response);
+        return of(response.data);
       }),
       catchError((error) => {
-        console.error(this.TAG, 'got error', error);
+        // console.error(this.TAG, 'got error', error);
         return throwError(error);
       }),
     );
@@ -83,7 +83,7 @@ export class JPushSMSService {
             'yan zheng ma error',
             
           );
-          return of(autherrorCode.verification_code_error,);
+          return of(AutherrorCode.verification_code_error,);
         } else {
           return throwError(new Error(error.response.data.error.message));
         }
