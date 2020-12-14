@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
-import { of, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { BackCodeMessage } from 'src/common/back.codeinterface';
-import { SearchByUserid, UserInfoInterface } from './user.interface';
-import { UserService } from './user.service';
-
-@Controller('user')
-
-=======
 import { Body, Controller, Get, Header, Headers, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { of, throwError } from 'rxjs';
@@ -21,26 +10,10 @@ import { UserInfoInterface } from './user.interface';
 import { UserService } from './user.service';
 
 @Controller('user')
->>>>>>> dev-hxy
 export class UserController {
   log = 'UserController'
   constructor(private userService: UserService) { }
 
-<<<<<<< HEAD
-  @Post('getuser')
-  getuserinfo(@Body(ValidationPipe) data: UserInfoInterface): any {
-    console.log('getuserinfo', 'data', data);
-    return UserService.storeUserInfo(data);
-  }
-
-  @Post('insertuserinfo')
-  insertuserinfo(): any {
-    return UserService.storeUserInfo({
-      hash: '',
-      range: '',
-      index: '',
-      userid: '',
-=======
 
   @Post('insertuserinfo')
   insertuserinfo(@Headers() headers): any {
@@ -50,45 +23,11 @@ export class UserController {
     console.log(userinfo);
     return UserService.storeUserInfo({
       userid: '1',
->>>>>>> dev-hxy
       usernickname: '',
       telephone: '',
       usermail: '',
       userico: '',
       authKey: {
-<<<<<<< HEAD
-        hash: '123',
-        range: '456',
-        index: '789',
-      }
-    })
-  }
-  @Post('updateuserinfo')
-  updateuserinfo(): any {
-    return UserService.UpdateUserInfo({
-      hash: '',
-      range: '',
-      index: '',
-      userid: '',
-      usernickname: '',
-      telephone: '',
-      usermail: '',
-      userico: '',
-      authKey: {
-        hash: '',
-        range: '',
-        index: '',
-      }
-    });
-  }
-  @Post('searchbyuserid')
-  searchbyuserid(
-    @Body(ValidationPipe) userid: SearchByUserid,
-  ): any {
-    return UserService.SearchUserInfo(userid.userid);
-  }
-} 
-=======
         hash:userinfo.hash,
         range:userinfo.range,
         index:userinfo.index,
@@ -141,4 +80,3 @@ export class UserController {
 } 
 
 
->>>>>>> dev-hxy

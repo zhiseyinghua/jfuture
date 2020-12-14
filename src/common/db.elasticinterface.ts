@@ -74,7 +74,6 @@ interface QueryinterfaceHitList {
 }
 
 
-
 /**
  * 这是一个公共的method接口
  */
@@ -99,6 +98,3 @@ export type Method =
   | 'LINK'
   | 'unlink'
   | 'UNLINK';
-
-
-  
