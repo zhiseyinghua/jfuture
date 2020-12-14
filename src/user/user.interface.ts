@@ -9,9 +9,7 @@ interface UserInfo {
   }
   
   export interface UserInfoInterface  {
-    hash: string;
-    range: string;
-    index: string;
+
     userid:string;
     usernickname:string;
     telephone:string;

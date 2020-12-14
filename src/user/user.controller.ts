@@ -22,20 +22,25 @@ export class UserController {
     let userinfo=AuthService.decodeIdtoken(idtoken);
     console.log(userinfo);
     return UserService.storeUserInfo({
-      hash:userinfo.hash,
-      range:userinfo.range,
-      index:userinfo.index,
-      userid: '',
+      userid: '1',
       usernickname: '',
       telephone: '',
       usermail: '',
       userico: '',
       authKey: {
-        hash: '',
-        range: '',
-        index: '',
+        hash:userinfo.hash,
+        range:userinfo.range,
+        index:userinfo.index,
       }
-    })
+    }).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    );
   }
   @Post('updateuserinfo')
   updateuserinfo(@Headers() headers): any {
@@ -44,19 +49,28 @@ export class UserController {
     let userinfo=AuthService.decodeIdtoken(idtoken);
     console.log(userinfo);
     return UserService.UpdateUserInfo({
-      hash:userinfo.hash,
-      range:userinfo.range,
-      index:userinfo.index,
-          userid:'', 
+          userid:'123', 
           usernickname:'',
           telephone:'',
           usermail:'',
           userico:'',
           authKey:{
-            hash: "123",
-            range: "456",
-            index: "",
-        }}); } 
+            hash:userinfo.hash,
+            range:userinfo.range,
+            index:userinfo.index,
+        }}).pipe(
+          catchError((err) => {
+            console.log('updateuserinfo err.message',err.message);
+            let redata: BackCodeMessage = {
+             
+              
+              code: Errorcode[err.message],
+              message: err.message,
+            };
+            return of(redata);
+          }),
+        );
+       } 
   @Post('searchbyuserid')
   searchbyuserid(
     @Body(ValidationPipe) userid: Dbinterface,
@@ -64,4 +78,5 @@ export class UserController {
     return UserService.SearchUserInfo(userid.range);
   }
 } 
+
 
