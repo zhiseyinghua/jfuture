@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-export const errorcode = {
-    "000001":"用户已存在",
-}
-
-=======
 export const Errorcode = {
     /**
      * 用户已存在
@@ -23,4 +17,3 @@ export const Errorcode = {
      */
     The_user_does_not_exist: '000006'
 }
->>>>>>> dev-hxy

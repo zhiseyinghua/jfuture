@@ -1,6 +1,6 @@
 import { Observable, from, of, throwError } from 'rxjs';
 import { Method } from 'src/common/db.elasticinterface';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
 import axios, { AxiosRequestConfig } from 'axios';
 
 // const axios = require('axios');
@@ -46,17 +46,13 @@ export class DbElasticService {
     return from(
       axios(axiosData),
     ).pipe(
-      map(data=>{
-        console.log('11111111111111111111111111',data)
-        return data
-      }),
       catchError((error) => {
-        console.log('DbElasticService ' + 'executeInEs error' + error);
+        // console.log('DbElasticService ' + 'executeInEs' + error);
         // return throwError(error);
         return throwError(error);
       }),
       switchMap((result) => {
-        // console.log('DbElasticService ' + 'executeInEs error',result);
+        // console.log(result);
         return of(result['data']);
       }),
     );
