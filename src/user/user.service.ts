@@ -22,9 +22,8 @@ export class UserService {
           'put',
            USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + data.authKey.range,
            data,
-        )
-        .pipe(
-          map((result: DbElasticinterPutReturn) => {
+        ).pipe(
+          map((result:  DbElasticinterPutReturn ) => {
             if (result.result == 'updated' && result._shards.successful == 1) {
               return data;
             } else {
@@ -35,8 +34,6 @@ export class UserService {
     }
 
      public static  UpdateUserInfo(data: UserInfoInterface): Observable<any> {
-        // console.log(this.logger + 'updateUserinfo data', data);
-        // console.log(this.logger, 'updateUserinformation eldata', data);
         return DbElasticService.executeInEs(
           'post',
            USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + data.authKey.range,
@@ -52,7 +49,22 @@ export class UserService {
           }),
         );
     }
-
+    public static  DeleteUserInfo(data: UserInfoInterface): Observable<any> {
+      return DbElasticService.executeInEs(
+        'delete',
+         USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + data.authKey.range,
+         data,
+      )
+       .pipe(
+        map((result:  DbElasticinterPutReturn ) => {
+          if (result.result == 'deleted' && result._shards.successful == 1) {
+            return data;
+          } else {
+            return throwError(new Error(UsererrorCode.delete_error));
+          }
+        }),
+      );
+  }
       public static SearchUserInfo(userid: string): Observable<any> {
         return DbElasticService.executeInEs(
           'get',

@@ -62,8 +62,6 @@ export class UserController {
           catchError((err) => {
             console.log('updateuserinfo err.message',err.message);
             let redata: BackCodeMessage = {
-             
-              
               code: Errorcode[err.message],
               message: err.message,
             };
@@ -71,6 +69,35 @@ export class UserController {
           }),
         );
        } 
+
+       @Post('deleteuserinfo')
+       deleteuserinfo(@Headers() headers): any {
+         let idtoken = headers['authorization'];
+         console.log(AuthService.decodeIdtoken(idtoken));
+         let userinfo=AuthService.decodeIdtoken(idtoken);
+         console.log(userinfo);
+         return UserService.DeleteUserInfo({
+               userid:'', 
+               usernickname:'',
+               telephone:'',
+               usermail:'',
+               userico:'',
+               authKey:{
+                 hash:userinfo.hash,
+                 range:userinfo.range,
+                 index:userinfo.index,
+             }})
+             .pipe(
+               catchError((err) => {
+                 console.log('deleteuserinfo err.message',err.message);
+                 let redata: BackCodeMessage = {
+                     code: Errorcode[err.message],
+                     message: err.message,
+                 };
+                 return of(redata);
+               }),
+             );
+            } 
   @Post('searchbyuserid')
   searchbyuserid(
     @Body(ValidationPipe) userid: Dbinterface,
