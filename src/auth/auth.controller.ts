@@ -5,6 +5,7 @@ import {
   ValidationPipe,
   UseGuards,
   Headers,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
@@ -319,5 +320,12 @@ export class AuthController {
   signUp(@Body(ValidationPipe) userRange: Dbinterface): any {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
+  }
+
+  @Post('logontest2')
+  @UseGuards(AuthGuard)
+  setlocaltest2(@Body(ValidationPipe) data: Logindatainterface): any {
+    console.log('setlocaltest', 'data', data);
+    return AuthService.storageUserregisterdata(data);
   }
 }

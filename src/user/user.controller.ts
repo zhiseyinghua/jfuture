@@ -14,7 +14,6 @@ export class UserController {
   log = 'UserController'
   constructor(private userService: UserService) { }
 
-
   @Post('insertuserinfo')
   insertuserinfo(@Headers() headers): any {
     let idtoken = headers['authorization'];
@@ -27,6 +26,7 @@ export class UserController {
       telephone: '',
       usermail: '',
       userico: '',
+      userpassword:'',
       authKey: {
         hash:userinfo.hash,
         range:userinfo.range,
@@ -54,6 +54,7 @@ export class UserController {
           telephone:'',
           usermail:'',
           userico:'',
+          userpassword:'',
           authKey:{
             hash:userinfo.hash,
             range:userinfo.range,
@@ -82,6 +83,7 @@ export class UserController {
                telephone:'',
                usermail:'',
                userico:'',
+               userpassword:'',
                authKey:{
                  hash:userinfo.hash,
                  range:userinfo.range,
@@ -105,5 +107,6 @@ export class UserController {
     return UserService.SearchUserInfo(userid.range);
   }
 } 
+
 
 

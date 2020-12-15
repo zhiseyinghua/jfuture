@@ -24,6 +24,9 @@ var jwt = require('jsonwebtoken');
 
 @Injectable()
 export class AuthService {
+  validateToken(authorization: any): boolean | Promise<boolean> | Observable<boolean> {
+    throw new Error('Method not implemented.');
+  }
   static getEsdUser(arg0: { hash: any; range: any; index: any; }): any {
     throw new Error('Method not implemented.');
   }
@@ -257,5 +260,7 @@ export class AuthService {
       }),
     );
   }
+
 }
+
 

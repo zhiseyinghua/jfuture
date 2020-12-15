@@ -14,6 +14,7 @@ interface UserInfo {
     telephone:string;
     usermail:string;
     userico:string;
+    userpassword:string;
     authKey: Dbinterface;
   }
   
