@@ -36,13 +36,13 @@ export class DbElasticService {
     );
     let axiosData: AxiosRequestConfig = {
       method: method,
-      url: 'http://localhost:9400' + urlstr,
+      url: 'http://localhost:9400/' + urlstr,
       data: body,
       headers: {
         'Content-Type': 'application/json',
       },
     };
-    // console.log('DbElasticService ' + 'executeInEs axiosData' + JSON.stringify(axiosData));
+    console.log('DbElasticService ' + 'executeInEs axiosData' + JSON.stringify(axiosData));
     return from(
       axios(axiosData),
     ).pipe(
