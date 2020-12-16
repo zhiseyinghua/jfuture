@@ -321,11 +321,4 @@ export class AuthController {
     console.log('AuthController signup mode enter');
     return AuthService.getEsdbAuth(userRange);
   }
-
-  @Post('logontest2')
-  @UseGuards(AuthGuard)
-  setlocaltest2(@Body(ValidationPipe) data: Logindatainterface): any {
-    console.log('setlocaltest', 'data', data);
-    return AuthService.storageUserregisterdata(data);
-  }
 }

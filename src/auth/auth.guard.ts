@@ -21,10 +21,8 @@ export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     let authorization = request.headers['authorization'];
-    let authorinfo=AuthService.decodeIdtoken(authorization);
-    let authorinforange=authorinfo.range
-    console.log(authorinforange);
-    if (!authorinforange) {
+    console.log(authorization);
+    if (!authorization) {
       return false;
     }
     return AuthService.verifyIdtoken(authorization);

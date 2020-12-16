@@ -24,9 +24,6 @@ var jwt = require('jsonwebtoken');
 
 @Injectable()
 export class AuthService {
-  validateToken(authorization: any): boolean | Promise<boolean> | Observable<boolean> {
-    throw new Error('Method not implemented.');
-  }
   static getEsdUser(arg0: { hash: any; range: any; index: any; }): any {
     throw new Error('Method not implemented.');
   }
@@ -41,7 +38,7 @@ export class AuthService {
   public static getEsdbAuth(userRange: Dbinterface): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + userRange.range,
+      AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + userRange.range, 
     ).pipe(
       map((result) => {
         return result['_source'];
@@ -260,7 +257,5 @@ export class AuthService {
       }),
     );
   }
-
 }
-
 
