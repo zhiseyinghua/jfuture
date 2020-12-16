@@ -37,6 +37,8 @@ export class AuthController {
   @Post('/seedjpushsms')
   sendJpushsms(@Body(ValidationPipe) sendData: SendPhoneSMS): any {
     console.log(this.log + 'sendJpushsms');
+    // return '11'
+    console.log('sendData:',sendData)
     return JPushSMSService.sendSMSVerficiationCode(sendData.mobile);
   }
 
