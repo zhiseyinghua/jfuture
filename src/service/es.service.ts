@@ -7,7 +7,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-  host: 'http://127.0.0.3:9200/',
+  host: 'http://localhost:9200/',
   log: 'trace',
 });
 
