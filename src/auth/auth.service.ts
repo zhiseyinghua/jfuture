@@ -23,6 +23,12 @@ var jwt = require('jsonwebtoken');
 
 @Injectable()
 export class AuthService {
+  static getEsdUser(arg0: { hash: any; range: any; index: any; }): any {
+    throw new Error('Method not implemented.');
+  }
+  static updateuserinfo(arg0: {}): any {
+    throw new Error('Method not implemented.');
+  }
   public static logger = 'AuthService';
   /**
    * 根据uuid查询es里的user字段,返回es里auth里所有的字段
@@ -31,7 +37,7 @@ export class AuthService {
   public static getEsdbAuth(userRange: Dbinterface): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + userRange.range,
+      AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + userRange.range, 
     ).pipe(
       map((result) => {
         return result['_source'];
@@ -141,6 +147,7 @@ export class AuthService {
         return idtokenbackdata;
       }),
     );
+    
   }
 
   /**
@@ -265,3 +272,4 @@ export class AuthService {
     );
   }
 }
+
