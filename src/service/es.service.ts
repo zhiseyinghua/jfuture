@@ -36,11 +36,7 @@ export class DbElasticService {
     );
     let axiosData: AxiosRequestConfig = {
       method: method,
-<<<<<<< HEAD
-      url: 'http://localhost:9200/' + urlstr,
-=======
       url: 'http://localhost:9400/' + urlstr,
->>>>>>> b22995e00ba4da8b5a6a744caa8a7b411884876d
       data: body,
       headers: {
         'Content-Type': 'application/json',
