@@ -5,6 +5,7 @@ import {
   ValidationPipe,
   UseGuards,
   Headers,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JPushSMSService } from '../jiguang/jpush-sms.service';
@@ -233,7 +234,7 @@ export class AuthController {
     console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
     return AuthService.verifyIdtoken(idtoken).pipe(
       switchMap((data) => {
-        return AuthService.getEsdbAuth({
+        return AuthService.getEsdUser({
           hash: data.hash,
           range: data.range,
           index: data.index,

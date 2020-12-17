@@ -15,5 +15,9 @@ export const Errorcode = {
     /**
      * 该用户不存在
      */
-    The_user_does_not_exist: '000006'
+    The_user_does_not_exist: '000006',
+
+    update_error: '000100',
+    insert_error:'000101',
+    delete_error:'000102'
 }

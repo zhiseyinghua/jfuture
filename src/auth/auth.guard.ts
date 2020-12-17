@@ -1,17 +1,30 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ArgumentsHost, CanActivate, ExecutionContext, Injectable, Type } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable()
+// export class AuthGuard implements CanActivate {
+//   canActivate(
+//     context: ExecutionContext,
+//   ): boolean | Promise<boolean> | Observable<boolean> {
+//     const request = context.switchToHttp().getRequest();
+//     console.log("AuthGuard  "+request.user);
+//     const url = request.route.path;
+//     console.log("AuthGuard  url"+request.user,url);
+//       console.log(request);
+//     return true;
+//   }
+// }
+
 export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    // console.log("AuthGuard  "+request.user);
-    // const url = request.route.path;
-    // console.log("AuthGuard  url"+request.user,url);
-    //   console.log(request);
-    //白名单的直接返回
-    return true;
+  constructor(private readonly AuthService: AuthService) {}
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    let authorization = request.headers['authorization'];
+    console.log(authorization);
+    if (!authorization) {
+      return false;
+    }
+    return AuthService.verifyIdtoken(authorization);
   }
 }
