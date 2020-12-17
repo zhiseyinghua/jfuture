@@ -5,7 +5,6 @@ import { DbElasticService } from 'src/service/es.service';
 import { AUTH_CONFIG } from './auth.config';
 import {
   AuthuserIdtokenInterface,
-  AuthuserInterface,
   BackidtokenInterface,
   CreateIdtokenInterface,
   idToken,
@@ -87,7 +86,7 @@ export class AuthService {
     let eldata: Logindatainterface = {
       hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
       range: uuid.v4(),
-      index: 'user',
+      index: AUTH_CONFIG.INDEX,
       email: '',
       encodepossword: data.encodepossword,
       phone: data.phone,
@@ -126,6 +125,8 @@ export class AuthService {
       iat: time,
       iss: 'future_time',
       sub: 'member',
+      platform:authdata.platform,
+      device:authdata.device
     };
     return AuthService.upjwttokenkey({
       hash: authdata.hash,
@@ -195,7 +196,7 @@ export class AuthService {
    * 根据一个快过期的token得到一个新的token
    * @param token
    */
-  static byTokenGetToken(token: string) {
+  static byTokenGetToken(token: string,platform:string,device:string) {
     return AuthService.verifyIdtoken(token).pipe(
       switchMap((result: idToken) => {
         return AuthService.getEsdbAuth({
@@ -213,6 +214,8 @@ export class AuthService {
           phone: result.phone,
           timestamp: result.timestamp,
           realname: result.realname,
+          platform:platform,
+          device:device
         };
         return AuthService.createjwtToken(createIdtoken);
       }),
@@ -228,14 +231,16 @@ export class AuthService {
   }
 
   /**
-   * 这是一个改变密码的方法 
+   * 这是一个改变密码的方法,成功后返回auth 的所有数据
    * @param phone 电话号码
    * @param possword 密码
    */
   static resetpossword(phone: string, possword: string) {
+    let authadata;
     return AuthService.byphoneNumber(phone).pipe(
       switchMap((byphoneResult) => {
         if (byphoneResult && byphoneResult.range) {
+          authadata = byphoneResult
           return DbElasticService.executeInEs(
             'post',
             AUTH_CONFIG.INDEX +
@@ -255,6 +260,9 @@ export class AuthService {
           return throwError(new Error(AutherrorCode.The_user_does_not_exist))
         }
       }),
+      map(()=>{
+        return authadata
+      })
     );
   }
 }

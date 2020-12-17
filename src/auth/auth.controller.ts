@@ -12,11 +12,12 @@ import { JPushSMSService } from '../jiguang/jpush-sms.service';
 import {
   GetuserbyphonenumberInterface,
   Logindatainterface,
-  LoginWithSMSVerifyCodeInput,
+  LoginInWithSMSVerifyCodeInput,
   SendPhoneSMS,
   AuthuserInterface,
   CreateIdtokenInterface,
   AuthuserIdtokenInterface,
+  LoginWithSMSVerifyCodeInput,
 } from './auth.interface';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
@@ -37,6 +38,8 @@ export class AuthController {
   @Post('/seedjpushsms')
   sendJpushsms(@Body(ValidationPipe) sendData: SendPhoneSMS): any {
     console.log(this.log + 'sendJpushsms');
+    // return '11'
+    console.log('sendData:',sendData)
     return JPushSMSService.sendSMSVerficiationCode(sendData.mobile);
   }
 
@@ -48,7 +51,7 @@ export class AuthController {
    */
   @Post('/verifysmscoderegister')
   verifysmscoderegister(
-    @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
+    @Body(ValidationPipe) data: LoginInWithSMSVerifyCodeInput,
   ): any {
     console.log(this.log + 'verifysmscoderegister start');
 
@@ -94,6 +97,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          device:data.device,
+          platform: data.phone
         });
       }),
       catchError((err) => {
@@ -113,7 +118,7 @@ export class AuthController {
   }
 
   /**
-   * 根据手机号码登录
+   * 根据手机号码和密码登录
    */
   @Post('byusermimalogin')
   getUserbyPhoneNumber(
@@ -145,6 +150,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          platform:mimaLogindata.platform,
+          device: mimaLogindata.platform
         });
       }),
       catchError((err) => {
@@ -164,11 +171,11 @@ export class AuthController {
    */
   @Post('byphoneresetpossword')
   byphoneResetPossword(
-    @Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,
+    @Body(ValidationPipe) data: LoginInWithSMSVerifyCodeInput,
   ) {
     return AuthService.byphoneNumber(data.phone).pipe(
       switchMap((result) => {
-        if (result == true) {
+        if (result &&  result.range) {
           return JPushSMSService.verifySmsCode({
             code: data.code,
             msg_id: data.msg_id,
@@ -199,6 +206,8 @@ export class AuthController {
           role: authdata.role,
           timestamp: authdata.timestamp,
           realname: authdata.realname,
+          platform: data.platform,
+          device: data.device
         });
       }),
       catchError((err) => {
@@ -223,6 +232,7 @@ export class AuthController {
    */
   @Post('bytokengettoken')
   verify(@Headers() headers): any {
+    let idtokendata;
     let idtoken = headers['authorization'];
     console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
     return AuthService.verifyIdtoken(idtoken).pipe(
@@ -234,7 +244,8 @@ export class AuthController {
         });
       }),
       switchMap((data: AuthuserInterface) => {
-        let authData: CreateIdtokenInterface = {
+        idtokendata = data
+        let authData = {
           hash: data.hash,
           range: data.range,
           index: data.index,
@@ -246,10 +257,74 @@ export class AuthController {
         return of(authData);
       }),
       switchMap((data: AuthuserInterface) => {
-        return AuthService.createjwtToken(data);
+        console.log('111111111111111111111111111111111111111111',data)
+        return AuthService.createjwtToken({
+          ...data,
+          platform: idtokendata['platform'],
+          device:idtokendata['device']
+        });
       }),
       catchError((err) => {
         return of(AutherrorCode.toeken_expired);
+      }),
+    );
+  }
+
+  /**
+   * 通过手机验证码登录
+   * @param data 
+   */
+  @Post('verificationcodelogin')
+  verificationCodeLogin(@Body(ValidationPipe) data: LoginWithSMSVerifyCodeInput,) {
+    let authdata;
+    return AuthService.byphoneNumber(data.phone).pipe(
+      switchMap((result) => {
+        if (result &&  result.range) {
+          authdata =result
+          return JPushSMSService.verifySmsCode({
+            code: data.code,
+            msg_id: data.msg_id,
+            provider: data.provider,
+          });
+        } else {
+          // let backMessage: BackCodeMessage = {
+          //   code: 'auth0001',
+          //   message: autherrorCode.the_user_already_exists,
+          // };
+          return throwError(new Error(AutherrorCode.The_user_does_not_exist));
+        }
+      }),
+      switchMap((smsdataResult) => {
+        if (smsdataResult['is_valid'] == true) {
+          // 更新密码
+          return AuthService.createjwtToken({
+            hash: authdata.hash,
+            range: authdata.range,
+            index: authdata.range,
+            phone: authdata.phone,
+            role: authdata.role,
+            timestamp: authdata.timestamp,
+            realname: authdata.realname,
+            platform: data.platform,
+            device: data.device
+          });
+        } else {
+          return throwError(new Error(AutherrorCode.verification_code_error));
+        }
+        
+      }),
+      catchError((err) => {
+        console.log(
+          this.log + 'verifysmscoderegister yicunz catcherror',
+          JSON.stringify(err),
+          typeof err,
+          err.message,
+        );
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
       }),
     );
   }
@@ -267,33 +342,33 @@ export class AuthController {
     );
   }
 
-  @Post('shengchengidtokentest')
-  shengchengidtokentest(): any {
-    return AuthService.getEsdbAuth({
-      hash: '',
-      range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
-      index: 'auth',
-    }).pipe(
-      /**
-       * 获取用户的信息
-       */
-      switchMap((data: AuthuserInterface) => {
-        let authData: CreateIdtokenInterface = {
-          hash: data.hash,
-          range: data.range,
-          index: data.index,
-          role: data.role,
-          phone: data.phone,
-          timestamp: data.timestamp,
-          realname: data.realname,
-        };
-        return of(authData);
-      }),
-      switchMap((data: AuthuserInterface) => {
-        return AuthService.createjwtToken(data);
-      }),
-    );
-  }
+  // @Post('shengchengidtokentest')
+  // shengchengidtokentest(): any {
+  //   return AuthService.getEsdbAuth({
+  //     hash: '',
+  //     range: '32d75c79-528a-4a64-a67c-de133f06a4ae',
+  //     index: 'auth',
+  //   }).pipe(
+  //     /**
+  //      * 获取用户的信息
+  //      */
+  //     switchMap((data: AuthuserInterface) => {
+  //       let authData: CreateIdtokenInterface = {
+  //         hash: data.hash,
+  //         range: data.range,
+  //         index: data.index,
+  //         role: data.role,
+  //         phone: data.phone,
+  //         timestamp: data.timestamp,
+  //         realname: data.realname,
+  //       };
+  //       return of(authData);
+  //     }),
+  //     switchMap((data: AuthuserInterface) => {
+  //       return AuthService.createjwtToken(data);
+  //     }),
+  //   );
+  // }
 
   @Post('upidtokentest')
   upidtoken(): any {
