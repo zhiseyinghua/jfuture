@@ -26,6 +26,7 @@ export class TeamController {
       membername: data.membername,
     }).pipe(
       catchError((err) => {
+        
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
           message: err.message,

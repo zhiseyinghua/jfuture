@@ -47,12 +47,12 @@ export class DbElasticService {
       axios(axiosData),
     ).pipe(
       catchError((error) => {
-        console.log('DbElasticService ' + 'executeInEs' + error);
+        // console.log('DbElasticService ' + 'executeInEs' + error);
         // return throwError(error);
         return throwError(error);
       }),
       switchMap((result) => {
-        console.log(result);
+        // console.log(result);
         return of(result['data'])
       }),
     );

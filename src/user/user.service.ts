@@ -10,23 +10,33 @@ import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Dbinterface, Quer
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { UsererrorCode } from './UsererrorCode';
 import { AUTH_CONFIG } from 'src/auth/auth.config';
+import { AutherrorCode } from 'src/auth/auth.code';
 
 @Injectable()
 export class UserService {
-  static getEsdbAuth(arg0: { hash: any; range: any; index: any; }) {
-    throw new Error('Method not implemented.');
-  }
+
   public static logger = 'UserService';
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
+    console.log( 'UserService storeUserInfo data',data)
+    let eldata: UserInfoInterface = {
+      usernickname: data.usernickname,
+      telephone: data.telephone,
+      usermail: data.usermail,
+      userico: data.userico,
+      authKey: data.authKey,
+      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+      range: uuid.v4(),
+      index: AUTH_CONFIG.INDEX,
+    };
     return DbElasticService.executeInEs(
       'put',
-      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + data.range,
-      data,
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + eldata.range,
+      eldata,
     )
       .pipe(
         map((result: DbElasticinterPutReturn) => {
           if (result.result == 'created' && result._shards.successful == 1) {
-            return data;
+            return eldata;
           } else {
             return throwError(new Error(UsererrorCode.insert_error));
           }
@@ -35,85 +45,71 @@ export class UserService {
   }
 
   static UpdateUserInfo(resultdata: UserInfoInterface): Observable<any> {
+    console.log('UserService UpdateUserInfo resultdata',resultdata)
     let userInfo = {
       hash: resultdata.hash,
       range: resultdata.range,
       index: resultdata.index,
     }
-    return this.ByAuthkey(userInfo).pipe(
-      switchMap((data) => {
-        if (userInfo.range == data.authKey.range) {
-          return DbElasticService.executeInEs(
-            'post',
-            USER_CONFIG.INDEX + '/' + USER_CONFIG.UPDATA + '/' + data.range,
-            {
-              "doc": {
-                userid: '',
-                usernickname: '',
-                telephone: '',
-                usermail: '',
-                userico: '',
-                userpassword: '',
-              },
-            })
+
+    return DbElasticService.executeInEs(
+      'post',
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.UPDATA + '/' + userInfo.range,
+      {
+        "doc": {
+          usernickname: resultdata.usernickname,
+          telephone: resultdata.usernickname,
+          usermail: resultdata.usernickname,
+          userico: resultdata.usernickname,
+        },
+      }).pipe(
+        map((result: DbElasticinterPutReturn) => {
+          if (result.result == 'updated' && result._shards.successful == 1) {
+            return resultdata;
+          } else {
+            return throwError(new Error(UsererrorCode.insert_error));
+          }
         }
-        else {
-          return this.storeUserInfo(resultdata)
-        }
-      }),
-      map((result: DbElasticinterPutReturn) => {
-        if (result.result == 'updated' && result._shards.successful == 1) {
-          ``
-          return resultdata;
-        } else {
-          return throwError(new Error(UsererrorCode.insert_error));
-        }
-      }
-      ),
-    )
+        ),
+      )
   }
-  static ByAuthkey(authKey: any): Observable<any> {
+
+  /**
+   * 
+   * @param authKey 用户的key
+   */
+  static ByAuthkey(newauthKey: any): Observable<any> {
+
     return DbElasticService.executeInEs(
       'get',
       USER_CONFIG.INDEX + '/' + USER_CONFIG.SEARCH,
       {
-        "query": {
-          "term": {
-            "authKey.range.keyword": authKey.range
+        query: {
+          term: {
+            'authKey.range.keyword': newauthKey.range
           }
         }
       }
     ).pipe(
-      map((result: Queryface) => {
+      map((result) => {
+
         if (
-          result.data.hits.total.value == 1 &&
-          result.data.hits.hits[0]._source['range']
+          result.hits.total.value == 1 &&
+          result.hits.hits[0]._source['range']
         ) {
-          return result.data.hits.hits[0]._source;
-        } else if (result.data.hits.total.value > 1) {
-          return UsererrorCode.update_error;
-        } else if (result.data.hits.total.value == 0) {
+          return result.hits.hits[0]._source;
+        } else if (result.hits.total.value > 1) {
+          return AutherrorCode.user_error;
+        } else if (result.hits.total.value == 0) {
           return false;
+        } else {
+          // TODO:
+          // console.log("")
         }
       }),
     );
   }
-  // public static DeleteUserInfo(data: UserInfoInterface): Observable<any> {
-  //   return DbElasticService.executeInEs(
-  //     'put',
-  //     USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + data.authKey.range,
-  //     data,
-  //   )
-  //     .pipe(
-  //       map((result: DbElasticinterPutReturn) => {
-  //         if (result.result == 'updated' && result._shards.successful == 1) {
-  //           return data;
-  //         } else {
-  //           return throwError(new Error(UsererrorCode.delete_error));
-  //         }
-  //       }),
-  //     );
-  // }
+
   public static SearchUserInfo(userid: string): Observable<any> {
     return DbElasticService.executeInEs(
       'get',

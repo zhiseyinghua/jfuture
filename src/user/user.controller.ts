@@ -20,23 +20,21 @@ export class UserController {
   constructor(private userService: UserService) { }
 
   @Post('insertuserinfo')
-  insertuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface,@Headers() headers): any {
+  insertuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
-    let userinfo=AuthService.decodeIdtoken(idtoken);
+    let userinfo = AuthService.decodeIdtoken(idtoken);
     return UserService.storeUserInfo({
       hash: DynamoDBService.computeHash(USER_CONFIG.INDEX),
       range: uuid.v4(),
       index: USER_CONFIG.INDEX,
-      userid: sendData.userid,
       usernickname: sendData.usernickname,
       telephone: sendData.telephone,
       usermail: sendData.usermail,
       userico: sendData.userico,
-      userpassword:sendData.userpassword,
       authKey: {
-        hash:userinfo.hash,
-        range:userinfo.range,
-        index:userinfo.index,
+        hash: userinfo.hash,
+        range: userinfo.range,
+        index: userinfo.index,
       }
     }).pipe(
       catchError((err) => {
@@ -50,7 +48,7 @@ export class UserController {
   }
 
   @Post('updateuserinfo')
-  updateuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
+  updateuserinfocontroller(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
     let userinfo = AuthService.decodeIdtoken(idtoken);
     let vertifyInfo = {
@@ -60,15 +58,41 @@ export class UserController {
     }
     return UserService.ByAuthkey(vertifyInfo)
       .pipe(
-        switchMap(() => {
-          return UserService.UpdateUserInfo({
-            userid: sendData.userid,
-            usernickname: sendData.usernickname,
-            telephone: sendData.telephone,
-            usermail: sendData.usermail,
-            userico: sendData.userico,
-            userpassword: sendData.userpassword,
-          })
+        switchMap((data) => {
+          console.log('updateuserinfocontroller ByAuthkey data', data);
+          if (data && data.range ) {
+            // console.log('1111111111111111111111111',data)
+            return UserService.UpdateUserInfo({
+              usernickname: data.usernickname,
+              telephone: data.telephone,
+              usermail: data.usermail,
+              userico: data.userico,
+              hash:data.hash,
+              range:data.range,
+              index:data.index
+            })
+          } else if (data == 'user_error') {
+            throwError(new Error('cun zai liang ge yong hu '))
+          } else if (data == false) {
+            return UserService.storeUserInfo({
+              usernickname: sendData.usernickname,
+              telephone: sendData.telephone,
+              usermail: sendData.usermail,
+              userico: sendData.userico,
+              authKey: vertifyInfo
+            })
+          }
+          else {
+            // TODO:
+            // return UserService.storeUserInfo({
+            //   usernickname: data.usernickname,
+            //   telephone: data.telephone,
+            //   usermail: data.usermail,
+            //   userico: data.userico,
+            //   authKey: data.authKey
+            // })
+          }
+
         }),
         catchError((err) => {
           console.log(
@@ -85,47 +109,8 @@ export class UserController {
         })
       )
   }
-  // @Post('deleteuserinfo')
-  // deleteuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
-  //   let idtoken = headers['authorization'];
-  //   let userinfo = AuthService.decodeIdtoken(idtoken);
-  //   let vertifyInfo = {
-  //     hash: userinfo.hash,
-  //     range: userinfo.range,
-  //     index: userinfo.index,
-  //   }
-  //   return UserService.ByAuthkey(vertifyInfo)
-  //     .pipe(
-  //       switchMap((result) => {
-  //         if (result == false) {
-  //           return UsererrorCode.update_error;
-  //         } else {
-  //           return UserService.DeleteUserInfo({
-  //             userid: sendData.userid,
-  //             usernickname: sendData.usernickname,
-  //             telephone: sendData.telephone,
-  //             usermail: sendData.usermail,
-  //             userico: sendData.userico,
-  //             userpassword: sendData.userpassword,
-  //           })
-  //         }
-  //       }),
-  //       catchError((err) => {
-  //         console.log(
-  //           this.log + 'delete error',
-  //           JSON.stringify(err),
-  //           typeof err,
-  //           err.message,
-  //         );
-  //         let redata: BackCodeMessage = {
-  //           code: Errorcode[err.message],
-  //           message: err.message,
-  //         };
-  //         return of(redata);
-  //       }),
-  //     );
-  // }
 
+  
   @Post('searchbyuserid')
   searchbyuserid(
     @Body(ValidationPipe) userid: Dbinterface,
