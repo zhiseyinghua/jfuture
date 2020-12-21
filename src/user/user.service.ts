@@ -17,12 +17,16 @@ export class UserService {
 
   public static logger = 'UserService';
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
-    console.log( 'UserService storeUserInfo data',data)
+    console.log('UserService storeUserInfo data', data)
     let eldata: UserInfoInterface = {
       usernickname: data.usernickname,
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
+      introduction: data.introduction,
+      profession: data.profession,
+      birthday: data.birthday,
+      age: data.age,
       authKey: data.authKey,
       hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
       range: uuid.v4(),
@@ -45,7 +49,7 @@ export class UserService {
   }
 
   static UpdateUserInfo(resultdata: UserInfoInterface): Observable<any> {
-    console.log('UserService UpdateUserInfo resultdata',resultdata)
+    console.log('UserService UpdateUserInfo resultdata', resultdata)
     let userInfo = {
       hash: resultdata.hash,
       range: resultdata.range,
@@ -54,13 +58,17 @@ export class UserService {
 
     return DbElasticService.executeInEs(
       'post',
-      USER_CONFIG.INDEX + '/' + userInfo.range+  '/' + USER_CONFIG.DOC + '/' + USER_CONFIG.UPDATA,
+      USER_CONFIG.INDEX + '/' + userInfo.range + '/' + USER_CONFIG.DOC + '/' + USER_CONFIG.UPDATA,
       {
         "doc": {
           usernickname: resultdata.usernickname,
           telephone: resultdata.telephone,
           usermail: resultdata.usermail,
           userico: resultdata.userico,
+          introduction: resultdata.introduction,
+          profession: resultdata.profession,
+          birthday: resultdata.birthday,
+          age: resultdata.age,
         },
       }).pipe(
         map((result: DbElasticinterPutReturn) => {
@@ -94,7 +102,7 @@ export class UserService {
     ).pipe(
       map((result) => {
         console.log(result);
-        
+
         if (
           result.hits.total.value == 1 &&
           result.hits.hits[0]._source['range']

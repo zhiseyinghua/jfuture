@@ -31,6 +31,10 @@ export class UserController {
       telephone: sendData.telephone,
       usermail: sendData.usermail,
       userico: sendData.userico,
+      introduction:sendData.introduction,
+      profession:sendData.profession,
+      birthday:sendData.birthday,
+      age:sendData.age,
       authKey: {
         hash: userinfo.hash,
         range: userinfo.range,
@@ -67,6 +71,10 @@ export class UserController {
               telephone: data.telephone,
               usermail: data.usermail,
               userico: data.userico,
+              introduction:data.introduction,
+              profession:data.profession,
+              birthday:data.birthday,
+              age:data.age,
               hash:data.hash,
               range:data.range,
               index:data.index
@@ -79,6 +87,10 @@ export class UserController {
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
+              introduction:sendData.introduction,
+              profession:sendData.profession,
+              birthday:sendData.birthday,
+              age:sendData.age,
               authKey: vertifyInfo
             })
           }

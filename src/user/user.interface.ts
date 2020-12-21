@@ -14,6 +14,10 @@ export interface UserInfoInterface {
   telephone: string;
   usermail: string;
   userico: string;
+  introduction:string;
+  profession:string;
+  birthday:string;
+  age:string;
   authKey?: Dbinterface;
   hash?: string;
   range?: string;
