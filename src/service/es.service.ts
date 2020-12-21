@@ -52,7 +52,7 @@ export class DbElasticService {
         return throwError(error);
       }),
       switchMap((result) => {
-        // console.log(result);
+        console.log('DbElasticService result',result.data);
         return of(result['data'])
       }),
     );

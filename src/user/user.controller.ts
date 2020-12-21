@@ -91,8 +91,7 @@ export class UserController {
             //   userico: data.userico,
             //   authKey: data.authKey
             // })
-          }
-
+          } 
         }),
         catchError((err) => {
           console.log(
@@ -110,7 +109,7 @@ export class UserController {
       )
   }
 
-  
+
   @Post('searchbyuserid')
   searchbyuserid(
     @Body(ValidationPipe) userid: Dbinterface,

@@ -54,21 +54,22 @@ export class UserService {
 
     return DbElasticService.executeInEs(
       'post',
-      USER_CONFIG.INDEX + '/' + USER_CONFIG.UPDATA + '/' + userInfo.range,
+      USER_CONFIG.INDEX + '/' + userInfo.range+  '/' + USER_CONFIG.DOC + '/' + USER_CONFIG.UPDATA,
       {
         "doc": {
           usernickname: resultdata.usernickname,
-          telephone: resultdata.usernickname,
-          usermail: resultdata.usernickname,
-          userico: resultdata.usernickname,
+          telephone: resultdata.telephone,
+          usermail: resultdata.usermail,
+          userico: resultdata.userico,
         },
       }).pipe(
         map((result: DbElasticinterPutReturn) => {
-          if (result.result == 'updated' && result._shards.successful == 1) {
-            return resultdata;
-          } else {
-            return throwError(new Error(UsererrorCode.insert_error));
-          }
+          return result
+          // if (result.result == 'updated' && result._shards.successful == 1) {
+          //   return resultdata;
+          // } else {
+          //   return throwError(new Error(UsererrorCode.insert_error));
+          // }
         }
         ),
       )
@@ -92,7 +93,8 @@ export class UserService {
       }
     ).pipe(
       map((result) => {
-
+        console.log(result);
+        
         if (
           result.hits.total.value == 1 &&
           result.hits.hits[0]._source['range']
