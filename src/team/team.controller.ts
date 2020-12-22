@@ -42,5 +42,6 @@ export class TeamController {
   ): any {
     return TeamService.SearchTeamInfo(TeamIndex);
   }
+  
 }
  

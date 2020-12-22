@@ -59,4 +59,10 @@ export class TeamService {
       }
     )
   }
+
+  public static UpdateTeamInfo(data:TeamInfoInterface):Observable<any>{
+   return
+
+
+  }
 }
