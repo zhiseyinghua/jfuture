@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Header, Headers, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Observable, of, pipe, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, dematerialize, map, switchMap } from 'rxjs/operators';
 import { CreateIdtokenInterface } from 'src/auth/auth.interface';
 import { AuthService } from 'src/auth/auth.service';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
@@ -63,13 +63,13 @@ export class UserController {
           if (data && data.range ) {
             // console.log('1111111111111111111111111',data)
             return UserService.UpdateUserInfo({
-              usernickname: data.usernickname,
-              telephone: data.telephone,
-              usermail: data.usermail,
-              userico: data.userico,
+              usernickname: sendData.usernickname,
+              telephone: sendData.telephone,
+              usermail: sendData.usermail,
+              userico: sendData.userico,
               hash:data.hash,
-              range:data.range,
-              index:data.index
+              range: data.range,
+              index: data.index
             })
           } else if (data == 'user_error') {
             throwError(new Error('cun zai liang ge yong hu '))
