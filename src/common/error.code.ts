@@ -7,6 +7,9 @@ export const Errorcode = {
      * 验证码error
      */
     verification_code_error: "000002",
+    /**
+     * 储存数据路错误
+     */
     database_storage_failed: "000003",
     /**
      * 密码错误
@@ -16,9 +19,13 @@ export const Errorcode = {
      * 该用户不存在
      */
     The_user_does_not_exist: '000006',
+
     /**
-     * 更新用户信息失败
+     * 服务器错误
      */
+    server_error:'000005',
+    // 验证码验证出错
+    verification_code_verification_error:'000007',
     update_error: '000100',
     /**
      * 插入用户信息失败

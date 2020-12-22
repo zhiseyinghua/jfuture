@@ -77,15 +77,15 @@ export class JPushSMSService {
         return response.data;
       }),
       catchError((error) => {
-        console.log('error', error.response.data.error.message);
-        if ((error.response.data.error.message = 'invalid code')) {
+        console.log('error', error.response.data);
+        console.log('error', error.response.data);
+        if (error &&  error.response && error.response.data && error.response.data.error &&error.response.data.error.message && error.response.data.error.message == 'invalid code' ) {
           console.log(
             'yan zheng ma error',
-            
           );
           return of(AutherrorCode.verification_code_error,);
         } else {
-          return throwError(new Error(error.response.data.error.message));
+          return throwError(new Error(AutherrorCode.verification_code_verification_error));
         }
       }),
     );

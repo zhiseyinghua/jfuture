@@ -16,7 +16,7 @@ import {
   Dbinterface,
   Queryinterface,
 } from 'src/common/db.elasticinterface';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { AutherrorCode } from './auth.code';
 import { Base64 } from 'js-base64';
 var jwt = require('jsonwebtoken');
@@ -74,7 +74,13 @@ export class AuthService {
           return false;
         }
       }),
+      catchError((err)=>{
+        // if(err)
+        console.log('11111111',err.message,err)
+        return throwError(err);
+      })
     );
+    
   }
 
   /**
