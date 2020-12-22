@@ -49,15 +49,14 @@ export class TeamService {
       {
         "query": {
           "bool": {
-            "should": [
+            "must": [
               { "match": { "hash":  TeamIndex.hash }},
-              { "match": { "range": TeamIndex.range   }},
-              { "match": { "index": TeamIndex.index   }},
+              { "match": { "range": TeamIndex.range}},
+              { "match": { "index": TeamIndex.index}},
             ]
           }
         }
       }
     )
   }
-
 }
