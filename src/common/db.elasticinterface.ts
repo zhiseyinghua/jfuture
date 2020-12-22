@@ -19,7 +19,7 @@ export interface DbElasticinterfacePutReturn {
     total: 2,
     successful: 1,
     failed: 0
-},
+  },
 }
 export interface DbElasticinterPutReturn {
   _index: string;
@@ -31,9 +31,9 @@ export interface DbElasticinterPutReturn {
     total: 2,
     successful: 1,
     failed: 0
-},
-_seq_no: number;
-_primary_term: number;
+  },
+  _seq_no: number;
+  _primary_term: number;
 }
 
 export interface Dbinterface {
@@ -47,15 +47,31 @@ export interface Dbinterface {
  * 查询多条数据返回的接口
  */
 export interface Queryinterface {
-  took: number;
-  timed_out: false;
-  _shards: {
-    total: number;
-    successful: number;
-    skipped: number;
-    failed: number;
-  };
-  hits: QueryinterfaceHit;
+    took: number;
+    timed_out: false;
+    _shards: {
+      total: number;
+      successful: number;
+      skipped: number;
+      failed: number;
+    }
+    ;
+    hits: QueryinterfaceHit;
+}
+
+export interface Queryface {
+  data: {
+    took: number;
+    timed_out: false;
+    _shards: {
+      total: number;
+      successful: number;
+      skipped: number;
+      failed: number;
+    }
+    ;
+    hits: QueryinterfaceHit;
+  }
 }
 interface QueryinterfaceHit {
   total: {
@@ -63,7 +79,7 @@ interface QueryinterfaceHit {
     relation: string;
   };
   max_score: number,
-  hits:QueryinterfaceHitList[]
+  hits: QueryinterfaceHitList[]
 }
 interface QueryinterfaceHitList {
   _index: string;

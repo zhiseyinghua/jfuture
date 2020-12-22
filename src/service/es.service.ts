@@ -36,7 +36,7 @@ export class DbElasticService {
     );
     let axiosData: AxiosRequestConfig = {
       method: method,
-      url: 'http://localhost:9400/' + urlstr,
+      url: 'http://localhost:9200/' + urlstr,
       data: body,
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export class DbElasticService {
       }),
       switchMap((result) => {
         // console.log(result);
-        return of(result['data']);
+        return of(result['data'])
       }),
     );
   }
