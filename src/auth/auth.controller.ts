@@ -98,21 +98,26 @@ export class AuthController {
           timestamp: authdata.timestamp,
           realname: authdata.realname,
           device:data.device,
-          platform: data.phone
+          platform: data.platform
         });
       }),
       catchError((err) => {
-        console.log(
-          this.log + 'verifysmscoderegister yicunz catcherror',
-          JSON.stringify(err),
-          typeof err,
-          err.message,
-        );
-        let redata: BackCodeMessage = {
-          code: Errorcode[err.message],
-          message: err.message,
-        };
-        return of(redata);
+        console.log('1111111111111111111111111111111',err)
+        if(err.message == null || err.message == ''){
+          let newmessage = AutherrorCode.server_error
+          let redata: BackCodeMessage = {
+            code: Errorcode['newmessage'],
+            message: newmessage,
+          };
+          console.log('1111111111111111111111111111111',redata)
+          return of(redata);
+        } else {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        }
       }),
     );
   }
@@ -155,12 +160,21 @@ export class AuthController {
         });
       }),
       catchError((err) => {
-        console.log(err);
-        let backMessage: BackCodeMessage = {
-          code: Errorcode[err.message],
-          message: err.message,
-        };
-        return of(backMessage);
+        if(err.message == null || err.message == ''){
+          let newmessage = AutherrorCode.server_error
+          let redata: BackCodeMessage = {
+            code: Errorcode['newmessage'],
+            message: newmessage,
+          };
+          // console.log('1111111111111111111111111111111',redata)
+          return of(redata);
+        } else {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        }
       }),
     );
   }
@@ -211,17 +225,21 @@ export class AuthController {
         });
       }),
       catchError((err) => {
-        console.log(
-          this.log + 'verifysmscoderegister yicunz catcherror',
-          JSON.stringify(err),
-          typeof err,
-          err.message,
-        );
-        let redata: BackCodeMessage = {
-          code: Errorcode[err.message],
-          message: err.message,
-        };
-        return of(redata);
+        if(err.message == null || err.message == ''){
+          let newmessage = AutherrorCode.server_error
+          let redata: BackCodeMessage = {
+            code: Errorcode['newmessage'],
+            message: newmessage,
+          };
+          // console.log('1111111111111111111111111111111',redata)
+          return of(redata);
+        } else {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        }
       }),
     );
   }

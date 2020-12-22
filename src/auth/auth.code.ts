@@ -11,5 +11,11 @@ export const AutherrorCode = {
   // 密码错误
   wrong_password: 'wrong_password',
   // 该用户不存在
-  The_user_does_not_exist: 'The_user_does_not_exist'
+  The_user_does_not_exist: 'The_user_does_not_exist',
+  // 服务器错误
+  server_error: 'server_error',
+  // 验证码验证error
+  verification_code_verification_error:'verification_code_verification_error'
+
+
 };
