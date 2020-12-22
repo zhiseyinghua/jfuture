@@ -19,6 +19,8 @@ export interface UserInfoInterface {
   birthday:string;
   age:string;
   authKey?: Dbinterface;
+  TeamKey?:TeamInfoInterface;
+  role?:  'member' | 'admin' | 'owner',
   hash?: string;
   range?: string;
   index?: string;

@@ -1,3 +1,3 @@
 export const TeamErrorCode ={
-    insert_error:'insert_error',
+    insert_teaminfo_error:'insert_teaminfo_error',
 }
