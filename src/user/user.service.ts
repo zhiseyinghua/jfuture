@@ -54,7 +54,7 @@ export class UserService {
 
     return DbElasticService.executeInEs(
       'post',
-      USER_CONFIG.INDEX + '/' + USER_CONFIG.UPDATA + '/' + userInfo.range,
+      USER_CONFIG.INDEX + '/'   + userInfo.range + '/'+ USER_CONFIG.UPDATA,
       {
         "doc": {
           usernickname: resultdata.usernickname,
