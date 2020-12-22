@@ -14,13 +14,7 @@ export interface UserInfoInterface {
   telephone: string;
   usermail: string;
   userico: string;
-  introduction:string;
-  profession:string;
-  birthday:string;
-  age:string;
   authKey?: Dbinterface;
-  TeamKey?:TeamInfoInterface;
-  role?:  'member' | 'admin' | 'owner',
   hash?: string;
   range?: string;
   index?: string;
@@ -31,5 +25,3 @@ export interface UserInterface {
   usermail: string;
   userico: string;
 }
-
-

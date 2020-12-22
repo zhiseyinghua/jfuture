@@ -31,10 +31,6 @@ export class UserController {
       telephone: sendData.telephone,
       usermail: sendData.usermail,
       userico: sendData.userico,
-      introduction:sendData.introduction,
-      profession:sendData.profession,
-      birthday:sendData.birthday,
-      age:sendData.age,
       authKey: {
         hash: userinfo.hash,
         range: userinfo.range,
@@ -83,10 +79,6 @@ export class UserController {
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
-              introduction:sendData.introduction,
-              profession:sendData.profession,
-              birthday:sendData.birthday,
-              age:sendData.age,
               authKey: vertifyInfo
             })
           }
@@ -99,7 +91,8 @@ export class UserController {
             //   userico: data.userico,
             //   authKey: data.authKey
             // })
-          } 
+          }
+
         }),
         catchError((err) => {
           console.log(
@@ -117,11 +110,11 @@ export class UserController {
       )
   }
 
-
+  
   @Post('searchbyuserid')
-  searchbyuserid(
-    @Body(ValidationPipe) userid: Dbinterface,
+  searchteaminfo(
+    @Body(ValidationPipe) TeamIndex: UserInfo,
   ): any {
-    return UserService.SearchUserInfo(userid.range);
+    return UserService.SearchUserInfo(TeamIndex);
   }
 }

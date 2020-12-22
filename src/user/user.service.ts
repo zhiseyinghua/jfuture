@@ -23,10 +23,6 @@ export class UserService {
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
-      introduction: data.introduction,
-      profession: data.profession,
-      birthday: data.birthday,
-      age: data.age,
       authKey: data.authKey,
       hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
       range: uuid.v4(),
@@ -58,7 +54,7 @@ export class UserService {
 
     return DbElasticService.executeInEs(
       'post',
-      USER_CONFIG.INDEX + '/' +USER_CONFIG.DOC+ '/' + userInfo.range + '/'+ USER_CONFIG.UPDATA,
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + userInfo.range + '/' + USER_CONFIG.UPDATA,
       {
         "doc": {
           usernickname: resultdata.usernickname,
@@ -68,13 +64,15 @@ export class UserService {
         },
       }).pipe(
         map((result: DbElasticinterPutReturn) => {
-          // TODO:
-          return result;
-          // if (result.result == 'updated' && result._shards.successful == 1) {
-          //   return result;
-          // } else {
-          //   return throwError(new Error(UsererrorCode.insert_error));
-          // }
+          if (result.result == 'updated' && result._shards.successful == 1) {
+            return resultdata;
+          }
+         if (result._shards.failed==0) {
+            return UsererrorCode.user_exit;
+          }
+          else {
+            return throwError(new Error(UsererrorCode.user_exit));
+          }
         }
         ),
       )
@@ -98,7 +96,6 @@ export class UserService {
       }
     ).pipe(
       map((result) => {
-        console.log(result);
 
         if (
           result.hits.total.value == 1 &&
@@ -117,10 +114,21 @@ export class UserService {
     );
   }
 
-  public static SearchUserInfo(userid: string): Observable<any> {
+  public static SearchUserInfo(data: UserInfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + userid,
-      '')
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'range.keyword': data.range
+          }
+        }
+      }
+    ).pipe(
+        map((data: Queryinterface) => {
+          return data.hits.hits[0]._source
+        })
+      )
   }
 }

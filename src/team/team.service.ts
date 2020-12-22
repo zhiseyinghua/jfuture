@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DbElasticinterfacePutReturn, DbElasticinterPutReturn } from 'src/common/db.elasticinterface';
+import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import { TEAM_CONFIG } from './team.config';
 import { TeamInfo, TeamInfoInterface } from './team.interface';
@@ -50,18 +50,22 @@ export class TeamService {
         "query": {
           "bool": {
             "must": [
-              { "match": { "hash":  TeamIndex.hash }},
-              { "match": { "range": TeamIndex.range}},
-              { "match": { "index": TeamIndex.index}},
+              { "match": { "hash": TeamIndex.hash } },
+              { "match": { "range": TeamIndex.range } },
+              { "match": { "index": TeamIndex.index } },
             ]
           }
         }
       }
+    ).pipe(
+      map((data: Queryinterface) => {
+        return data.hits.hits[0]._source
+      })
     )
   }
 
-  public static UpdateTeamInfo(data:TeamInfoInterface):Observable<any>{
-   return
+  public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
+    return
 
 
   }
