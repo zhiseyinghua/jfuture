@@ -16,7 +16,6 @@ export class TeamService {
   }
   public static logger = 'TeamService';
   public static insertteaminfo(data: TeamInfoInterface): Observable<any> {
-    console.log('UserService storeUserInfo data', data)
     let eldata: TeamInfoInterface = {
       hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
       range: uuid.v4(),
@@ -25,6 +24,7 @@ export class TeamService {
       projectname: data.projectname,
       projectprogress: data.projectprogress,
       membername: data.membername,
+      teamMemberKey: data.teamMemberKey
     };
     return DbElasticService.executeInEs(
       'put',
@@ -47,13 +47,9 @@ export class TeamService {
       'get',
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
       {
-        "query": {
-          "bool": {
-            "must": [
-              { "match": { "hash": TeamIndex.hash } },
-              { "match": { "range": TeamIndex.range } },
-              { "match": { "index": TeamIndex.index } },
-            ]
+        query: {
+          term: {
+            'range.keyword': TeamIndex.range
           }
         }
       }
@@ -65,8 +61,37 @@ export class TeamService {
   }
 
   public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
-    return
-
-
+    let TeamInfo = {
+      hash: data.hash,
+      range: data.range,
+      index: data.index,
+    }
+    console.log(TeamInfo)
+    console.log()
+    return DbElasticService.executeInEs(
+      'post',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + TeamInfo.range + '/' + TEAM_CONFIG.UPDATA,
+      {
+        "doc": {
+          teamname: data.teamname,
+          projectname: data.projectname,
+          projectprogress: data.projectprogress,
+          membername: data.membername,
+        },
+      }).pipe(
+        map((result: DbElasticinterPutReturn) => {
+          if (result.result == 'updated' && result._shards.successful == 1) {
+            return data;
+          }
+          if (result._shards.failed == 0) {
+            return TeamErrorCode.teaminfo_not_change;
+          }
+          else {
+            return throwError(new Error(TeamErrorCode.update_teaminfo_error));
+          }
+        }
+        ),
+      )
   }
+
 }
