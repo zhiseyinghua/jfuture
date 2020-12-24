@@ -102,14 +102,12 @@ export class AuthController {
         });
       }),
       catchError((err) => {
-        console.log('1111111111111111111111111111111',err)
         if(err.message == null || err.message == ''){
           let newmessage = AutherrorCode.server_error
           let redata: BackCodeMessage = {
             code: Errorcode['newmessage'],
             message: newmessage,
           };
-          console.log('1111111111111111111111111111111',redata)
           return of(redata);
         } else {
           let redata: BackCodeMessage = {
@@ -255,7 +253,7 @@ export class AuthController {
     console.log('auth_controller bytokengettoken idtoken', idtoken, headers);
     return AuthService.verifyIdtoken(idtoken).pipe(
       switchMap((data) => {
-        return AuthService.getEsdUser({
+        return AuthService.getEsdbAuth({
           hash: data.hash,
           range: data.range,
           index: data.index,
@@ -275,7 +273,7 @@ export class AuthController {
         return of(authData);
       }),
       switchMap((data: AuthuserInterface) => {
-        console.log('111111111111111111111111111111111111111111',data)
+        // console.log('111111111111111111111111111111111111111111',data)
         return AuthService.createjwtToken({
           ...data,
           platform: idtokendata['platform'],
