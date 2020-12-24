@@ -36,7 +36,7 @@ export class TeamController {
         teamname: sendData.teamname,
         projectname: sendData.projectname,
         projectprogress: sendData.projectprogress,
-        membername: sendData.membername,
+        // membername: sendData.membername,
         teamMemberKey:TeamMemberKey,
       }).pipe(
         catchError((err) => {
@@ -57,7 +57,15 @@ export class TeamController {
   searchteaminfo(
     @Body(ValidationPipe) TeamIndex: TeamInfo,
   ): any {
-    return TeamService.SearchTeamInfo(TeamIndex);
+    return TeamService.SearchTeamInfo(TeamIndex).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    );
   }
 
 
@@ -71,7 +79,7 @@ export class TeamController {
         teamname: sendData.teamname,
         projectname: sendData.projectname,
         projectprogress: sendData.projectprogress,
-        membername: sendData.membername,
+        // membername: sendData.membername,
         hash:TeamMemberInfo.hash,
         range:TeamMemberInfo.range,
         index:TeamMemberInfo.index,

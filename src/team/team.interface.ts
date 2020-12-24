@@ -16,7 +16,7 @@ export interface TeamInfoInterface {
   teamname:string,
   projectname:string,
   projectprogress:string,
-  membername:any,
+  // membername:any,
 }
 export interface NTeamInfoInterface {
   hash?: string;
@@ -25,7 +25,7 @@ export interface NTeamInfoInterface {
   teamname:string,
   projectname:string,
   projectprogress:string,
-  membername:any,
+  // membername:any,
   TeamMemberKey?:TeamInfo,
 }
 export interface TeamMember{
