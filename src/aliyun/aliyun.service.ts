@@ -32,3 +32,4 @@ async function assumeRole() {
     console.log(e);
   }
 }
+assumeRole();
