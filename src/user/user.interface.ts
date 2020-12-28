@@ -25,5 +25,3 @@ export interface UserInterface {
   usermail: string;
   userico: string;
 }
-
-

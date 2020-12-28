@@ -17,7 +17,7 @@ export class UserService {
 
   public static logger = 'UserService';
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
-    console.log( 'UserService storeUserInfo data',data)
+    console.log('UserService storeUserInfo data', data)
     let eldata: UserInfoInterface = {
       usernickname: data.usernickname,
       telephone: data.telephone,
@@ -45,7 +45,7 @@ export class UserService {
   }
 
   static UpdateUserInfo(resultdata: UserInfoInterface): Observable<any> {
-    console.log('UserService UpdateUserInfo resultdata',resultdata)
+    console.log('UserService UpdateUserInfo resultdata', resultdata)
     let userInfo = {
       hash: resultdata.hash,
       range: resultdata.range,
@@ -54,7 +54,7 @@ export class UserService {
 
     return DbElasticService.executeInEs(
       'post',
-      USER_CONFIG.INDEX + '/' +USER_CONFIG.DOC+ '/' + userInfo.range + '/'+ USER_CONFIG.UPDATA,
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + userInfo.range + '/' + USER_CONFIG.UPDATA,
       {
         "doc": {
           usernickname: resultdata.usernickname,
@@ -64,13 +64,15 @@ export class UserService {
         },
       }).pipe(
         map((result: DbElasticinterPutReturn) => {
-          // TODO:
-          return result;
-          // if (result.result == 'updated' && result._shards.successful == 1) {
-          //   return result;
-          // } else {
-          //   return throwError(new Error(UsererrorCode.insert_error));
-          // }
+          if (result.result == 'updated' && result._shards.successful == 1) {
+            return resultdata;
+          }
+         if (result._shards.failed==0) {
+            return UsererrorCode.user_exit;
+          }
+          else {
+            return throwError(new Error(UsererrorCode.user_exit));
+          }
         }
         ),
       )
@@ -112,10 +114,52 @@ export class UserService {
     );
   }
 
-  public static SearchUserInfo(userid: string): Observable<any> {
+  public static SearchUserInfo(data: UserInfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
-      USER_CONFIG.INDEX + '/' + USER_CONFIG.DOC + '/' + userid,
-      '')
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'range.keyword': data.range
+          }
+        }
+      }
+    )
+    .pipe(
+        map((data: Queryinterface) => {
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return data.hits.hits[0]._source
+          }
+         else {
+            return UsererrorCode.search_error
+          }
+        })
+      )
+  }
+  public static SearchByAuthKey(data: UserInfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'authKey.range.keyword': data.range
+          }
+        }
+      }
+    ) .pipe(
+        map((data: Queryinterface) => {
+          console.log(data)
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return data.hits.hits[0]._source
+          }
+         else {
+            return UsererrorCode.search_error
+          }
+        })
+      )
   }
 }

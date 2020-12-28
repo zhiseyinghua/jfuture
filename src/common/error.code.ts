@@ -2,7 +2,7 @@ export const Errorcode = {
     /**
      * 用户已存在
      */
-    the_user_already_exists:"000001",
+    the_user_already_exists: "000001",
     /**
      * 验证码error
      */
@@ -27,6 +27,17 @@ export const Errorcode = {
     // 验证码验证出错
     verification_code_verification_error:'000007',
     update_error: '000100',
-    insert_error:'000101',
-    delete_error:'000102'
+    /**
+     * 插入用户信息失败
+     */
+    insert_error: '000101',
+    /**
+     * 删除用户信息失败
+     */
+    delete_error: '000102',
+    /**
+     * 插入团队信息失败
+     */
+    insert_teaminfo_error: '000103',
 }
+
