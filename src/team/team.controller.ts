@@ -49,7 +49,7 @@ export class TeamController {
       );
     }
     if(TeamMemberRole == 'menber'){
-      return TeamErrorCode.teammember_donot_haveright
+      return Errorcode.teammember_donot_haveright
     }
   }                    
 
@@ -94,7 +94,7 @@ export class TeamController {
       );
     }
     if(TeamMemberRole == 'menber'){
-      return TeamErrorCode.teammember_donot_haveright
+      return Errorcode.teammember_donot_haveright
     }
   }  
 

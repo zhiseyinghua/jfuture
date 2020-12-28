@@ -8,6 +8,7 @@ import { TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
+import { Errorcode } from 'src/common/error.code';
 
 @Injectable()
 export class TeamService {
@@ -36,11 +37,11 @@ export class TeamService {
           if (result.result == 'created' && result._shards.successful == 1) {
             return eldata;
           } else {
-            return throwError(new Error(TeamErrorCode.insert_teaminfo_error));
+            return throwError(new Error(Errorcode.insert_teaminfo_error));
           }
         }),
       );
-  }
+  }c
 
   public static SearchTeamInfo(TeamIndex: TeamInfo): Observable<any> {
     return DbElasticService.executeInEs(
@@ -61,7 +62,7 @@ export class TeamService {
           return data.hits.hits[0]._source
         }
        else {
-          return TeamErrorCode.search_team_error
+          return Errorcode.search_team_error
         }
       })
     )
@@ -91,10 +92,10 @@ export class TeamService {
             return data;
           }
           if (result._shards.failed == 0) {
-            return TeamErrorCode.teaminfo_not_change;
+            return Errorcode.teaminfo_not_change;
           }
           else {
-            return throwError(new Error(TeamErrorCode.update_teaminfo_error));
+            return throwError(new Error(Errorcode.update_teaminfo_error));
           }
         }
         ),
@@ -123,13 +124,13 @@ export class TeamService {
           if (result.result == 'created' && result._shards.successful == 1) {
             return eldata;
           } else {
-            return throwError(new Error(TeamErrorCode.insert_teaminfo_error));
+            return throwError(new Error(Errorcode.insert_teaminfo_error));
           }
         }),
       );
   }
 
-  
+
 }
 
 

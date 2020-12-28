@@ -63,13 +63,14 @@ export class UserController {
           if (data && data.range ) {
             // console.log('1111111111111111111111111',data)
             return UserService.UpdateUserInfo({
+              hash:data.hash,
+              range: data.range,
+              index: data.index,
               usernickname: sendData.usernickname,
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
-              hash:data.hash,
-              range: data.range,
-              index: data.index
+              authKey: vertifyInfo
             })
           } else if (data == 'user_error') {
             throwError(new Error('cun zai liang ge yong hu '))

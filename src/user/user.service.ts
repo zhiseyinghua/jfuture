@@ -20,14 +20,14 @@ export class UserService {
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
     console.log('UserService storeUserInfo data', data)
     let eldata: UserInfoInterface = {
+      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+      range: uuid.v4(),
+      index: AUTH_CONFIG.INDEX,
       usernickname: data.usernickname,
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
       authKey: data.authKey,
-      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
-      range: uuid.v4(),
-      index: AUTH_CONFIG.INDEX,
     };
     return DbElasticService.executeInEs(
       'put',
