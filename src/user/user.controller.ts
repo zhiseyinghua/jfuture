@@ -115,7 +115,15 @@ export class UserController {
   searchuserinfo(
     @Body(ValidationPipe) UserIndex: UserInfo,
   ): any {
-    return UserService.SearchUserInfo(UserIndex);
+    return UserService.SearchUserInfo(UserIndex).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      })
+    )
   }
   @Post('searchbyauthkey')
   byauthkeysearch(@Headers() headers): any {
@@ -126,6 +134,14 @@ export class UserController {
       range: userinfo.range,
       index: userinfo.index,
     }
-    return UserService.SearchByAuthKey(vertifyInfo);
+    return UserService.SearchByAuthKey(vertifyInfo).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      })
+    )
   }
 }

@@ -106,10 +106,12 @@ export class TeamService {
       hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
       range: uuid.v4(),
       index: TEAM_CONFIG.INDEX,
-      TeamMemberName: '',
+      TeamMemberName: data.TeamMemberName,
+      position:data.position,
+      role: data.role,
       TeamKey: data.TeamKey,
       AuthKey: data.AuthKey,
-      role: data.role,
+
     };
     return DbElasticService.executeInEs(
       'put',

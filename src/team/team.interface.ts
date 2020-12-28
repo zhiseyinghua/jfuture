@@ -33,7 +33,8 @@ export interface TeamMember{
   range?:string;
   index?:string; 
   TeamMemberName:string;
-  TeamKey:TeamInfo;
+  position:string;
+  TeamKey?:TeamInfo;
   AuthKey: Dbinterface;
-  role:'member'|'admin'|'owner'
+  role: 'menber' | 'admin' | 'our'
 }

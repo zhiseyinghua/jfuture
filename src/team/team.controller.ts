@@ -28,7 +28,7 @@ export class TeamController {
       role:TeamMemberInfo.role,
     }
     let TeamMemberRole=TeamMemberInfo.role
-    if (TeamMemberRole == 'admin' ||TeamMemberRole == 'owner') {
+    if (TeamMemberRole == 'admin' ||TeamMemberRole == 'our') {
       return TeamService.insertteaminfo({
         hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
         range: uuid.v4(),
@@ -48,7 +48,7 @@ export class TeamController {
         }),
       );
     }
-    else {
+    if(TeamMemberRole == 'menber'){
       return TeamErrorCode.teammember_donot_haveright
     }
   }                    
@@ -73,7 +73,7 @@ export class TeamController {
   userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
     let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-    let TeamMemberRole=TeamMemberInfo['teamMemberKey']['role']
+    let TeamMemberRole=TeamMemberInfo['teamMemberKey']['our']
     if (TeamMemberRole == 'admin' ||TeamMemberRole == 'owner') {
       return TeamService.UpdateTeamInfo({
         teamname: sendData.teamname,
@@ -93,37 +93,39 @@ export class TeamController {
         }),
       );
     }
-    else {
+    if(TeamMemberRole == 'menber'){
       return TeamErrorCode.teammember_donot_haveright
     }
   }  
 
-// @Post('insertteammember')
-//   insertteammember(@Body(ValidationPipe) sendData:TeamMember, @Headers() headers): any {
-//     let idtoken = headers['authorization'];
-//     let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-//     console.log(TeamMemberInfo)
-//     let AuthKey={
-//       hash:TeamMemberInfo.hash,
-//       range:TeamMemberInfo.range,
-//       index:TeamMemberInfo.index,
-//     }
-//       return TeamService.inteammemberinfo({
-//         hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
-//         range: uuid.v4(),
-//         index: TEAM_CONFIG.INDEX,
-//         TeamMemberName:'',
-//         TeamKey:'',
-//         AuthKey: AuthKey ,
-//       }).pipe(
-//         catchError((err) => {
-//           let redata: BackCodeMessage = {
-//             code: Errorcode[err.message],
-//             message: err.message,
-//           };
-//           return of(redata);
-//         }),
-//       );
-//     }
+@Post('insertteammember')
+  insertteammember(@Body(ValidationPipe) sendData:TeamMember, @Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
+    console.log(TeamMemberInfo)
+    let AuthKey={
+      hash:TeamMemberInfo.hash,
+      range:TeamMemberInfo.range,
+      index:TeamMemberInfo.index,
+    }
+      return TeamService.inteammemberinfo({
+        hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
+        range: uuid.v4(),
+        index: TEAM_CONFIG.INDEX,
+        TeamMemberName:sendData.TeamMemberName,
+        position:sendData.position,
+        role:sendData.role,  
+        AuthKey: AuthKey ,
+        // TeamKey:
+      }).pipe(
+        catchError((err) => {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        }),
+      );
+    }
   }                    
 
