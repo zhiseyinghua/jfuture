@@ -95,8 +95,7 @@ export class UserService {
         }
       }
     ).pipe(
-      map((result) => {
-        // console.log(result)
+      map((result:any) => {
 
         if (
           result.hits.total.value == 1 &&
