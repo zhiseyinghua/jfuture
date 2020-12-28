@@ -69,15 +69,16 @@ export class UserService {
             return resultdata;
           }
          if (result._shards.failed==0) {
-            return UsererrorCode.user_exit;
+            return Errorcode.user_exit;
           }
           else {
-            return throwError(new Error(UsererrorCode.user_exit));
+            return throwError(new Error(Errorcode.update_error));
           }
         }
         ),
       )
   }
+
 
   /**
    * 

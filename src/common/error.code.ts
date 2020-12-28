@@ -39,6 +39,16 @@ export const Errorcode = {
      * 插入团队信息失败
      */
     insert_teaminfo_error: '000103',
-    search_error:'000104'
+       /**
+     * 查询用户信息失败
+     */
+    search_error:'000104',
+           /**
+     * 用户信息存在
+     */
+    user_exit:'000105',
+           /**
+     * 查询用户信息失败
+     */
 }
 
