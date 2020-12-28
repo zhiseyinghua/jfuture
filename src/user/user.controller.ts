@@ -112,9 +112,20 @@ export class UserController {
 
   
   @Post('searchbyuserid')
-  searchteaminfo(
-    @Body(ValidationPipe) TeamIndex: UserInfo,
+  searchuserinfo(
+    @Body(ValidationPipe) UserIndex: UserInfo,
   ): any {
-    return UserService.SearchUserInfo(TeamIndex);
+    return UserService.SearchUserInfo(UserIndex);
+  }
+  @Post('searchbyauthkey')
+  byauthkeysearch(@Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let userinfo = AuthService.decodeIdtoken(idtoken);
+    let vertifyInfo = {
+      hash: userinfo.hash,
+      range: userinfo.range,
+      index: userinfo.index,
+    }
+    return UserService.SearchByAuthKey(vertifyInfo);
   }
 }

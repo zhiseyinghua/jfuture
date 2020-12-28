@@ -96,6 +96,7 @@ export class UserService {
       }
     ).pipe(
       map((result) => {
+        // console.log(result)
 
         if (
           result.hits.total.value == 1 &&
@@ -125,9 +126,40 @@ export class UserService {
           }
         }
       }
-    ).pipe(
+    )
+    .pipe(
         map((data: Queryinterface) => {
-          return data.hits.hits[0]._source
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return data.hits.hits[0]._source
+          }
+         else {
+            return UsererrorCode.search_error
+          }
+        })
+      )
+  }
+  public static SearchByAuthKey(data: UserInfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      USER_CONFIG.INDEX + '/' + USER_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'authKey.range.keyword': data.range
+          }
+        }
+      }
+    ) .pipe(
+        map((data: Queryinterface) => {
+          console.log(data)
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return data.hits.hits[0]._source
+          }
+         else {
+            return UsererrorCode.search_error
+          }
         })
       )
   }

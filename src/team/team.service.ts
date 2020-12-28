@@ -56,9 +56,11 @@ export class TeamService {
     ).pipe(
       map((data: Queryinterface) => {
         console.log(data)
-        if(data.took==1){
-        return data.hits.hits[0]._source}
-        if(data.took==0){
+        if (data.hits.total.value == 1 &&
+          data.hits.hits[0]._source['range']) {
+          return data.hits.hits[0]._source
+        }
+       else {
           return TeamErrorCode.search_team_error
         }
       })
@@ -126,3 +128,5 @@ export class TeamService {
   }
 
 }
+
+

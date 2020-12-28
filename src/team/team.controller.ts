@@ -5,7 +5,7 @@ import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { Errorcode } from 'src/common/error.code';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { TEAM_CONFIG } from './team.config';
-import { TeamInfo, TeamInfoInterface } from './team.interface';
+import { TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
 import { TeamService } from './team.service';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
@@ -97,5 +97,33 @@ export class TeamController {
       return TeamErrorCode.teammember_donot_haveright
     }
   }  
-}
+
+// @Post('insertteammember')
+//   insertteammember(@Body(ValidationPipe) sendData:TeamMember, @Headers() headers): any {
+//     let idtoken = headers['authorization'];
+//     let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
+//     console.log(TeamMemberInfo)
+//     let AuthKey={
+//       hash:TeamMemberInfo.hash,
+//       range:TeamMemberInfo.range,
+//       index:TeamMemberInfo.index,
+//     }
+//       return TeamService.inteammemberinfo({
+//         hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
+//         range: uuid.v4(),
+//         index: TEAM_CONFIG.INDEX,
+//         TeamMemberName:'',
+//         TeamKey:'',
+//         AuthKey: AuthKey ,
+//       }).pipe(
+//         catchError((err) => {
+//           let redata: BackCodeMessage = {
+//             code: Errorcode[err.message],
+//             message: err.message,
+//           };
+//           return of(redata);
+//         }),
+//       );
+//     }
+  }                    
 
