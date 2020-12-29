@@ -77,7 +77,7 @@ export class TeamController {
       hash: TeamMemberInfo.hash,
       range: TeamMemberInfo.range,
       index: TeamMemberInfo.index,
-      role:TeamMemberInfo.role
+      role: TeamMemberInfo.role
     }
     let TeamMemberKey = {
       hash: TeamMemberInfo.hash,
@@ -87,36 +87,38 @@ export class TeamController {
     }
     console.log(TeamMemberInfo)
     let TeamMemberRole = TeamMemberInfo['role']
-    return TeamService.SearchMemberByTMK(vertifyInfo)
+    return TeamService.SearchMemberReturn(vertifyInfo)
       .pipe(
         switchMap((data) => {
-          if (data && data.range) {
-            return TeamService.UpdateTeamInfo({
-              hash: data.hash,
-              range: data.range,
-              index: data.index,
-              teamname: sendData.teamname,
-              projectname: sendData.projectname,
-              projectprogress: sendData.projectprogress,
-              teamMemberKey: vertifyInfo
-            })
-          } else if (data == 'user_error') {
-            throwError(new Error('cun zai liang ge yong hu '))
-          } else if (data == '000109') {
-            return TeamService.insertteaminfo({
-              hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
-              range: uuid.v4(),
-              index: TEAM_CONFIG.INDEX,
-              teamname: sendData.teamname,
-              projectname: sendData.projectname,
-              projectprogress: sendData.projectprogress,
-              teamMemberKey: TeamMemberKey,
-            })
+          if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
+            if (data && data.range) {
+              return TeamService.UpdateTeamInfo({
+                hash: data.hash,
+                range: data.range,
+                index: data.index,
+                teamname: sendData.teamname,
+                projectname: sendData.projectname,
+                projectprogress: sendData.projectprogress,
+                teamMemberKey: vertifyInfo
+              })
+            } else if (data == '000109') {
+              return TeamService.insertteaminfo({
+                hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
+                range: uuid.v4(),
+                index: TEAM_CONFIG.INDEX,
+                teamname: sendData.teamname,
+                projectname: sendData.projectname,
+                projectprogress: sendData.projectprogress,
+                teamMemberKey: TeamMemberKey,
+              })
+            }
+          }
+          if (TeamMemberRole == 'menber') {
+            throwError(new Error('team member does not have rights '))
           }
           else {
             // TODO:
           }
-
         }),
         catchError((err) => {
           console.log(
@@ -133,50 +135,65 @@ export class TeamController {
         })
       )
   }
-
+/**
+ * 
+ * @param sendData 插入团队成员信息
+ * @param headers 
+ */
   @Post('insertteammember')
   insertteammember(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
     let idtoken = headers['authorization'];
     let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
     console.log(TeamMemberInfo)
-    let AuthKey = {
-      hash: TeamMemberInfo.hash,
-      range: TeamMemberInfo.range,
-      index: TeamMemberInfo.index,
-    }
     let TeamKey = {
       hash: sendData.hash,
       range: sendData.range,
       index: sendData.index,
     }
-    return TeamService.SearchMemberByTK(TeamKey).pipe(
-
-      map((result) => {
+    return TeamService.SearchTeamInfo(TeamKey).pipe(
+      switchMap((result) => {
         console.log(result)
-        if (
-          result == "000109"
-        ) {
+        if (result=='000109') {
+          return Errorcode.insert_teammember_repeat
+         }
+        if (result) { 
+          let AuthKey={
+            hash:result.teamMemberKey.hash,
+            range:result.teamMemberKey.range,
+            index:result.teamMemberKey.index
+          }
           return TeamService.inteammemberinfo({
             hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
             range: uuid.v4(),
             index: TEAM_CONFIG.INDEX,
             TeamMemberName: sendData.TeamMemberName,
             position: sendData.position,
-            role: sendData.role,
+            role: 'menber',
             AuthKey: AuthKey,
             TeamKey: TeamKey
           })
         }
-        if (result && result.range) {
-          throwError(new Error('the teammember has already exit '))
-        }
-        // catchError((err) => {
-        //   let redata: BackCodeMessage = {
-        //     code: Errorcode[err.message],
-        //     message: err.message,
-        //   };
-        //   return of(redata);
-        // }),
-      }))
+        catchError((err) => {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        })
+      })
+      )
+  }
+
+  /**
+   * 根据团队成员信息中的TeamKey查找所有的团队成员
+   */
+  @Post('steammember')
+  teammembersearch(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
+      let TeamKey={
+        hash:sendData.hash,
+        range:sendData.range,
+        index:sendData.index,
+      }
+      return TeamService.SearchMemberReturn(TeamKey)
   }
 }

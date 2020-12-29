@@ -16,6 +16,10 @@ export class TeamService {
     throw new Error('Method not implemented.');
   }
   public static logger = 'TeamService';
+  /**
+   * 
+   * @param data 插入团队信息
+   */
   public static insertteaminfo(data: TeamInfoInterface): Observable<any> {
     let eldata: TeamInfoInterface = {
       hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
@@ -41,8 +45,11 @@ export class TeamService {
           }
         }),
       );
-  }c
-
+  }
+  /**
+   * 
+   * @param TeamIndex 根据团队信息的range查找
+   */
   public static SearchTeamInfo(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -60,15 +67,70 @@ export class TeamService {
           data.hits.hits[0]._source['range']) {
           return data.hits.hits[0]._source
         }
-       else {
+        else {
           return Errorcode.search_team_error
         }
       })
     )
   }
 
-  
+  /**
+   * 
+   * @param TeamIndex 根据团队成员的TeamKey查找
+   */
   public static SearchMemberByTK(TeamIndex: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'TeamKey.range.keyword': TeamIndex.range
+          }
+        }
+      }
+    )
+      .pipe(
+        map((data: Queryinterface) => {
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return data.hits.hits[0]._source
+          }
+          else {
+            return Errorcode.search_team_error
+          }
+        })
+      )
+  }
+  /**
+   * 
+   * @param TeamIndex 根据团队信息中的team MemberKey查找
+   */
+  // public static SearchMemberByTMK(TeamIndex: Teaminfo): Observable<any> {
+  //   return DbElasticService.executeInEs(
+  //     'get',
+  //     TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+  //     {
+  //       query: {
+  //         term: {
+  //           'teamMemberKey.range.keyword': TeamIndex.range
+  //         }
+  //       }
+  //     }
+  //   )
+  //     .pipe(
+  //       map((data: Queryinterface) => {
+  //         if (data.hits.total.value == 1 &&
+  //           data.hits.hits[0]._source['range']) {
+  //           return data.hits.hits[0]._source
+  //         }
+  //         else {
+  //           return Errorcode.search_team_error
+  //         }
+  //       })
+  //     )
+  // }
+  public static SearchMemberReturn(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
@@ -82,35 +144,10 @@ export class TeamService {
     )
     .pipe(
       map((data: Queryinterface) => {
-        if (data.hits.total.value == 1&&
-          data.hits.hits[0]._source['range']) {
-          return data.hits.hits[0]._source
+        if (data.hits.hits[0]._source['range']) {
+          return data.hits.hits
         }
-       else {
-          return Errorcode.search_team_error
-        }
-      })
-    )
-  }
-  public static SearchMemberByTMK(TeamIndex: Teaminfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'teamMemberKey.range.keyword': TeamIndex.range
-          }
-        }
-      }
-    )
-    .pipe(
-      map((data: Queryinterface) => {
-        if (data.hits.total.value == 1&&
-          data.hits.hits[0]._source['range']) {
-          return data.hits.hits[0]._source
-        }
-       else {
+        else {
           return Errorcode.search_team_error
         }
       })
@@ -134,7 +171,7 @@ export class TeamService {
           projectprogress: data.projectprogress,
           // membername: data.membername,
         },
-      }).pipe(  
+      }).pipe(
         map((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
             return data;
@@ -156,7 +193,7 @@ export class TeamService {
       range: uuid.v4(),
       index: TEAM_CONFIG.INDEX,
       TeamMemberName: data.TeamMemberName,
-      position:data.position,
+      position: data.position,
       role: data.role,
       TeamKey: data.TeamKey,
       AuthKey: data.AuthKey,
@@ -165,16 +202,15 @@ export class TeamService {
       'put',
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + eldata.range,
       eldata,
-    )
-      .pipe(
-        map((result: DbElasticinterPutReturn) => {
-          if (result.result == 'created' && result._shards.successful == 1) {
-            return eldata;
-          } else {
-            return throwError(new Error(Errorcode.insert_teaminfo_error));
-          }
-        }),
-      );
+    ).pipe(
+      map((result: DbElasticinterPutReturn) => {
+        if (result.result == 'created' && result._shards.successful == 1) {
+          return eldata;
+        } else {
+          return throwError(new Error(Errorcode.insert_teaminfo_error));
+        }
+      }),
+    );
   }
 }
 
