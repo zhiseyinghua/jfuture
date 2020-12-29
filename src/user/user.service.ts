@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserInfo, UserInfoInterface } from './user.interface';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import uuid = require('uuid');
 import { USER_CONFIG } from './user.config';
 import { UserController } from './user.controller';
@@ -152,16 +152,18 @@ export class UserService {
         }
       }
     ) .pipe(
-        map((data: Queryinterface) => {
+        switchMap((data: Queryinterface) => {
           console.log(data)
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return data.hits.hits[0]._source
+            return of(data.hits.hits[0]._source)
           }
          else {
-            return Errorcode.search_error
+            return throwError(new Error('search_error'))
+            // return Errorcode.search_error
           }
         })
       )
   }
 }
+
