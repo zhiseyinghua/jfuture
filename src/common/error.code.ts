@@ -50,22 +50,29 @@ export const Errorcode = {
 * 插入团队信息失败
 */
   insert_teaminfo_error: '000105',
-    /**
+  /**
 * 更新团队信息失败
 */
   update_teaminfo_error: '000106',
-    /**
+  /**
 * 更新团队信息时信息未修改
 */
   teaminfo_not_change: '000107',
-      /**
+  /**
 * 团队成员没有权限
 */
   teammember_donot_haveright: '000108',
-    /**
+  /**
 * 更新团队信息时信息未修改
 */
-  search_team_error: '000109'
-  
+  search_team_error: '000109',
+  /**
+* 更新团队信息时信息未修改
+*/
+  insert_team_repeat: '000110',
+    /**
+* 插入团队成员时，团队成员已存在
+*/
+insert_teammember_repeat: '000111'
 }
 

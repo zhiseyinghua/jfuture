@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import { TEAM_CONFIG } from './team.config';
-import { TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
+import { Teaminfo, TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
@@ -43,7 +43,7 @@ export class TeamService {
       );
   }c
 
-  public static SearchTeamInfo(TeamIndex: TeamInfo): Observable<any> {
+  public static SearchTeamInfo(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
@@ -57,6 +57,56 @@ export class TeamService {
     ).pipe(
       map((data: Queryinterface) => {
         if (data.hits.total.value == 1 &&
+          data.hits.hits[0]._source['range']) {
+          return data.hits.hits[0]._source
+        }
+       else {
+          return Errorcode.search_team_error
+        }
+      })
+    )
+  }
+
+  
+  public static SearchMemberByTK(TeamIndex: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'TeamKey.range.keyword': TeamIndex.range
+          }
+        }
+      }
+    )
+    .pipe(
+      map((data: Queryinterface) => {
+        if (data.hits.total.value == 1&&
+          data.hits.hits[0]._source['range']) {
+          return data.hits.hits[0]._source
+        }
+       else {
+          return Errorcode.search_team_error
+        }
+      })
+    )
+  }
+  public static SearchMemberByTMK(TeamIndex: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'teamMemberKey.range.keyword': TeamIndex.range
+          }
+        }
+      }
+    )
+    .pipe(
+      map((data: Queryinterface) => {
+        if (data.hits.total.value == 1&&
           data.hits.hits[0]._source['range']) {
           return data.hits.hits[0]._source
         }
