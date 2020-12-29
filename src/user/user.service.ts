@@ -11,6 +11,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { UsererrorCode } from './UsererrorCode';
 import { AUTH_CONFIG } from 'src/auth/auth.config';
 import { AutherrorCode } from 'src/auth/auth.code';
+import { Errorcode } from 'src/common/error.code';
 
 @Injectable()
 export class UserService {
@@ -19,14 +20,14 @@ export class UserService {
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
     console.log('UserService storeUserInfo data', data)
     let eldata: UserInfoInterface = {
+      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+      range: uuid.v4(),
+      index: AUTH_CONFIG.INDEX,
       usernickname: data.usernickname,
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
       authKey: data.authKey,
-      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
-      range: uuid.v4(),
-      index: AUTH_CONFIG.INDEX,
     };
     return DbElasticService.executeInEs(
       'put',
@@ -38,7 +39,7 @@ export class UserService {
           if (result.result == 'created' && result._shards.successful == 1) {
             return eldata;
           } else {
-            return throwError(new Error(UsererrorCode.insert_error));
+            return throwError(new Error(Errorcode.insert_error));
           }
         }),
       );
@@ -68,15 +69,16 @@ export class UserService {
             return resultdata;
           }
          if (result._shards.failed==0) {
-            return UsererrorCode.user_exit;
+            return Errorcode.user_exit;
           }
           else {
-            return throwError(new Error(UsererrorCode.user_exit));
+            return throwError(new Error(Errorcode.update_error));
           }
         }
         ),
       )
   }
+
 
   /**
    * 
@@ -133,7 +135,7 @@ export class UserService {
             return data.hits.hits[0]._source
           }
          else {
-            return UsererrorCode.search_error
+            return Errorcode.search_error
           }
         })
       )
@@ -157,7 +159,7 @@ export class UserService {
             return data.hits.hits[0]._source
           }
          else {
-            return UsererrorCode.search_error
+            return Errorcode.search_error
           }
         })
       )

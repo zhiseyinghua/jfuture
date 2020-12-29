@@ -63,13 +63,14 @@ export class UserController {
           if (data && data.range ) {
             // console.log('1111111111111111111111111',data)
             return UserService.UpdateUserInfo({
+              hash:data.hash,
+              range: data.range,
+              index: data.index,
               usernickname: sendData.usernickname,
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
-              hash:data.hash,
-              range: data.range,
-              index: data.index
+              authKey: vertifyInfo
             })
           } else if (data == 'user_error') {
             throwError(new Error('cun zai liang ge yong hu '))
@@ -115,7 +116,15 @@ export class UserController {
   searchuserinfo(
     @Body(ValidationPipe) UserIndex: UserInfo,
   ): any {
-    return UserService.SearchUserInfo(UserIndex);
+    return UserService.SearchUserInfo(UserIndex).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      })
+    )
   }
   @Post('searchbyauthkey')
   byauthkeysearch(@Headers() headers): any {
@@ -126,6 +135,14 @@ export class UserController {
       range: userinfo.range,
       index: userinfo.index,
     }
-    return UserService.SearchByAuthKey(vertifyInfo);
+    return UserService.SearchByAuthKey(vertifyInfo).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      })
+    )
   }
 }
