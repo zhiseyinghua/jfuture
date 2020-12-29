@@ -49,7 +49,15 @@ export class TeamController {
       );
     }
     if (TeamMemberRole == 'menber') {
-      return Errorcode.teammember_donot_haveright
+      return throwError(new Error('teammember_donot_haveright')).pipe(
+        catchError((err) => {
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        }),
+      )
     }
   }
 
@@ -57,7 +65,7 @@ export class TeamController {
   searchteaminfo(
     @Body(ValidationPipe) TeamIndex: TeamInfo,
   ): any {
-    return TeamService.SearchTeamInfo(TeamIndex).pipe(
+    return TeamService.SearchTeam(TeamIndex).pipe(
       catchError((err) => {
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
@@ -135,11 +143,11 @@ export class TeamController {
         })
       )
   }
-/**
- * 
- * @param sendData 插入团队成员信息
- * @param headers 
- */
+  /**
+   * 
+   * @param sendData 插入团队成员信息
+   * @param headers 
+   */
   @Post('insertteammember')
   insertteammember(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
     let idtoken = headers['authorization'];
@@ -150,18 +158,14 @@ export class TeamController {
       range: sendData.range,
       index: sendData.index,
     }
+    let AuthKey = {
+      hash: TeamMemberInfo.hash,
+      range: TeamMemberInfo.range,
+      index: TeamMemberInfo.index,
+    }
     return TeamService.SearchTeamInfo(TeamKey).pipe(
       switchMap((result) => {
-        console.log(result)
-        if (result=='000109') {
-          return Errorcode.insert_teammember_repeat
-         }
-        if (result) { 
-          let AuthKey={
-            hash:result.teamMemberKey.hash,
-            range:result.teamMemberKey.range,
-            index:result.teamMemberKey.index
-          }
+        if (result) {
           return TeamService.inteammemberinfo({
             hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
             range: uuid.v4(),
@@ -172,28 +176,38 @@ export class TeamController {
             AuthKey: AuthKey,
             TeamKey: TeamKey
           })
+
+        } else {
+          return throwError(new Error('insert_team_not_found'));
         }
-        catchError((err) => {
-          let redata: BackCodeMessage = {
-            code: Errorcode[err.message],
-            message: err.message,
-          };
-          return of(redata);
-        })
-      })
-      )
+      }),
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }))
   }
 
   /**
    * 根据团队成员信息中的TeamKey查找所有的团队成员
    */
   @Post('steammember')
-  teammembersearch(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
-      let TeamKey={
-        hash:sendData.hash,
-        range:sendData.range,
-        index:sendData.index,
-      }
-      return TeamService.SearchMemberReturn(TeamKey)
+  teammembersearch(@Body(ValidationPipe) sendData: TeamMember): any {
+    let TeamKey = {
+      hash: sendData.hash,
+      range: sendData.range,
+      index: sendData.index,
+    }
+    return TeamService.SearchMemberReturn(TeamKey).pipe(
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      })
+    )
   }
 }

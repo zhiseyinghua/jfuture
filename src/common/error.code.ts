@@ -63,20 +63,23 @@ export const Errorcode = {
 */
   teammember_donot_haveright: '000108',
   /**
-* 更新团队信息时信息未修改
+*查询团队信息失败
 */
-  search_team_error: '000109',
+  search_teaminfo_error: '000109',
   /**
 * 插入团队信息时信息未修改
 */
   insert_team_repeat: '000110',
-    /**
+  /**
 * 插入团队成员时，团队成员已存在
 */
-insert_teammember_repeat: '000111',
-    /**
+  insert_teammember_repeat: '000111',
+  /**
 * 插入团队成员时，团队信息不存在
 */
-insert_teamm_info: '000112'
+  insert_team_not_found: '000112',
+    /**
+* 查询团队成员信息失败
+*/search_teammember_error: '000112',
 }
 
