@@ -35,11 +35,12 @@ export class UserService {
       eldata,
     )
       .pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'created' && result._shards.successful == 1) {
-            return eldata;
+            return of(eldata);
           } else {
-            return throwError(new Error(Errorcode.insert_error));
+            return throwError(new Error('insert_error'));
+           
           }
         }),
       );
@@ -64,15 +65,15 @@ export class UserService {
           userico: resultdata.userico,
         },
       }).pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
-            return resultdata;
+            return of(resultdata);
           }
          if (result._shards.failed==0) {
-            return Errorcode.user_exit;
+          return throwError(new Error('teaminfo_not_change'));
           }
           else {
-            return throwError(new Error(Errorcode.update_error));
+            return throwError(new Error('update_error'));
           }
         }
         ),
@@ -116,6 +117,7 @@ export class UserService {
     );
   }
 
+
   public static SearchUserInfo(data: UserInfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -129,13 +131,13 @@ export class UserService {
       }
     )
     .pipe(
-        map((data: Queryinterface) => {
+        switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return data.hits.hits[0]._source
+            return of (data.hits.hits[0]._source)
           }
-         else {
-            return Errorcode.search_error
+          else {
+            return throwError(new Error('search_error'))
           }
         })
       )
@@ -160,7 +162,6 @@ export class UserService {
           }
          else {
             return throwError(new Error('search_error'))
-            // return Errorcode.search_error
           }
         })
       )

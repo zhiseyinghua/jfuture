@@ -123,7 +123,7 @@ export class UserController {
           message: err.message,
         };
         return of(redata);
-      })
+      }),
     )
   }
   @Post('searchbyauthkey')
@@ -135,7 +135,6 @@ export class UserController {
     }
     return UserService.SearchByAuthKey(vertifyInfo).pipe(
       catchError((err) => {
-        console.log(err)
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
           message: err.message,
