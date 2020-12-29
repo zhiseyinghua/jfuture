@@ -1,4 +1,5 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { AliyunService } from './aliyun.service';
 let OSS = require('ali-oss');
 let STS = OSS.STS;
 let sts = new STS({
@@ -13,44 +14,49 @@ export class AliyunController {
    */
   @Post('/assumerole')
   verifysmscoderegister(): any {
-    let policy = {
-      Statement: [
-        {
-          Action: ['oss:Get*', 'oss:List*'],
-          Effect: 'Allow',
-          Resource: '*',
-        },
-      ],
-      Version: '1',
-    };
-    async function assumeRole() {
-      try {
-        console.log('assumeRole start');
-        let token = await sts.assumeRole(
-          'acs:ram::1302229210323986:role/aliyunosstokengeneratorrole',
-          policy,
-          15 * 60,
-          'AliyunOSSTokenGeneratorRole',
-        );
-        console.log('assumeRole start 2');
-        console.log(
-          'token.credentials.AccessKeyId',
-          token.credentials.AccessKeyId,
-        );
-        console.log(token.credentials.AccessKeySecret);
-        console.log(token.credentials.SecurityToken);
-        let client = new OSS({
-          region: 'oss-cn-beijing',
-          accessKeyId: token.credentials.AccessKeyId,
-          accessKeySecret: token.credentials.AccessKeySecret,
-          stsToken: token.credentials.SecurityToken,
-          bucket: 'hwquser',
-        });
-      } catch (e) {
-        console.log('aliyun.controller', e);
-      }
-      return 'success';
-    }
-    assumeRole();
+    return AliyunService.TSTAllotOSSJurisdiction()
+    // let policy = {
+    //   Statement: [
+    //     {
+    //       Action: ['oss:Get*', 'oss:List*'],
+    //       Effect: 'Allow',
+    //       Resource: '*',
+    //     },
+    //   ],
+    //   Version: '1',
+    // };
+    // async function assumeRole() {
+    //   try {
+    //     console.log('assumeRole start');
+    //     let token = await sts.assumeRole(
+    //       'acs:ram::1302229210323986:role/futuretime',
+    //       policy,
+    //       15 * 60,
+    //       'alice',
+    //     );
+    //     console.log('assumeRole start 2');
+    //     console.log(
+    //       'token.credentials.AccessKeyId',
+    //       token.credentials.AccessKeyId,
+    //     );
+    //     console.log(token.credentials.AccessKeySecret);
+    //     console.log(token.credentials.SecurityToken);
+    //     console.log('assumeRole start 3');
+    //     return token;
+    //     let client = new OSS({
+    //       region: 'oss-cn-beijing',
+    //       accessKeyId: token.credentials.AccessKeyId,
+    //       accessKeySecret: token.credentials.AccessKeySecret,
+    //       stsToken: token.credentials.SecurityToken,
+    //       bucket: 'hwquser',
+    //     });
+       
+    //   } catch (e) {
+    //     console.log('aliyun.controller', e);
+    //   }
+
+    //   return 'success';
+    // }
+    // return assumeRole();
   }
 }
