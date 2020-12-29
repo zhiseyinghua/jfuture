@@ -108,6 +108,11 @@ export class TeamController {
       range:TeamMemberInfo.range,
       index:TeamMemberInfo.index,
     }
+    let TeamKey={
+      hash:sendData.hash,
+      range:sendData.range,
+      index:sendData.index,
+    }
       return TeamService.inteammemberinfo({
         hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
         range: uuid.v4(),
@@ -116,7 +121,7 @@ export class TeamController {
         position:sendData.position,
         role:sendData.role,  
         AuthKey: AuthKey ,
-        // TeamKey:
+        TeamKey:TeamKey
       }).pipe(
         catchError((err) => {
           let redata: BackCodeMessage = {

@@ -8,6 +8,12 @@ export interface TeamInfo {
     index: string;  
     role:string
   }
+
+  export interface Teaminfo {
+    hash: string;
+    range: string;
+    index: string;  
+  }
 export interface TeamInfoInterface {
   hash?: string;
   range?: string;
@@ -32,9 +38,9 @@ export interface TeamMember{
   hash?:string;
   range?:string;
   index?:string; 
-  TeamMemberName:string;
-  position:string;
-  TeamKey?:TeamInfo;
+  TeamMemberName?:string;
+  position?:string;
+  TeamKey?:Teaminfo;
   AuthKey: Dbinterface;
   role: 'menber' | 'admin' | 'our'
 }

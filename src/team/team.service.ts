@@ -56,7 +56,6 @@ export class TeamService {
       }
     ).pipe(
       map((data: Queryinterface) => {
-        console.log(data)
         if (data.hits.total.value == 1 &&
           data.hits.hits[0]._source['range']) {
           return data.hits.hits[0]._source
@@ -67,7 +66,6 @@ export class TeamService {
       })
     )
   }
-
   public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
     let TeamInfo = {
       hash: data.hash,
@@ -86,7 +84,7 @@ export class TeamService {
           projectprogress: data.projectprogress,
           // membername: data.membername,
         },
-      }).pipe(
+      }).pipe(  
         map((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
             return data;
@@ -112,7 +110,6 @@ export class TeamService {
       role: data.role,
       TeamKey: data.TeamKey,
       AuthKey: data.AuthKey,
-
     };
     return DbElasticService.executeInEs(
       'put',
@@ -129,8 +126,6 @@ export class TeamService {
         }),
       );
   }
-
-
 }
 
 
