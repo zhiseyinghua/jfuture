@@ -127,22 +127,22 @@ export class UserController {
     )
   }
   @Post('searchbyauthkey')
-  byauthkeysearch(@Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let userinfo = AuthService.decodeIdtoken(idtoken);
+  searchbyauthkey(@Body(ValidationPipe) sendData: UserInfoInterface): any {
     let vertifyInfo = {
-      hash: userinfo.hash,
-      range: userinfo.range,
-      index: userinfo.index,
+      hash: sendData.hash,
+      range: sendData.range,
+      index: sendData.index,
     }
     return UserService.SearchByAuthKey(vertifyInfo).pipe(
       catchError((err) => {
+        console.log(err)
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
           message: err.message,
         };
         return of(redata);
-      })
+      }),
     )
   }
 }
+
