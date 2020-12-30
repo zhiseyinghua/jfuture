@@ -1,4 +1,5 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { map } from 'rxjs/operators';
 import { AliyunService } from './aliyun.service';
 let OSS = require('ali-oss');
 let STS = OSS.STS;
@@ -14,7 +15,11 @@ export class AliyunController {
    */
   @Post('/assumerole')
   verifysmscoderegister(): any {
-    return AliyunService.TSTAllotOSSJurisdiction()
+    return AliyunService.TSTAllotOSSJurisdiction().pipe(
+      map(data=>{
+        return data['credentials']
+      })
+    )
     // let policy = {
     //   Statement: [
     //     {
