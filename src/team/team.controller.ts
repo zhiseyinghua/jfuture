@@ -25,7 +25,6 @@ export class TeamController {
       hash: TeamMemberInfo.hash,
       range: TeamMemberInfo.range,
       index: TeamMemberInfo.index,
-      role: TeamMemberInfo.role,
     }
     let TeamMemberRole = TeamMemberInfo.role
     if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {

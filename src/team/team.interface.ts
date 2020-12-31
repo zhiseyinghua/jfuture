@@ -17,30 +17,27 @@ export interface TeamInfo {
 export interface TeamInfoInterface {
   hash?: string;
   range?: string;
-  index?: string;
-  teamMemberKey?:TeamInfo,   
+  index?: string; 
+  type: 'nomal' | 'cooperation', 
+  teamid:string;
   teamname:string,
+  projectid:string,
   projectname:string,
   projectprogress:string,
+  startdata:Date,
+  enddate:Date
+  TeamMemberKey?:Teaminfo,
   // membername:any,
-}
-export interface NTeamInfoInterface {
-  hash?: string;
-  range?: string;
-  index?: string;   
-  teamname:string,
-  projectname:string,
-  projectprogress:string,
-  // membername:any,
-  TeamMemberKey?:TeamInfo,
 }
 export interface TeamMember{
   hash?:string;
   range?:string;
   index?:string; 
-  TeamMemberName?:string;
-  position?:string;
-  TeamKey?:Teaminfo;
+  gender:'man' | 'woman',
+  age:string,
+  TeamMemberName:string;
+  position:string;
+  TeamKey:Teaminfo;
   AuthKey: Dbinterface;
   role: 'menber' | 'admin' | 'our'
 }

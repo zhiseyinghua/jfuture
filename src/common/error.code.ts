@@ -81,5 +81,9 @@ export const Errorcode = {
     /**
 * 查询团队成员信息失败
 */search_teammember_error: '000112',
+  /**
+* 更新团队信息时信息未修改
+*/userinfo_not_change: '000113',
+
 }
 
