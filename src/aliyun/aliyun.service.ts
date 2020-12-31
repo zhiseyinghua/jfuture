@@ -26,7 +26,7 @@ export class AliyunService {
       sts.assumeRole(
         'acs:ram::1302229210323986:role/futuretime',
         policy,
-        15 * 60,
+        60 * 60,
         'alice',
       ),
     );
