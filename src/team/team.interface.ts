@@ -18,22 +18,13 @@ export interface TeamInfoInterface {
   hash?: string;
   range?: string;
   index?: string;
-  teamMemberKey?:TeamInfo,   
+  teamMemberKey?:Teaminfo,   
   teamname:string,
   projectname:string,
   projectprogress:string,
   // membername:any,
 }
-export interface NTeamInfoInterface {
-  hash?: string;
-  range?: string;
-  index?: string;   
-  teamname:string,
-  projectname:string,
-  projectprogress:string,
-  // membername:any,
-  TeamMemberKey?:TeamInfo,
-}
+
 export interface TeamMember{
   hash?:string;
   range?:string;
@@ -42,5 +33,5 @@ export interface TeamMember{
   position?:string;
   TeamKey?:Teaminfo;
   AuthKey: Dbinterface;
-  role: 'menber' | 'admin' | 'our'
+  role?: 'menber' | 'admin' | 'our'
 }

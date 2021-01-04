@@ -116,7 +116,7 @@ export class TeamService {
       }
     )
       .pipe(
-       switchMap((data: Queryinterface) => {
+        switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
             return of(data.hits.hits[0]._source)
@@ -142,9 +142,12 @@ export class TeamService {
       .pipe(
         switchMap((data: Queryinterface) => {
           console.log(data)
-          if (data.hits.total.value == 1 &&
-            data.hits.hits[0]._source['range']) {
+          if (
+            data.hits.total.value >=1 &&data.hits.hits[0]._source['range']) {
             return of(data.hits.hits)
+          }
+          if (data.hits.total.value == 0) {
+            return throwError(new Error('search_teammember_error'));
           }
           else {
             return throwError(new Error('search_teammember_error'));
