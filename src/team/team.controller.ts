@@ -5,7 +5,7 @@ import { BackCodeMessage } from 'src/common/back.codeinterface';
 import { Errorcode } from 'src/common/error.code';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { TEAM_CONFIG } from './team.config';
-import { Teaminfo, TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
+import { Teaminfo, TeamInfoInterface, TeamMember } from './team.interface';
 import { TeamService } from './team.service';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
@@ -25,7 +25,6 @@ export class TeamController {
       hash: TeamMemberInfo.hash,
       range: TeamMemberInfo.range,
       index: TeamMemberInfo.index,
-      role: TeamMemberInfo.role,
     }
     let TeamMemberRole = TeamMemberInfo.role
     if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
@@ -63,7 +62,7 @@ export class TeamController {
 
   @Post('searchbyteamindex')
   searchteaminfo(
-    @Body(ValidationPipe) TeamIndex: TeamInfo,
+    @Body(ValidationPipe) TeamIndex: Teaminfo,
   ): any {
     return TeamService.SearchTeam(TeamIndex).pipe(
       catchError((err) => {

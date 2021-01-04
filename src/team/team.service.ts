@@ -4,7 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import { TEAM_CONFIG } from './team.config';
-import { Teaminfo, TeamInfo, TeamInfoInterface, TeamMember } from './team.interface';
+import { Teaminfo, TeamInfoInterface, TeamMember } from './team.interface';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';

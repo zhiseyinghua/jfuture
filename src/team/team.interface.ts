@@ -2,12 +2,6 @@ import { AuthuserInterface } from "src/auth/auth.interface";
 import { Dbinterface } from "src/common/db.elasticinterface";
 import { UserInfo, UserInfoInterface, UserInterface } from "src/user/user.interface";
 
-export interface TeamInfo {
-    hash: string;
-    range: string;
-    index: string;  
-    role:string
-  }
 
   export interface Teaminfo {
     hash: string;
@@ -22,7 +16,6 @@ export interface TeamInfoInterface {
   teamname:string,
   projectname:string,
   projectprogress:string,
-  // membername:any,
 }
 
 export interface TeamMember{
