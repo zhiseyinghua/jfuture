@@ -14,7 +14,7 @@ import { AutherrorCode } from 'src/auth/auth.code';
  */
 export class JpushIMService {
   static readonly TAG = 'JpushIMService';
-  pushMessage() {
+  pushMessage(mobilePhoneNumber: string,) {
     let authorizationBase64Header =
       'Basic' +
       ' ' +
