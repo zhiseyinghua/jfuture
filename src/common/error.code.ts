@@ -82,16 +82,10 @@ export const Errorcode = {
 * 查询团队成员信息失败
 */search_teammember_error: '000112',
   /**
-<<<<<<< HEAD
    * 删除团队成员信息时团队成员信息不存在
    */
   teammember_not_found:'000113',
   delete_teammember_error:'000114',
   search_team_error:'000115',
-=======
-* 更新团队信息时信息未修改
-*/userinfo_not_change: '000113',
-
->>>>>>> f81020089ba03434bde270547f5321cd17e14992
 }
 

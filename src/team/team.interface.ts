@@ -23,36 +23,21 @@ import { UserInfo, UserInfoInterface } from "src/user/user.interface";
 export interface TeamInfoInterface {
   hash?: string;
   range?: string;
-<<<<<<< HEAD
   index?: string;
   teamMemberKey?:Teaminfo,
   teamid:string,   
-=======
-  index?: string; 
-  type: 'nomal' | 'cooperation', 
-  teamid:string;
->>>>>>> f81020089ba03434bde270547f5321cd17e14992
   teamname:string,
   projectid:string,
   projectname:string,
   projectprogress:string,
-<<<<<<< HEAD
   description:string,
   type:'normal'|'corporation'
 }
 
-=======
-  startdata:Date,
-  enddate:Date
-  TeamMemberKey?:Teaminfo,
-  // membername:any,
-}
->>>>>>> f81020089ba03434bde270547f5321cd17e14992
 export interface TeamMember{
   hash?:string;
   range?:string;
   index?:string; 
-<<<<<<< HEAD
   TeamKey?:Teaminfo;
   AuthKey?: Dbinterface;
   TeamMemberName:string;
@@ -63,13 +48,4 @@ export interface TeamMember{
   img:string,
   description:string,
   birth:string,
-=======
-  gender:'man' | 'woman',
-  age:string,
-  TeamMemberName:string;
-  position:string;
-  TeamKey:Teaminfo;
-  AuthKey: Dbinterface;
-  role: 'menber' | 'admin' | 'our'
->>>>>>> f81020089ba03434bde270547f5321cd17e14992
 }
