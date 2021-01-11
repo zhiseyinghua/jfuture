@@ -85,6 +85,11 @@ export const Errorcode = {
   teammember_not_found:'000113',
   delete_teammember_error:'000114',
   search_team_error:'000115',
-  userinfo_not_change:'000116'
+  userinfo_not_change:'000116',
+  delete_team_success:'000117',
+  delete_team_error:'000118',
+  delete_teammember_success:'000119',
+  teammember_info_not_change:'000120',
+  update_teammember_info_error:'000121'
 }
 

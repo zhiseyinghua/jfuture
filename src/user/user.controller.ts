@@ -24,6 +24,7 @@ export class UserController {
   insertuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
     let userinfo = AuthService.decodeIdtoken(idtoken);
+     
     return UserService.storeUserInfo({
       hash: DynamoDBService.computeHash(USER_CONFIG.INDEX),
       range: uuid.v4(),
