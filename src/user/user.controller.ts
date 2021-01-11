@@ -24,24 +24,39 @@ export class UserController {
   insertuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
     let userinfo = AuthService.decodeIdtoken(idtoken);
-     
-    return UserService.storeUserInfo({
-      hash: DynamoDBService.computeHash(USER_CONFIG.INDEX),
-      range: uuid.v4(),
-      index: USER_CONFIG.INDEX,
-      usernickname: sendData.usernickname,
-      telephone: sendData.telephone,
-      usermail: sendData.usermail,
-      userico: sendData.userico,
-      position: sendData.position,
-      startdate: sendData.startdate,
-      companyname: sendData.companyname,
-      authKey: {
-        hash: userinfo.hash,
-        range: userinfo.range,
-        index: userinfo.index,
-      }
-    }).pipe(
+    let vertifyInfo = {
+      hash: userinfo.hash,
+      range: userinfo.range,
+      index: userinfo.index,
+    }
+    return UserService.ByAuthkey(vertifyInfo).pipe(
+      switchMap((data) => {
+        console.log('3333333333', data)
+        if (data==false) {
+          console.log('1111111111', data)
+          return UserService.storeUserInfo({
+            hash: DynamoDBService.computeHash(USER_CONFIG.INDEX),
+            range: uuid.v4(),
+            index: USER_CONFIG.INDEX,
+            usernickname: sendData.usernickname,
+            telephone: sendData.telephone,
+            usermail: sendData.usermail,
+            userico: sendData.userico,
+            position: sendData.position,
+            startdate: sendData.startdate,
+            companyname: sendData.companyname,
+            authKey: {
+              hash: userinfo.hash,
+              range: userinfo.range,
+              index: userinfo.index,
+            }
+          })
+        }
+        if (data && data.range) {
+          console.log('222222222', data)
+          return throwError(new Error('cun_zai_liang_ge_yong_hu'))
+        }
+      }),
       catchError((err) => {
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
@@ -64,10 +79,10 @@ export class UserController {
       .pipe(
         switchMap((data) => {
           console.log('updateuserinfocontroller ByAuthkey data', data);
-          if (data && data.range ) {
+          if (data && data.range) {
             // console.log('1111111111111111111111111',data)
             return UserService.UpdateUserInfo({
-              hash:data.hash,
+              hash: data.hash,
               range: data.range,
               index: data.index,
               usernickname: sendData.usernickname,
@@ -80,7 +95,7 @@ export class UserController {
               authKey: vertifyInfo
             })
           } else if (data == 'user_error') {
-            throwError(new Error('cun zai liang ge yong hu '))
+            throwError(new Error('cun_zai_liang_ge_yong_hu'))
           } else if (data == false) {
             return UserService.storeUserInfo({
               usernickname: sendData.usernickname,

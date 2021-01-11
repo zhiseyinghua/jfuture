@@ -39,7 +39,7 @@ export const Errorcode = {
    */
   delete_error: '000102',
 
-  
+  search_error: '000103',
   /**
 * 用户信息存在
 */
@@ -90,6 +90,7 @@ export const Errorcode = {
   delete_team_error:'000118',
   delete_teammember_success:'000119',
   teammember_info_not_change:'000120',
-  update_teammember_info_error:'000121'
+  update_teammember_info_error:'000121',
+  cun_zai_liang_ge_yong_hu:'000122'
 }
 
