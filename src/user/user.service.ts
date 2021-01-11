@@ -27,6 +27,9 @@ export class UserService {
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
+      position: data.position,
+      startdate: data.startdate,
+      companyname: data.companyname,
       authKey: data.authKey,
     };
     return DbElasticService.executeInEs(
@@ -35,11 +38,12 @@ export class UserService {
       eldata,
     )
       .pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'created' && result._shards.successful == 1) {
-            return eldata;
+            return of(eldata);
           } else {
-            return throwError(new Error(Errorcode.insert_error));
+            return throwError(new Error('insert_error'));
+
           }
         }),
       );
@@ -62,17 +66,25 @@ export class UserService {
           telephone: resultdata.telephone,
           usermail: resultdata.usermail,
           userico: resultdata.userico,
+          position: resultdata.position,
+          startdate: resultdata.startdate,
+          companyname: resultdata.companyname,
         },
       }).pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
-            return resultdata;
+            return of(resultdata);
           }
+<<<<<<< HEAD
+          if (result._shards.failed == 0) {
+            return throwError(new Error('teaminfo_not_change'));
+=======
          if (result._shards.failed==0) {
-            return Errorcode.user_exit;
+          return throwError(new Error('userinfo_not_change'));
+>>>>>>> f81020089ba03434bde270547f5321cd17e14992
           }
           else {
-            return throwError(new Error(Errorcode.update_error));
+            return throwError(new Error('update_error'));
           }
         }
         ),
@@ -97,8 +109,7 @@ export class UserService {
         }
       }
     ).pipe(
-      map((result:any) => {
-
+      map((result: any) => {
         if (
           result.hits.total.value == 1 &&
           result.hits.hits[0]._source['range']
@@ -116,6 +127,7 @@ export class UserService {
     );
   }
 
+
   public static SearchUserInfo(data: UserInfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -128,14 +140,14 @@ export class UserService {
         }
       }
     )
-    .pipe(
-        map((data: Queryinterface) => {
+      .pipe(
+        switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return data.hits.hits[0]._source
+            return of(data.hits.hits[0]._source)
           }
-         else {
-            return Errorcode.search_error
+          else {
+            return throwError(new Error('search_error'))
           }
         })
       )
@@ -151,19 +163,19 @@ export class UserService {
           }
         }
       }
-    ) .pipe(
-        switchMap((data: Queryinterface) => {
-          console.log(data)
-          if (data.hits.total.value == 1 &&
-            data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits[0]._source)
-          }
-         else {
-            return throwError(new Error('search_error'))
-            // return Errorcode.search_error
-          }
-        })
-      )
+    ).pipe(
+      switchMap((data: Queryinterface) => {
+        console.log(data)
+        if (data.hits.total.value == 1 &&
+          data.hits.hits[0]._source['range']) {
+          return of(data.hits.hits[0]._source)
+        }
+        else {
+          return throwError(new Error('search_error'))
+        }
+      })
+    )
   }
 }
+
 

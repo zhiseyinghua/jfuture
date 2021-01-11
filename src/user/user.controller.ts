@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 import uuid = require('uuid');
 import { Errorcode } from 'src/common/error.code';
 import { UsererrorCode } from './UsererrorCode';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -31,6 +32,9 @@ export class UserController {
       telephone: sendData.telephone,
       usermail: sendData.usermail,
       userico: sendData.userico,
+      position: sendData.position,
+      startdate: sendData.startdate,
+      companyname: sendData.companyname,
       authKey: {
         hash: userinfo.hash,
         range: userinfo.range,
@@ -46,7 +50,6 @@ export class UserController {
       }),
     );
   }
-
   @Post('updateuserinfo')
   updateuserinfocontroller(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
@@ -70,6 +73,9 @@ export class UserController {
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
+              position: sendData.position,
+              startdate: sendData.startdate,
+              companyname: sendData.companyname,
               authKey: vertifyInfo
             })
           } else if (data == 'user_error') {
@@ -80,6 +86,9 @@ export class UserController {
               telephone: sendData.telephone,
               usermail: sendData.usermail,
               userico: sendData.userico,
+              position: sendData.position,
+              startdate: sendData.startdate,
+              companyname: sendData.companyname,
               authKey: vertifyInfo
             })
           }
@@ -110,8 +119,6 @@ export class UserController {
         })
       )
   }
-
-  
   @Post('searchbyuserid')
   searchuserinfo(
     @Body(ValidationPipe) UserIndex: UserInfo,
@@ -123,7 +130,7 @@ export class UserController {
           message: err.message,
         };
         return of(redata);
-      })
+      }),
     )
   }
   @Post('searchbyauthkey')
@@ -135,7 +142,6 @@ export class UserController {
     }
     return UserService.SearchByAuthKey(vertifyInfo).pipe(
       catchError((err) => {
-        console.log(err)
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
           message: err.message,

@@ -63,20 +63,35 @@ export const Errorcode = {
 */
   teammember_donot_haveright: '000108',
   /**
-* 更新团队信息时信息未修改
+*查询团队信息失败
 */
-  search_team_error: '000109',
+  search_teaminfo_error: '000109',
   /**
 * 插入团队信息时信息未修改
 */
   insert_team_repeat: '000110',
-    /**
+  /**
 * 插入团队成员时，团队成员已存在
 */
-insert_teammember_repeat: '000111',
-    /**
+  insert_teammember_repeat: '000111',
+  /**
 * 插入团队成员时，团队信息不存在
 */
-insert_teamm_info: '000112'
+  team_not_found: '000112',
+    /**
+* 查询团队成员信息失败
+*/search_teammember_error: '000112',
+  /**
+<<<<<<< HEAD
+   * 删除团队成员信息时团队成员信息不存在
+   */
+  teammember_not_found:'000113',
+  delete_teammember_error:'000114',
+  search_team_error:'000115',
+=======
+* 更新团队信息时信息未修改
+*/userinfo_not_change: '000113',
+
+>>>>>>> f81020089ba03434bde270547f5321cd17e14992
 }
 

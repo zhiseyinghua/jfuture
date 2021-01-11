@@ -49,6 +49,7 @@ export class AuthController {
    * 2.将用户信息存储到数据库,返回idtoken到用户
    * @param data
    */
+
   @Post('/verifysmscoderegister')
   verifysmscoderegister(
     @Body(ValidationPipe) data: LoginInWithSMSVerifyCodeInput,
