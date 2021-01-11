@@ -265,15 +265,7 @@ export class TeamService {
       'delete',
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + eldata.range,
       eldata,
-    ).pipe(
-      switchMap((result: DbElasticinterPutReturn) => {
-        if (result.result == 'deleted' && result._shards.successful == 1) {
-          return of(eldata);
-        } else {
-          return throwError(new Error('delete_teammember_error'));
-        }
-      }),
-    );
+    )
   }
 
   public static DeleteTeamInfo(data: Teaminfo): Observable<any> {

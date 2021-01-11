@@ -76,7 +76,7 @@ export class UserService {
             return of(resultdata);
           }
           if (result._shards.failed == 0) {
-            return throwError(new Error('teaminfo_not_change'));
+            return throwError(new Error('userinfo_not_change'));
           }
           else {
             return throwError(new Error('update_error'));
@@ -171,6 +171,7 @@ export class UserService {
       })
     )
   }
+
 }
 
 

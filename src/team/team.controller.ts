@@ -86,80 +86,80 @@ export class TeamController {
   }
 
 
-  // @Post('updateteaminfo')
-  // userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
-  //   let idtoken = headers['authorization'];
-  //   let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-  //   let vertifyInfo = {
-  //     hash: TeamMemberInfo.hash,
-  //     range: TeamMemberInfo.range,
-  //     index: TeamMemberInfo.index,
-  //     role: TeamMemberInfo.role
-  //   }
-  //   let TeamMemberKey = {
-  //     hash: TeamMemberInfo.hash,
-  //     range: TeamMemberInfo.range,
-  //     index: TeamMemberInfo.index,
-  //     role: TeamMemberInfo.role,
-  //   }
-  //   console.log(TeamMemberInfo)
-  //   let TeamMemberRole = TeamMemberInfo['role']
-  //   return TeamService.SearchMemberReturn(vertifyInfo)
-  //     .pipe(
-  //       switchMap((data) => {
-  //         if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
-  //           if (data && data.range) {
-  //             return TeamService.UpdateTeamInfo({
-  //               hash: data.hash,
-  //               range: data.range,
-  //               index: data.index,
-  //               teamid:sendData.teamid,   
-  //               teamname:sendData.teamname,   
-  //               projectid:sendData.projectid,   
-  //               projectname:sendData.projectname,   
-  //               projectprogress:sendData.projectprogress,   
-  //               description:sendData.description,  
-  //               type:sendData.type,
-  //               teamMemberKey: vertifyInfo
-  //             })
-  //           } else if (data == '000109') {
-  //             return TeamService.insertteaminfo({
-  //               hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
-  //               range: uuid.v4(),
-  //               index: TEAM_CONFIG.INDEX,
-  //               teamid:sendData.teamid,   
-  //               teamname:sendData.teamname,   
-  //               projectid:sendData.projectid,   
-  //               projectname:sendData.projectname,   
-  //               projectprogress:sendData.projectprogress,   
-  //               description:sendData.description,  
-  //               type:sendData.type,
-  //               teamMemberKey: TeamMemberKey,
-  //             })
-  //           }
-  //         }
-  //         if (TeamMemberRole == 'menber') {
-  //           throwError(new Error('team member does not have rights '))
-  //         }
-  //         else {
-  //           // TODO:
-  //         }
-  //       }),
-  //       catchError((err) => {
-  //         console.log(
-  //           this.log + 'update error',
-  //           JSON.stringify(err),
-  //           typeof err,
-  //           err.message,
-  //         );
-  //         let redata: BackCodeMessage = {
-  //           code: Errorcode[err.message],
-  //           message: err.message,
-  //         };
-  //         return of(redata);
-  //       })
-  //     )
-  // }
+  @Post('updateteaminfo')
+  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
+    let vertifyInfo = {
+      hash: TeamMemberInfo.hash,
+      range: TeamMemberInfo.range,
+      index: TeamMemberInfo.index,
+      role: TeamMemberInfo.role
+    }
+    let TeamMemberKey = {
+      hash: TeamMemberInfo.hash,
+      range: TeamMemberInfo.range,
+      index: TeamMemberInfo.index,
+      role: TeamMemberInfo.role,
+    }
+    console.log(TeamMemberInfo)
+    let TeamMemberRole = TeamMemberInfo['role']
+    return TeamService.SearchMemberByTK(vertifyInfo)
+      .pipe(
+        switchMap((data) => {
+          // if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
+            if (data && data.range) {
+              return TeamService.UpdateTeamInfo({
+                hash: data.hash,
+                range: data.range,
+                index: data.index,
+                teamid:sendData.teamid,   
+                teamname:sendData.teamname,   
+                projectid:sendData.projectid,   
+                projectname:sendData.projectname,   
+                projectprogress:sendData.projectprogress,   
+                description:sendData.description,  
+                type:sendData.type,
+                teamMemberKey: vertifyInfo
+              })
+            } else if (data == '000109') {
+              return TeamService.insertteaminfo({
+                hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
+                range: uuid.v4(),
+                index: TEAM_CONFIG.INDEX,
+                teamid:sendData.teamid,   
+                teamname:sendData.teamname,   
+                projectid:sendData.projectid,   
+                projectname:sendData.projectname,   
+                projectprogress:sendData.projectprogress,   
+                description:sendData.description,  
+                type:sendData.type,
+                teamMemberKey: TeamMemberKey,
+              })
+            }
+          // }
+          // if (TeamMemberRole == 'menber') {
+          //   throwError(new Error('team member does not have rights '))
+          // }
+          else {
+            // TODO:
+          }
+        }),
+        catchError((err) => {
+          console.log(
+            this.log + 'update error',
+            JSON.stringify(err),
+            typeof err,
+            err.message,
+          );
+          let redata: BackCodeMessage = {
+            code: Errorcode[err.message],
+            message: err.message,
+          };
+          return of(redata);
+        })
+      )
+  }
 
     @Post('updatememberinfo')
   memberinfoupdate(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
@@ -186,19 +186,12 @@ export class TeamController {
               position: sendData.position,
               img: sendData.img,
               description: sendData.description,
-              birth: sendData.birth
+              birth: sendData.birth,
+              role:sendData.role
             })
           }
-          //  else if (data == 'user_error') {
-          //   throwError(new Error('cun zai liang ge yong hu '))
-          // } 
-          // else if (data == false) {
-          //   return TeamService.inteammemberinfo({
-          //     role: 'menber',
-          //     TeamKey: data.TeamKey,
-          //     AuthKey: data.AuthKey,
-          //   })
-          // }
+          else if (data == false) {
+            throwError(new Error('team_not_found'))}
           else {
             // TODO:
           }
