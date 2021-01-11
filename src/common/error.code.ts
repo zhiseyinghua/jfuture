@@ -38,10 +38,8 @@ export const Errorcode = {
    * 删除用户信息失败
    */
   delete_error: '000102',
-  /**
-* 查询用户信息失败
-*/
-  search_error: '000103',
+
+  
   /**
 * 用户信息存在
 */
@@ -87,5 +85,6 @@ export const Errorcode = {
   teammember_not_found:'000113',
   delete_teammember_error:'000114',
   search_team_error:'000115',
+  userinfo_not_change:'000116'
 }
 
