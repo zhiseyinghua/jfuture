@@ -27,6 +27,9 @@ export class UserService {
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
+      position: data.position,
+      startdate: data.startdate,
+      companyname: data.companyname,
       authKey: data.authKey,
     };
     return DbElasticService.executeInEs(
@@ -40,7 +43,7 @@ export class UserService {
             return of(eldata);
           } else {
             return throwError(new Error('insert_error'));
-           
+
           }
         }),
       );
@@ -63,14 +66,17 @@ export class UserService {
           telephone: resultdata.telephone,
           usermail: resultdata.usermail,
           userico: resultdata.userico,
+          position: resultdata.position,
+          startdate: resultdata.startdate,
+          companyname: resultdata.companyname,
         },
       }).pipe(
         switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
             return of(resultdata);
           }
-         if (result._shards.failed==0) {
-          return throwError(new Error('teaminfo_not_change'));
+          if (result._shards.failed == 0) {
+            return throwError(new Error('teaminfo_not_change'));
           }
           else {
             return throwError(new Error('update_error'));
@@ -98,8 +104,7 @@ export class UserService {
         }
       }
     ).pipe(
-      map((result:any) => {
-
+      map((result: any) => {
         if (
           result.hits.total.value == 1 &&
           result.hits.hits[0]._source['range']
@@ -130,11 +135,11 @@ export class UserService {
         }
       }
     )
-    .pipe(
+      .pipe(
         switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return of (data.hits.hits[0]._source)
+            return of(data.hits.hits[0]._source)
           }
           else {
             return throwError(new Error('search_error'))
@@ -153,18 +158,19 @@ export class UserService {
           }
         }
       }
-    ) .pipe(
-        switchMap((data: Queryinterface) => {
-          console.log(data)
-          if (data.hits.total.value == 1 &&
-            data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits[0]._source)
-          }
-         else {
-            return throwError(new Error('search_error'))
-          }
-        })
-      )
+    ).pipe(
+      switchMap((data: Queryinterface) => {
+        console.log(data)
+        if (data.hits.total.value == 1 &&
+          data.hits.hits[0]._source['range']) {
+          return of(data.hits.hits[0]._source)
+        }
+        else {
+          return throwError(new Error('search_error'))
+        }
+      })
+    )
   }
 }
+
 

@@ -1,7 +1,8 @@
 import { ArgumentsHost, CanActivate, ExecutionContext, Injectable, Type } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Response } from 'supertest';
 import { AuthService } from './auth.service';
-
 @Injectable()
 // export class AuthGuard implements CanActivate {
 //   canActivate(
@@ -17,14 +18,11 @@ import { AuthService } from './auth.service';
 // }
 
 export class AuthGuard implements CanActivate {
-  constructor(private readonly AuthService: AuthService) {}
+  constructor(Headers: any) { }
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
-    let authorization = request.headers['authorization'];
-    console.log(authorization);
-    if (!authorization) {
-      return false;
-    }
-    return AuthService.verifyIdtoken(authorization);
+    const request = context.switchToHttp().getRequest();
+    let idtoken = request.rawHeaders[1]
+    console.log(idtoken)
+    return AuthService.verifyIdtoken(idtoken)
   }
 }

@@ -14,14 +14,11 @@ export interface UserInfoInterface {
   telephone: string;
   usermail: string;
   userico: string;
+  position:string;
+  startdate:Date;
+  companyname:string;
   authKey?: Dbinterface;
   hash?: string;
   range?: string;
   index?: string;
-}
-export interface UserInterface {
-  usernickname: string;
-  telephone: string;
-  usermail: string;
-  userico: string;
 }

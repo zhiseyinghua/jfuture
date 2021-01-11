@@ -3,7 +3,8 @@ export const TEAM_CONFIG = {
     DOC: '_doc',
     UPDATA: '_update',
     SEARCH: '_search',
-    INDEX: 'team'
+    INDEX: 'team',
+    DELETE:'_delete'
 };
 export const TEAM_OPERATION_CONFIG = {
     CREATE: 'creat',

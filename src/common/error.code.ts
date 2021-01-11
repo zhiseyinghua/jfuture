@@ -77,9 +77,15 @@ export const Errorcode = {
   /**
 * 插入团队成员时，团队信息不存在
 */
-  insert_team_not_found: '000112',
+  team_not_found: '000112',
     /**
 * 查询团队成员信息失败
 */search_teammember_error: '000112',
+  /**
+   * 删除团队成员信息时团队成员信息不存在
+   */
+  teammember_not_found:'000113',
+  delete_teammember_error:'000114',
+  search_team_error:'000115',
 }
 
