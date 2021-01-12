@@ -4,7 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import { TEAM_CONFIG } from './team.config';
-import { Teaminfo, TeamInfoInterface, TeamMember, Teamminterface } from './team.interface';
+import { TeamInfo, Teaminfo, TeamInfoInterface, TeamMember, Teamminterface } from './team.interface';
 import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
@@ -72,6 +72,30 @@ export class TeamService {
         }
         else {
           return throwError(new Error('team_not_found'));
+        }
+      })
+    )
+  }
+  public static SearchTeaminfo(TeamIndex: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'teamMemberKey.range.keyword': TeamIndex.range
+          }
+        }
+      }
+    ).pipe(
+      switchMap((data: Queryinterface) => {
+        if (data.hits.total.value >= 1 &&
+          data.hits.hits[0]._source['range']) {
+            console.log(data.hits.hits)
+            return data.hits.hits
+        }
+        else {
+         return TeamErrorCode.team_error
         }
       })
     )
@@ -338,6 +362,36 @@ export class TeamService {
         }
       }),
     );
+  }
+
+  public static SearchMemberByTAuth(teamauthKey: TeamInfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        "query": {
+          "bool": {
+            "must": [{ "match": { "AuthKey.range.keyword": teamauthKey.AuthKey.range } },
+           { "match": { "TeamKey.range.keyword":  teamauthKey.TeamKey.range } }]
+          }
+        }}
+    ).pipe(
+          map((result: any) => {
+            if (
+              result.hits.total.value == 1 &&
+              result.hits.hits[0]._source['range']
+            ) {
+              return result.hits.hits[0]._source;
+            } else if (result.hits.total.value > 1) {
+              return result.hits.hits;
+            } else if (result.hits.total.value == 0) {
+              return false;
+            } else {
+              // TODO:
+              // console.log("")
+            }
+          }),
+        );
   }
 }
 
