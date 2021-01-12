@@ -6,11 +6,14 @@ import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
 import { TeamModule } from './team/team.module';
 import { AliyunModule } from './aliyun/aliyun.module';
+import { TeammemberController } from './teammember/teammember.controller';
+import { TeammemberService } from './teammember/teammember.service';
+import { TeammemberModule } from './teammember/teammember.module';
 
 
 @Module({
-  imports: [AuthModule, UserModule, TeamModule, AliyunModule],
-  controllers: [AppController],
-  providers: [AppService, UserService],
+  imports: [AuthModule, UserModule, TeamModule, AliyunModule, TeammemberModule],
+  controllers: [AppController, TeammemberController],
+  providers: [AppService, UserService, TeammemberService],
 })
 export class AppModule {}

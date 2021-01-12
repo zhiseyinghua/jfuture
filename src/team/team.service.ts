@@ -76,59 +76,6 @@ export class TeamService {
       })
     )
   }
-  public static SearchTeaminfo(TeamIndex: Teaminfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'teamMemberKey.range.keyword': TeamIndex.range
-          }
-        }
-      }
-    ).pipe(
-      switchMap((data: Queryinterface) => {
-        if (data.hits.total.value >= 1 &&
-          data.hits.hits[0]._source['range']) {
-            console.log(data.hits.hits)
-            return data.hits.hits
-        }
-        else {
-         return TeamErrorCode.team_error
-        }
-      })
-    )
-  }
-
-  /**
-   * 
-   * @param TeamIndex 根据团队成员的TeamKey查找
-   */
-  public static SearchMemberByTK(TeamIndex: Teaminfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'TeamKey.range.keyword': TeamIndex.range
-          }
-        }
-      }
-    )
-      .pipe(
-        switchMap((data: Queryinterface) => {
-          if (data.hits.total.value == 1 &&
-            data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits[0]._source)
-          }
-          else {
-            return throwError(new Error('search_teaminfo_error'));
-          }
-        })
-      )
-  }
 
   public static SearchTeam(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
@@ -154,34 +101,7 @@ export class TeamService {
         })
       )
   }
-  public static SearchMemberReturn(TeamIndex: Teaminfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'TeamKey.range.keyword': TeamIndex.range
-          }
-        }
-      }
-    )
-      .pipe(
-        switchMap((data: Queryinterface) => {
-          console.log(data)
-          if (
-            data.hits.total.value >= 1 && data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits)
-          }
-          if (data.hits.total.value == 0) {
-            return throwError(new Error('search_teammember_error'));
-          }
-          else {
-            return throwError(new Error('search_teammember_error'));
-          }
-        })
-      )
-  }
+
   public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
     let TeamInfo = {
       hash: data.hash,
@@ -217,80 +137,8 @@ export class TeamService {
         ),
       )
   }
-  public static UpdateMemberInfo(data: TeamMember): Observable<any> {
-    let TeamInfo = {
-      hash: data.hash,
-      range: data.range,
-      index: data.index,
-    }
-    console.log(TeamInfo)
-    return DbElasticService.executeInEs(
-      'post',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + TeamInfo.range + '/' + TEAM_CONFIG.UPDATA,
-      {
-        "doc": {
-          TeamMemberName: data.TeamMemberName,
-          gender: data.gender,
-          age: data.age,
-          position: data.position,
-          img: data.img,
-          description: data.description,
-          birth: data.birth,
-          role: data.role,
-        },
-      }).pipe(
-        switchMap((result: DbElasticinterPutReturn) => {
-          if (result.result == 'updated' && result._shards.successful == 1) {
-            return of(data);
-          }
-          if (result._shards.failed == 0) {
-            return throwError(new Error('teammember_info_not_change'));
-          }
-          else {
-            return throwError(new Error('update_teammember_info_error'));
-          }
-        }
-        ),
-      )
-  }
 
-  public static inteammemberinfo(data: Teamminterface): Observable<any> {
 
-    let eldata: Teamminterface = {
-      hash: DynamoDBService.computeHash(TEAM_CONFIG.INDEX),
-      range: uuid.v4(),
-      index: TEAM_CONFIG.INDEX,
-      role: 'menber',
-      TeamKey: data.TeamKey,
-      AuthKey: data.AuthKey,
-    };
-    return DbElasticService.executeInEs(
-      'put',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + eldata.range,
-      eldata,
-    ).pipe(
-      switchMap((result: DbElasticinterPutReturn) => {
-        if (result.result == 'created' && result._shards.successful == 1) {
-          return of(eldata);
-        } else {
-          return throwError(new Error('insert_teaminfo_error'));
-        }
-      }),
-    );
-  }
-
-  public static DeleteTeamMember(data: Teaminfo): Observable<any> {
-    let eldata: Teaminfo = {
-      hash: data.hash,
-      range: data.range,
-      index: data.index,
-    };
-    return DbElasticService.executeInEs(
-      'delete',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + eldata.range,
-      eldata,
-    )
-  }
 
   public static DeleteTeamInfo(data: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
@@ -322,7 +170,7 @@ export class TeamService {
         switchMap((data: Queryinterface) => {
           if (
             data.hits.total.value >= 1 && data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits)
+            return of(data)
           }
           if (data.hits.total.value == 0) {
             return throwError(new Error('search_team_error'));
@@ -334,65 +182,6 @@ export class TeamService {
       )
   }
 
-  public static SearchMemberByTA(newauthKey: any): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'AuthKey.range.keyword': newauthKey.range
-          }
-        }
-      }
-    ).pipe(
-      map((result: any) => {
-        if (
-          result.hits.total.value == 1 &&
-          result.hits.hits[0]._source['range']
-        ) {
-          return result.hits.hits[0]._source;
-        } else if (result.hits.total.value > 1) {
-          return result.hits.hits;
-        } else if (result.hits.total.value == 0) {
-          return false;
-        } else {
-          // TODO:
-          // console.log("")
-        }
-      }),
-    );
-  }
-
-  public static SearchMemberByTAuth(teamauthKey: TeamInfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        "query": {
-          "bool": {
-            "must": [{ "match": { "AuthKey.range.keyword": teamauthKey.AuthKey.range } },
-           { "match": { "TeamKey.range.keyword":  teamauthKey.TeamKey.range } }]
-          }
-        }}
-    ).pipe(
-          map((result: any) => {
-            if (
-              result.hits.total.value == 1 &&
-              result.hits.hits[0]._source['range']
-            ) {
-              return result.hits.hits[0]._source;
-            } else if (result.hits.total.value > 1) {
-              return result.hits.hits;
-            } else if (result.hits.total.value == 0) {
-              return false;
-            } else {
-              // TODO:
-              // console.log("")
-            }
-          }),
-        );
-  }
 }
 
 
