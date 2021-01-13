@@ -109,6 +109,7 @@ export class TeamController {
       TeamKey: teaminfo,
       AuthKey: TeamMemberKey,
     }
+    
     return TeamService.SearchTeamInfo(teaminfo).pipe(
       switchMap((data) => {
         if (data && data.range) {

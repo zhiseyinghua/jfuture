@@ -50,10 +50,10 @@ export class TeammemberService {
       })
     )
   }
-/**
- * 
- * @param TeamIndex 根据团队成员信息的range查找团队信息，若查询不到，返回teammember_not_found
- */
+  /**
+   * 
+   * @param TeamIndex 根据团队成员信息的range查找团队信息，若查询不到，返回teammember_not_found
+   */
   public static SearchTeamMember(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -66,18 +66,18 @@ export class TeammemberService {
         }
       }
     )
-    .pipe(
-      switchMap((data: Queryinterface) => {
-        // return of(data)
-        if (data.hits.total.value== 1 &&
-          data.hits.hits[0]._source['range']) {
-          return of(data.hits.hits[0]._source)
-        }
-        else {
-          return throwError(new Error('teammember_not_found'));
-        }
-      })
-    )
+      .pipe(
+        switchMap((data: Queryinterface) => {
+          // return of(data)
+          if (data.hits.total.value == 1 &&
+            data.hits.hits[0]._source['range']) {
+            return of(data.hits.hits[0]._source)
+          }
+          else {
+            return throwError(new Error('teammember_not_found'));
+          }
+        })
+      )
 
   }
   /**
@@ -180,10 +180,10 @@ export class TeammemberService {
         ),
       )
   }
-/**
- * 
- * @param data 插入团队成员信息
- */
+  /**
+   * 
+   * @param data 插入团队成员信息
+   */
   public static inteammemberinfo(data: Teamminterface): Observable<any> {
 
     let eldata: Teamminterface = {
@@ -208,10 +208,10 @@ export class TeammemberService {
       }),
     );
   }
-/**
- * 
- * @param data 删除团队成员信息
- */
+  /**
+   * 
+   * @param data 删除团队成员信息
+   */
   public static DeleteTeamMember(data: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'post',
@@ -224,19 +224,19 @@ export class TeammemberService {
         }
       }
     )
-    .pipe(
-      switchMap((result: DELETE) => {
-        if (result.deleted == 1) {
-          return of(data);
+      .pipe(
+        switchMap((result: DELETE) => {
+          if (result.deleted == 1) {
+            return of(data);
+          }
         }
-      }
-      ),
-    )
+        ),
+      )
   }
-/**
- * 
- * @param TeamIndex 根据团队成员的AuthKey查询团队成员信息，若查询不到，返回search_team_error
- */
+  /**
+   * 
+   * @param TeamIndex 根据团队成员的AuthKey查询团队成员信息，若查询不到，返回search_team_error
+   */
   public static SearchMember(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -276,23 +276,24 @@ export class TeammemberService {
         "query": {
           "bool": {
             "must": [{ "match": { "AuthKey.range.keyword": teamauthKey.AuthKey.range } },
-           { "match": { "TeamKey.range.keyword":  teamauthKey.TeamKey.range } }]
+            { "match": { "TeamKey.range.keyword": teamauthKey.TeamKey.range } }]
           }
-        }}
+        }
+      }
     ).pipe(
-          map((result: any) => {
-            if (
-              result.hits.total.value >=1) {
-                return throwError(new Error('cun_zai_liang_ge_yong_hu'));
-            } else if (result.hits.total.value == 0) {
-              return false;
-            } else {
-              // TODO:
-              // console.log("")
-            }
-          }),
-        );
+      map((result: any) => {
+        if (
+          result.hits.total.value >= 1) {
+          return throwError(new Error('cun_zai_liang_ge_yong_hu'));
+        } else if (result.hits.total.value == 0) {
+          return false;
+        } else {
+          // TODO:
+          // console.log("")
+        }
+      }),
+    );
   }
-  
+
 }
 

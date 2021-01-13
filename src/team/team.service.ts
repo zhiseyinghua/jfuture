@@ -9,6 +9,7 @@ import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { Errorcode } from 'src/common/error.code';
+import { TEAMMEMBER_CONFIG } from 'src/teammember/team.config';
 
 @Injectable()
 export class TeamService {
@@ -168,7 +169,32 @@ export class TeamService {
       ),
     )
   }
-
+  public static SearchMemberByTAuth(teamauthKey: TeamInfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAMMEMBER_CONFIG.INDEX + '/' + TEAMMEMBER_CONFIG.SEARCH,
+      {
+        "query": {
+          "bool": {
+            "must": [{ "match": { "AuthKey.range.keyword": teamauthKey.AuthKey.range } },
+            { "match": { "TeamKey.range.keyword": teamauthKey.TeamKey.range } }]
+          }
+        }
+      }
+    ).pipe(
+      map((result: any) => {
+        if (
+          result.hits.total.value >= 1) {
+            return of(result.hits.hits[0]._source)
+        } else if (result.hits.total.value == 0) {
+          return throwError(new Error('teammember_not_exit_this_team'));
+        } else {
+          // TODO:
+          // console.log("")
+        }
+      }),
+    );
+  }
 }
 
 
