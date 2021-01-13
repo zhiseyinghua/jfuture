@@ -30,7 +30,7 @@ export class FigureService {
       createIdtoken
     ).pipe(
       map((result) => {
-        return result['_soutce'];
+        return result;
       }),
     );
   }
