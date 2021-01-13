@@ -7,11 +7,13 @@ import { UserService } from './user/user.service';
 import { TeamModule } from './team/team.module';
 import { AliyunModule } from './aliyun/aliyun.module';
 import { EventsGateway } from './subscription/events.gateway';
+import { FigureController } from './figure/figure.controller';
+import { FigureService } from './figure/figure.service';
 
 
 @Module({
   imports: [AuthModule, UserModule, TeamModule, AliyunModule],
-  controllers: [AppController],
-  providers: [AppService, UserService, EventsGateway],
+  controllers: [AppController, FigureController],
+  providers: [AppService, UserService, EventsGateway, FigureService],
 })
 export class AppModule {}
