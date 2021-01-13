@@ -130,7 +130,7 @@ export class UserService {
       {
         query: {
           term: {
-            'range.keyword': data.range
+            'authKey.range.keyword': data.range
           }
         }
       }
