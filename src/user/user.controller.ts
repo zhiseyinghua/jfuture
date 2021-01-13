@@ -150,11 +150,13 @@ export class UserController {
     )
   }
   @Post('searchbyauthkey')
-  searchbyauthkey(@Body(ValidationPipe) sendData: UserInfoInterface): any {
+  searchbyauthkey(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let userinfo = AuthService.decodeIdtoken(idtoken);
     let vertifyInfo = {
-      hash: sendData.hash,
-      range: sendData.range,
-      index: sendData.index,
+      hash: userinfo.hash,
+      range: userinfo.range,
+      index: userinfo.index,
     }
     return UserService.SearchByAuthKey(vertifyInfo).pipe(
       catchError((err) => {

@@ -91,6 +91,8 @@ export const Errorcode = {
   delete_teammember_success:'000119',
   teammember_info_not_change:'000120',
   update_teammember_info_error:'000121',
-  cun_zai_liang_ge_yong_hu:'000122'
+  cun_zai_liang_ge_yong_hu:'000122',
+  team_already_exit:'000123',
+  database_error:'000124'
 }
 
