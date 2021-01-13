@@ -12,6 +12,7 @@ import uuid = require('uuid');
 import { Teaminfo, Teamminterface } from 'src/team/team.interface';
 import { TEAMMEMBER_CONFIG } from './team.config';
 import { TeamService } from 'src/team/team.service';
+import { Dbinterface } from 'src/common/db.elasticinterface';
 
 @Controller('teammember')
 export class TeammemberController {
@@ -178,7 +179,10 @@ export class TeammemberController {
             index: data.hits.hits[i]._source.TeamKey.index,
           }
         }
-        return of(data)
+        return of(team)
+      }),
+      switchMap((teamkeylist: Dbinterface[])=>{
+        return of(teamkeylist)
       }),
       catchError((err) => {
         let redata: BackCodeMessage = {
