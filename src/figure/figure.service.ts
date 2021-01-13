@@ -5,12 +5,12 @@ import { DbElasticService } from 'src/service/es.service';
 import { FIGURE_CONFIG } from './figure.config';
 import uuid = require('uuid');
 import { PutOrderOne } from './figure.interface';
+import { Dbinterface } from 'src/common/db.elasticinterface';
 
 @Injectable()
 export class FigureService {
   public static logger = 'AuthService';
-  // TODO: 
-  public static putOrder(data: PutOrderOne) {
+  public static putOrder(data: PutOrderOne,authkey: Dbinterface) {
     let createIdtoken:PutOrderOne = {
       hash: DynamoDBService.computeHash(FIGURE_CONFIG.INDEX),
       range: uuid.v4(),

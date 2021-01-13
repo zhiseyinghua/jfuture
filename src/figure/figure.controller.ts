@@ -9,6 +9,6 @@ export class FigureController {
   //   constructor(private authService: AuthService) {}
   @Post('/putorder')
   putOrder( @Body(ValidationPipe) data: PutOrderOne){
-      return FigureService.putOrder(putOrderData)
+      return FigureService.putOrder(data,{hash:'',range:'',index:''})
   }
 }

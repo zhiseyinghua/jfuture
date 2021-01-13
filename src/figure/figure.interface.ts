@@ -48,7 +48,7 @@ export interface OrderInterface extends Dbinterface {
  */
 export interface PutOrderOne extends Dbinterface {
   localPlace: any;
-  type: 'realEstateTest' | 'oneTimeTest';
+  type: OrderType
   estimatedTime: Number;
   area: any;
   creatorkey?: Dbinterface;
@@ -62,3 +62,31 @@ export interface PutOrderOne extends Dbinterface {
     name: string;
   };
 }
+export type OrderType =
+  'realEstateTest' |'oneTimeTest'
+
+
+// const data: PutOrderOne = {
+//   localPlace: null,
+//   type: 'oneTimeTest',
+//   estimatedTime: 123654789,
+//   area: null,
+//   creatorkey: {
+//     hash:'',
+//     range:'',
+//     index:''
+//   },
+//   technician: {
+//     hash:'',
+//     range:'',
+//     index:''
+//   },
+//   // 甲方信息
+//   ONEinformation: {
+//     // 电话
+//     phone: 'string',
+//     // 邮箱
+//     email: '123',
+//     name: '123'
+//   }
+// }
