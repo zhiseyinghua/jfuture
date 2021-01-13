@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserInfo, UserInfoInterface } from './user.interface';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import uuid = require('uuid');
 import { USER_CONFIG } from './user.config';
 import { UserController } from './user.controller';
@@ -11,6 +11,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { UsererrorCode } from './UsererrorCode';
 import { AUTH_CONFIG } from 'src/auth/auth.config';
 import { AutherrorCode } from 'src/auth/auth.code';
+import { Errorcode } from 'src/common/error.code';
 
 @Injectable()
 export class UserService {
@@ -19,14 +20,17 @@ export class UserService {
   static storeUserInfo(data: UserInfoInterface): Observable<any> {
     console.log('UserService storeUserInfo data', data)
     let eldata: UserInfoInterface = {
+      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
+      range: uuid.v4(),
+      index: AUTH_CONFIG.INDEX,
       usernickname: data.usernickname,
       telephone: data.telephone,
       usermail: data.usermail,
       userico: data.userico,
+      position: data.position,
+      startdate: data.startdate,
+      companyname: data.companyname,
       authKey: data.authKey,
-      hash: DynamoDBService.computeHash(AUTH_CONFIG.INDEX),
-      range: uuid.v4(),
-      index: AUTH_CONFIG.INDEX,
     };
     return DbElasticService.executeInEs(
       'put',
@@ -34,11 +38,12 @@ export class UserService {
       eldata,
     )
       .pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'created' && result._shards.successful == 1) {
-            return eldata;
+            return of(eldata);
           } else {
-            return throwError(new Error(UsererrorCode.insert_error));
+            return throwError(new Error('insert_error'));
+
           }
         }),
       );
@@ -61,22 +66,26 @@ export class UserService {
           telephone: resultdata.telephone,
           usermail: resultdata.usermail,
           userico: resultdata.userico,
+          position: resultdata.position,
+          startdate: resultdata.startdate,
+          companyname: resultdata.companyname,
         },
       }).pipe(
-        map((result: DbElasticinterPutReturn) => {
+        switchMap((result: DbElasticinterPutReturn) => {
           if (result.result == 'updated' && result._shards.successful == 1) {
-            return resultdata;
+            return of(resultdata);
           }
-         if (result._shards.failed==0) {
-            return UsererrorCode.user_exit;
+          if (result._shards.failed == 0) {
+            return throwError(new Error('userinfo_not_change'));
           }
           else {
-            return throwError(new Error(UsererrorCode.user_exit));
+            return throwError(new Error('update_error'));
           }
         }
         ),
       )
   }
+
 
   /**
    * 
@@ -95,8 +104,7 @@ export class UserService {
         }
       }
     ).pipe(
-      map((result:any) => {
-
+      map((result: any) => {
         if (
           result.hits.total.value == 1 &&
           result.hits.hits[0]._source['range']
@@ -114,6 +122,7 @@ export class UserService {
     );
   }
 
+
   public static SearchUserInfo(data: UserInfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -126,14 +135,14 @@ export class UserService {
         }
       }
     )
-    .pipe(
-        map((data: Queryinterface) => {
+      .pipe(
+        switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return data.hits.hits[0]._source
+            return of(data.hits.hits[0]._source)
           }
-         else {
-            return UsererrorCode.search_error
+          else {
+            return throwError(new Error('search_error'))
           }
         })
       )
@@ -149,17 +158,20 @@ export class UserService {
           }
         }
       }
-    ) .pipe(
-        map((data: Queryinterface) => {
-          console.log(data)
-          if (data.hits.total.value == 1 &&
-            data.hits.hits[0]._source['range']) {
-            return data.hits.hits[0]._source
-          }
-         else {
-            return UsererrorCode.search_error
-          }
-        })
-      )
+    ).pipe(
+      switchMap((data: Queryinterface) => {
+        console.log(data)
+        if (data.hits.total.value == 1 &&
+          data.hits.hits[0]._source['range']) {
+          return of(data.hits.hits[0]._source)
+        }
+        else {
+          return throwError(new Error('search_error'))
+        }
+      })
+    )
   }
+
 }
+
+

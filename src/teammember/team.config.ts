@@ -1,9 +1,9 @@
-export const TEAM_CONFIG = {
+export const TEAMMEMBER_CONFIG = {
     // INDEX: 'company',
     DOC: '_doc',
     UPDATA: '_update',
     SEARCH: '_search',
-    INDEX: 'team',
+    INDEX: 'teammember',
     DELETE:'_delete'
 };
 export const TEAM_OPERATION_CONFIG = {

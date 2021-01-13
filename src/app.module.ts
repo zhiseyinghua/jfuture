@@ -9,11 +9,14 @@ import { AliyunModule } from './aliyun/aliyun.module';
 import { EventsGateway } from './subscription/events.gateway';
 import { FigureController } from './figure/figure.controller';
 import { FigureService } from './figure/figure.service';
+import { TeammemberController } from './teammember/teammember.controller';
+import { TeammemberService } from './teammember/teammember.service';
+import { TeammemberModule } from './teammember/teammember.module';
 
 
 @Module({
-  imports: [AuthModule, UserModule, TeamModule, AliyunModule],
+  imports: [AuthModule, UserModule, TeamModule, AliyunModule,TeammemberModule],
   controllers: [AppController, FigureController],
-  providers: [AppService, UserService, EventsGateway, FigureService],
+  providers: [AppService, UserService, EventsGateway, FigureService,TeammemberService],
 })
 export class AppModule {}

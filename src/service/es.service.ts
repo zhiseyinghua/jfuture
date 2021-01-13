@@ -47,7 +47,6 @@ export class DbElasticService {
       axios(axiosData),
     ).pipe(
       switchMap((result) => {
-        // console.log('11111111111',result);
         return of(result['data']);
       }),
       catchError((error) => {
