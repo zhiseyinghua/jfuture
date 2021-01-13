@@ -89,6 +89,23 @@ interface QueryinterfaceHitList {
   _source: any;
 }
 
+export interface DELETE{
+  took: number,
+  timed_out: false,
+  total: number,
+  deleted: number,
+  batches: number,
+  version_conflicts: number,
+  noops: number,
+retries: {
+      bulk: number,
+      search: number
+  },
+  throttled_millis: number,
+  requests_per_second:number,
+  throttled_until_millis: number,
+  failures: []
+}
 
 /**
  * 这是一个公共的method接口

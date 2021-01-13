@@ -99,7 +99,6 @@ export class TeamController {
     }
     return TeamService.SearchTeamInfo(teaminfo).pipe(
       switchMap((data) => {
-        console.log('1111111111111111111111111', data)
         if (data && data.range) {
           return TeamService.UpdateTeamInfo({
             hash: data.hash,
@@ -132,7 +131,7 @@ export class TeamController {
    * @param sendData 
    * @param headers 根据团队信息的hash,range,index删除团队信息
    */
-  @Delete('deleteteaminfo')
+  @Post('deleteteaminfo')
   teaminfodelete(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
     // let idtoken = headers['authorization'];
     // let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);

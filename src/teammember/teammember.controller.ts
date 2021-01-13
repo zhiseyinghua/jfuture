@@ -84,14 +84,14 @@ export class TeammemberController {
    * 
    * @param sendData 根据输入的hash range index删除成员
    */
-  @Delete('deleteteammember')
+  @Post('deleteteammember')
   teammemberdelete(@Body(ValidationPipe) sendData: Teaminfo): any {
     let TeamKey = {
       hash: sendData.hash,
       range: sendData.range,
       index: sendData.index,
     }
-    return TeammemberService.SearchTeamInfo(TeamKey).pipe(
+    return TeammemberService.SearchTeamMember(TeamKey).pipe(
       switchMap((result) => {
         if (result) {
           return TeammemberService.DeleteTeamMember({

@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of, throwError } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
+import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, DELETE, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
@@ -210,15 +210,23 @@ export class TeammemberService {
  * @param data 删除团队成员信息
  */
   public static DeleteTeamMember(data: Teaminfo): Observable<any> {
-    let eldata: Teaminfo = {
-      hash: data.hash,
-      range: data.range,
-      index: data.index,
-    };
     return DbElasticService.executeInEs(
-      'delete',
-      TEAMMEMBER_CONFIG.INDEX + '/' + TEAMMEMBER_CONFIG.DOC + '/' + eldata.range,
-      eldata,
+      'post',
+      TEAMMEMBER_CONFIG.INDEX + '/' + '_delete_by_query',
+      {
+        "query": {
+          "match": {
+            "range": data.range
+          }
+        }
+      }
+    ).pipe(
+      switchMap((result: DELETE) => {
+        if (result.deleted == 1) {
+          return of(data);
+        }
+      }
+      ),
     )
   }
 /**
@@ -281,5 +289,6 @@ export class TeammemberService {
           }),
         );
   }
+  
 }
 

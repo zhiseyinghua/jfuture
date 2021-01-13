@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of, throwError } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, Queryinterface } from 'src/common/db.elasticinterface';
+import { DbElasticinterfacePutReturn, DbElasticinterPutReturn, DELETE, Queryinterface } from 'src/common/db.elasticinterface';
 import { DbElasticService } from 'src/service/es.service';
 import { TEAM_CONFIG } from './team.config';
 import { TeamInfo, Teaminfo, TeamInfoInterface, TeamMember, Teamminterface } from './team.interface';
@@ -65,7 +65,7 @@ export class TeamService {
       }
     ).pipe(
       switchMap((data: Queryinterface) => {
-        if (data.hits.total.value >= 1 &&
+        if (data.hits.total.value == 1 &&
           data.hits.hits[0]._source['range']) {
           return of(data.hits.hits[0]._source)
         }
@@ -75,10 +75,10 @@ export class TeamService {
       })
     )
   }
-/**
- * 
- * @param TeamIndex 根据团队信息的range查找团队信息，并返回团队信息中的团队名称
- */
+  /**
+   * 
+   * @param TeamIndex 根据团队信息的range查找团队信息，并返回团队信息中的团队名称
+   */
   public static SearchTeam(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -103,10 +103,10 @@ export class TeamService {
         })
       )
   }
-/**
- * 
- * @param data 更新团队信息
- */
+  /**
+   * 
+   * @param data 更新团队信息
+   */
   public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
     let TeamInfo = {
       hash: data.hash,
@@ -144,21 +144,28 @@ export class TeamService {
   }
 
 
-/**
- * 
- * @param data 根据团队信息的range删除团队信息
- */
+  /**
+   * 
+   * @param data 根据团队信息的range删除团队信息
+   */
   public static DeleteTeamInfo(data: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
-      'delete',
-      TEAM_CONFIG.INDEX + '/',
+      'post',
+      TEAM_CONFIG.INDEX + '/' + '_delete_by_query',
       {
         "query": {
           "match": {
-            "range": "data.range"
+            "range": data.range
           }
         }
       }
+    ).pipe(
+      switchMap((result: DELETE) => {
+      if (result.deleted==1) {
+        return of(data);
+      }
+    }
+    ),
     )
   }
 
