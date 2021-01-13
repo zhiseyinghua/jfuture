@@ -93,6 +93,7 @@ export const Errorcode = {
   update_teammember_info_error:'000121',
   cun_zai_liang_ge_yong_hu:'000122',
   team_already_exit:'000123',
-  database_error:'000124'
+  database_error:'000124',
+  teammember_not_exit_this_team:'000125'
 }
 

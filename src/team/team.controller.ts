@@ -91,11 +91,23 @@ export class TeamController {
    * @param sendData 更新团队信息
    */
   @Post('updateteaminfo')
-  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface): any {
+  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
+    console.log(TeamMemberInfo)
+    let TeamMemberKey = {
+      hash: TeamMemberInfo.hash,
+      range: TeamMemberInfo.range,
+      index: TeamMemberInfo.index,
+    }
     let teaminfo = {
       hash: sendData.hash,
       range: sendData.range,
       index: sendData.index,
+    }
+    let teamauthdata = {
+      TeamKey: teaminfo,
+      AuthKey: TeamMemberKey,
     }
     return TeamService.SearchTeamInfo(teaminfo).pipe(
       switchMap((data) => {

@@ -161,11 +161,11 @@ export class TeamService {
       }
     ).pipe(
       switchMap((result: DELETE) => {
-      if (result.deleted==1) {
-        return of(data);
+        if (result.deleted == 1) {
+          return of(data);
+        }
       }
-    }
-    ),
+      ),
     )
   }
 

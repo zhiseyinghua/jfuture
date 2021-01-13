@@ -65,9 +65,11 @@ export class TeammemberService {
           }
         }
       }
-    ).pipe(
+    )
+    .pipe(
       switchMap((data: Queryinterface) => {
-        if (data.hits.total.value == 1 &&
+        // return of(data)
+        if (data.hits.total.value== 1 &&
           data.hits.hits[0]._source['range']) {
           return of(data.hits.hits[0]._source)
         }
@@ -76,6 +78,7 @@ export class TeammemberService {
         }
       })
     )
+
   }
   /**
    * 
@@ -220,7 +223,8 @@ export class TeammemberService {
           }
         }
       }
-    ).pipe(
+    )
+    .pipe(
       switchMap((result: DELETE) => {
         if (result.deleted == 1) {
           return of(data);
