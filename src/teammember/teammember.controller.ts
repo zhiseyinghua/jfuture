@@ -1,5 +1,5 @@
 import { Body, Controller, Post, ValidationPipe, Headers, Delete } from '@nestjs/common';
-import { of, throwError } from 'rxjs';
+import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/auth/auth.service';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
@@ -17,18 +17,46 @@ import { Dbinterface } from 'src/common/db.elasticinterface';
 @Controller('teammember')
 export class TeammemberController {
 
-
-  @Post('updatememberinfo')
-  memberinfoupdate(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let userinfo = AuthService.decodeIdtoken(idtoken);
-    let AuthInfo = {
-      hash: userinfo.hash,
-      range: userinfo.range,
-      index: userinfo.index,
+/**
+ * 
+ * @param sendData 根据用户输入的团队成员的hash,range,index更新团队成员信息
+ */
+  @Post('updateteammember')
+  teammemberupdate(@Body(ValidationPipe) sendData: TeamMember): any {
+    let teaminfo = {
+      hash: sendData.hash,
+      range: sendData.range,
+      index: sendData.index,
     }
-    console.log(AuthInfo)
-    return TeammemberService.SearchMemberByTA(AuthInfo)
+    return TeammemberService.SearchTeamMember(teaminfo).pipe(
+      switchMap((data) => {
+        if (data && data.range) {
+          return TeammemberService.UpdateMemberInfo({
+            hash: data.hash,
+            range: data.range,
+            index: data.index,
+            TeamMemberName: sendData.TeamMemberName,
+            gender: sendData.gender,
+            age: sendData.age,
+            position: sendData.position,
+            img: sendData.img,
+            description: sendData.description,
+            birth: sendData.birth,
+            role: sendData.role
+          })
+        }
+        else {
+          // TODO:
+        }
+      }),
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    )
   }
 
   /**
@@ -156,10 +184,10 @@ export class TeammemberController {
 
     )
   }
-/**
- * 
- * @param headers 根据解析出来的idtoken查询用户所加入的团队名称
- */
+  /**
+   * 
+   * @param headers 根据解析出来的idtoken查询用户所加入的团队名称
+   */
   @Post('steam')
   teamsearch(@Headers() headers): any {
     let idtoken = headers['authorization'];
@@ -181,8 +209,13 @@ export class TeammemberController {
         }
         return of(team)
       }),
-      switchMap((teamkeylist: Dbinterface[])=>{
-        return of(teamkeylist)
+      switchMap((teamkeylist: Dbinterface[]) => {
+        // return TeamService.SearchTeam(teamkeylist)
+        let teamforj = []
+        teamkeylist.forEach(element => {
+          teamforj.push(TeamService.SearchTeam(element))
+        });
+        return forkJoin(teamforj);
       }),
       catchError((err) => {
         let redata: BackCodeMessage = {

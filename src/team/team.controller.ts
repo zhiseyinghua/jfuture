@@ -20,7 +20,7 @@ export class TeamController {
 
   /**
    * 
-   * @param sendData 插入团队信息，若auth的idtoken中角色为成员，则返回错误信息
+   * @param sendData 插入团队信息，注释部分为解析用户idtoken的角色
    * @param headers 
    */
   @Post('insertteaminfo')
@@ -70,12 +70,12 @@ export class TeamController {
   }
   /**
    * 
-   * @param TeamIndex 查询团队信息
+   * @param TeamIndex 根据团队信息的hash,range,index查询团队信息
    */
   @Post('searchbyteamindex')
   // @UseGuards(new AuthGuard(Headers))
   searchteaminfo(@Body(ValidationPipe) TeamIndex: Teaminfo): any {
-    return TeamService.SearchTeam(TeamIndex).pipe(
+    return TeamService.SearchTeamInfo(TeamIndex).pipe(
       catchError((err) => {
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
@@ -86,27 +86,52 @@ export class TeamController {
     );
   }
 
-
+  /**
+   * 
+   * @param sendData 更新团队信息
+   */
   @Post('updateteaminfo')
-  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-    let vertifyInfo = {
-      hash: TeamMemberInfo.hash,
-      range: TeamMemberInfo.range,
-      index: TeamMemberInfo.index,
-      role: TeamMemberInfo.role
+  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface): any {
+    let teaminfo = {
+      hash: sendData.hash,
+      range: sendData.range,
+      index: sendData.index,
     }
-    let TeamMemberKey = {
-      hash: TeamMemberInfo.hash,
-      range: TeamMemberInfo.range,
-      index: TeamMemberInfo.index,
-      role: TeamMemberInfo.role,
-    }
-    console.log(TeamMemberInfo)
-    return TeamService.SearchMemberByAuth(vertifyInfo)
+    return TeamService.SearchTeamInfo(teaminfo).pipe(
+      switchMap((data) => {
+        console.log('1111111111111111111111111', data)
+        if (data && data.range) {
+          return TeamService.UpdateTeamInfo({
+            hash: data.hash,
+            range: data.range,
+            index: data.index,
+            teamid: sendData.teamid,
+            teamname: sendData.teamname,
+            projectid: sendData.projectid,
+            projectname: sendData.projectname,
+            projectprogress: sendData.projectprogress,
+            description: sendData.description,
+            type: sendData.type
+          })
+        }
+        else {
+          // TODO:
+        }
+      }),
+      catchError((err) => {
+        let redata: BackCodeMessage = {
+          code: Errorcode[err.message],
+          message: err.message,
+        };
+        return of(redata);
+      }),
+    )
   }
-
+  /**
+   * 
+   * @param sendData 
+   * @param headers 根据团队信息的hash,range,index删除团队信息
+   */
   @Delete('deleteteaminfo')
   teaminfodelete(@Body(ValidationPipe) sendData: TeamMember, @Headers() headers): any {
     // let idtoken = headers['authorization'];

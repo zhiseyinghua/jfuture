@@ -18,7 +18,7 @@ export class TeamService {
   public static logger = 'TeamService';
   /**
    * 
-   * @param data 插入团队信息
+   * @param data 插入团队信息，默认角色为成员
    */
   public static insertteaminfo(data: TeamInfoInterface): Observable<any> {
     let eldata: TeamInfoInterface = {
@@ -50,7 +50,7 @@ export class TeamService {
   }
   /**
    * 
-   * @param TeamIndex 根据团队信息的range查找
+   * @param TeamIndex 根据团队信息的range查找团队信息
    */
   public static SearchTeamInfo(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
@@ -65,7 +65,7 @@ export class TeamService {
       }
     ).pipe(
       switchMap((data: Queryinterface) => {
-        if (data.hits.total.value == 1 &&
+        if (data.hits.total.value >= 1 &&
           data.hits.hits[0]._source['range']) {
           return of(data.hits.hits[0]._source)
         }
@@ -75,7 +75,10 @@ export class TeamService {
       })
     )
   }
-
+/**
+ * 
+ * @param TeamIndex 根据团队信息的range查找团队信息，并返回团队信息中的团队名称
+ */
   public static SearchTeam(TeamIndex: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
@@ -100,7 +103,10 @@ export class TeamService {
         })
       )
   }
-
+/**
+ * 
+ * @param data 更新团队信息
+ */
   public static UpdateTeamInfo(data: TeamInfoInterface): Observable<any> {
     let TeamInfo = {
       hash: data.hash,
@@ -138,7 +144,10 @@ export class TeamService {
   }
 
 
-
+/**
+ * 
+ * @param data 根据团队信息的range删除团队信息
+ */
   public static DeleteTeamInfo(data: Teaminfo): Observable<any> {
     return DbElasticService.executeInEs(
       'delete',
@@ -151,34 +160,6 @@ export class TeamService {
         }
       }
     )
-  }
-
-  public static SearchMemberByAuth(TeamIndex: Teaminfo): Observable<any> {
-    return DbElasticService.executeInEs(
-      'get',
-      TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
-      {
-        query: {
-          term: {
-            'AuthKey.range.keyword': TeamIndex.range
-          }
-        }
-      }
-    )
-      .pipe(
-        switchMap((data: Queryinterface) => {
-          if (
-            data.hits.total.value >= 1 && data.hits.hits[0]._source['range']) {
-            return of(data)
-          }
-          if (data.hits.total.value == 0) {
-            return throwError(new Error('search_team_error'));
-          }
-          else {
-            return throwError(new Error('search_team_error'));
-          }
-        })
-      )
   }
 
 }
