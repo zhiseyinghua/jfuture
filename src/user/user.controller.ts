@@ -19,53 +19,6 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class UserController {
   log = 'UserController'
   constructor(private userService: UserService) { }
-
-  @Post('insertuserinfo')
-  insertuserinfo(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let userinfo = AuthService.decodeIdtoken(idtoken);
-    let vertifyInfo = {
-      hash: userinfo.hash,
-      range: userinfo.range,
-      index: userinfo.index,
-    }
-    return UserService.ByAuthkey(vertifyInfo).pipe(
-      switchMap((data) => {
-        console.log('3333333333', data)
-        if (data==false) {
-          console.log('1111111111', data)
-          return UserService.storeUserInfo({
-            hash: DynamoDBService.computeHash(USER_CONFIG.INDEX),
-            range: uuid.v4(),
-            index: USER_CONFIG.INDEX,
-            usernickname: sendData.usernickname,
-            telephone: sendData.telephone,
-            usermail: sendData.usermail,
-            userico: sendData.userico,
-            position: sendData.position,
-            startdate: sendData.startdate,
-            companyname: sendData.companyname,
-            authKey: {
-              hash: userinfo.hash,
-              range: userinfo.range,
-              index: userinfo.index,
-            }
-          })
-        }
-        if (data && data.range) {
-          console.log('222222222', data)
-          return throwError(new Error('cun_zai_liang_ge_yong_hu'))
-        }
-      }),
-      catchError((err) => {
-        let redata: BackCodeMessage = {
-          code: Errorcode[err.message],
-          message: err.message,
-        };
-        return of(redata);
-      }),
-    );
-  }
   @Post('updateuserinfo')
   updateuserinfocontroller(@Body(ValidationPipe) sendData: UserInfoInterface, @Headers() headers): any {
     let idtoken = headers['authorization'];
