@@ -9,7 +9,6 @@ import { AliyunModule } from './aliyun/aliyun.module';
 import { EventsGateway } from './subscription/events.gateway';
 import { FigureController } from './figure/figure.controller';
 import { FigureService } from './figure/figure.service';
-import { TeammemberController } from './teammember/teammember.controller';
 import { TeammemberService } from './teammember/teammember.service';
 import { TeammemberModule } from './teammember/teammember.module';
 
