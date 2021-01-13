@@ -32,7 +32,6 @@ export class TeamService {
       projectprogress: data.projectprogress,
       description: data.description,
       type: data.type,
-      teamMemberKey: data.teamMemberKey
     };
     return DbElasticService.executeInEs(
       'put',
@@ -93,7 +92,7 @@ export class TeamService {
         switchMap((data: Queryinterface) => {
           if (data.hits.total.value == 1 &&
             data.hits.hits[0]._source['range']) {
-            return of(data.hits.hits[0]._source)
+            return of(data.hits.hits[0]._source.teamname)
           }
           else {
             return throwError(new Error('search_teaminfo_error'));

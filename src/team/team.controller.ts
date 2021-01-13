@@ -46,7 +46,6 @@ export class TeamController {
       projectprogress: sendData.projectprogress,
       description: sendData.description,
       type: sendData.type,
-      teamMemberKey: TeamMemberKey,
     }).pipe(
       catchError((err) => {
         let redata: BackCodeMessage = {

@@ -208,7 +208,33 @@ export class TeammemberService {
         })
       )
   }
-
+  public static SearchMember(TeamIndex: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAMMEMBER_CONFIG.INDEX + '/' + TEAM_CONFIG.SEARCH,
+      {
+        query: {
+          term: {
+            'AuthKey.range.keyword': TeamIndex.range
+          }
+        }
+      }
+    )
+      .pipe(
+        switchMap((data: Queryinterface) => {
+          if (
+            data.hits.total.value >= 1 && data.hits.hits[0]._source['range']) {
+            return of(data)
+          }
+          if (data.hits.total.value == 0) {
+            return throwError(new Error('search_team_error'));
+          }
+          else {
+            return throwError(new Error('search_team_error'));
+          }
+        })
+      )
+  }
   public static SearchMemberByTA(newauthKey: any): Observable<any> {
     return DbElasticService.executeInEs(
       'get',
