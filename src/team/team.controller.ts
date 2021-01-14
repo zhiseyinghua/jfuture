@@ -110,15 +110,16 @@ export class TeamController {
       AuthKey: TeamMemberKey,
     }
     return TeamService.SearchTeamInfo(teaminfo).pipe(
-      switchMap((data) => {
-        if (data) {
+      switchMap((result) => {
+        if (result) {
           return TeamService.SearchMemberByTAuth(teamauthdata).pipe(
             switchMap((data) => {
-              if (data&&data.range) {
+              if (data) {
+                console.log(data.TeamKey.range)
                 return TeamService.UpdateTeamInfo({
-                  hash: data.hash,
-                  range: data.range,
-                  index: data.index,
+                  hash: data.TeamKey.hash,
+                  range: data.TeamKey.range,
+                  index: data.TeamKey.index,
                   teamid: sendData.teamid,
                   teamname: sendData.teamname,
                   projectid: sendData.projectid,
@@ -128,7 +129,7 @@ export class TeamController {
                   type: sendData.type
                 })
               }
-              if (data == false) {
+             if(data==false) {
                 return throwError(new Error('teammember_not_exit_this_team'));
               }
             }),
@@ -176,7 +177,8 @@ export class TeamController {
             range: sendData.range,
             index: sendData.index,
           })
-        } else {
+        } 
+        else {
           return throwError(new Error('team_not_found'));
         }
       }),

@@ -94,7 +94,7 @@ export class TeamService {
     )
       .pipe(
         switchMap((data: Queryinterface) => {
-          if (data.hits.total.value == 1 &&
+          if (data.hits.total.value >= 1 &&
             data.hits.hits[0]._source['range']) {
             return of(data.hits.hits[0]._source.teamname)
           }
@@ -120,9 +120,6 @@ export class TeamService {
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + TeamInfo.range + '/' + TEAM_CONFIG.UPDATA,
       {
         "doc": {
-          // hash:data.hash,
-          // range:data.range,
-          // index:data.index,
           teamid: data.teamid,
           teamname: data.teamname,
           projectid: data.projectid,
@@ -184,15 +181,16 @@ export class TeamService {
           }
         }
       }
-    ).pipe(
+    )
+    .pipe(
       map((result: any) => {
         if (result.hits.total.value == 1) {
-          return of(result.hits.hits[0]._source)
+          console.log(result.hits.hits[0]._source)
+          return (result.hits.hits[0]._source)
         } else if (result.hits.total.value == 0) {
           return false
         } else {
           // TODO:
-          // console.log("")
         }
       }),
     );
