@@ -120,6 +120,9 @@ export class TeamService {
       TEAM_CONFIG.INDEX + '/' + TEAM_CONFIG.DOC + '/' + TeamInfo.range + '/' + TEAM_CONFIG.UPDATA,
       {
         "doc": {
+          // hash:data.hash,
+          // range:data.range,
+          // index:data.index,
           teamid: data.teamid,
           teamname: data.teamname,
           projectid: data.projectid,
@@ -183,11 +186,10 @@ export class TeamService {
       }
     ).pipe(
       map((result: any) => {
-        if (
-          result.hits.total.value >= 1) {
-            return of(result.hits.hits[0]._source)
+        if (result.hits.total.value == 1) {
+          return of(result.hits.hits[0]._source)
         } else if (result.hits.total.value == 0) {
-          return throwError(new Error('teammember_not_exit_this_team'));
+          return false
         } else {
           // TODO:
           // console.log("")

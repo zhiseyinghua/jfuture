@@ -109,25 +109,33 @@ export class TeamController {
       TeamKey: teaminfo,
       AuthKey: TeamMemberKey,
     }
-    
     return TeamService.SearchTeamInfo(teaminfo).pipe(
       switchMap((data) => {
-        if (data && data.range) {
-          return TeamService.UpdateTeamInfo({
-            hash: data.hash,
-            range: data.range,
-            index: data.index,
-            teamid: sendData.teamid,
-            teamname: sendData.teamname,
-            projectid: sendData.projectid,
-            projectname: sendData.projectname,
-            projectprogress: sendData.projectprogress,
-            description: sendData.description,
-            type: sendData.type
-          })
+        if (data) {
+          return TeamService.SearchMemberByTAuth(teamauthdata).pipe(
+            switchMap((data) => {
+              if (data&&data.range) {
+                return TeamService.UpdateTeamInfo({
+                  hash: data.hash,
+                  range: data.range,
+                  index: data.index,
+                  teamid: sendData.teamid,
+                  teamname: sendData.teamname,
+                  projectid: sendData.projectid,
+                  projectname: sendData.projectname,
+                  projectprogress: sendData.projectprogress,
+                  description: sendData.description,
+                  type: sendData.type
+                })
+              }
+              if (data == false) {
+                return throwError(new Error('teammember_not_exit_this_team'));
+              }
+            }),
+          )
         }
         else {
-          // TODO:
+          return throwError(new Error('team_not_found'));
         }
       }),
       catchError((err) => {
@@ -138,7 +146,13 @@ export class TeamController {
         return of(redata);
       }),
     )
+    //     else {
+    //       // TODO:
+    //     }
+    //   }),
+
   }
+
   /**
    * 
    * @param sendData 
