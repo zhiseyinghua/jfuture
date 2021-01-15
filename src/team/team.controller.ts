@@ -25,15 +25,7 @@ export class TeamController {
    * @param headers 
    */
   @Post('insertteaminfo')
-  insertuserinfo(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-    console.log(TeamMemberInfo)
-    let TeamMemberKey = {
-      hash: TeamMemberInfo.hash,
-      range: TeamMemberInfo.range,
-      index: TeamMemberInfo.index,
-    }
+  insertuserinfo(@Body(ValidationPipe) sendData: TeamInfoInterface): any {
     // let TeamMemberRole = TeamMemberInfo.role
     // if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
     return TeamService.insertteaminfo({
