@@ -13,6 +13,7 @@ import uuid = require('uuid');
 import { AuthService } from 'src/auth/auth.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TEAMMEMBER_CONFIG } from 'src/teammember/team.config';
+import { TeammemberService } from 'src/teammember/teammember.service';
 
 @Controller('team')
 export class TeamController {
@@ -181,7 +182,14 @@ export class TeamController {
         else {
           return throwError(new Error('team_not_found'));
         }
-      }),
+      }),    
+      switchMap((data)=>{
+        return TeammemberService.SearchMemberReturn(TeamKey).pipe(
+          switchMap((data)=>{
+            return TeammemberService.DeleteTeamMemberByTeamKey(TeamKey)
+          }),
+        )
+      }),  
       catchError((err) => {
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],

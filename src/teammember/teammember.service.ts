@@ -235,6 +235,31 @@ export class TeammemberService {
   }
   /**
    * 
+   * @param data 根据团队信息的hash,range,index删除团队成员
+   */
+  public static DeleteTeamMemberByTeamKey(data: Teaminfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'post',
+      TEAMMEMBER_CONFIG.INDEX + '/' + '_delete_by_query',
+      {
+        "query": {
+          "match": {
+            "TeamKey.range": data.range
+          }
+        }
+      }
+    )
+      .pipe(
+        switchMap((result: DELETE) => {
+          if (result.deleted == 1) {
+            return of(data);
+          }
+        }
+        ),
+      )
+  }
+  /**
+   * 
    * @param TeamIndex 根据团队成员的AuthKey查询团队成员信息，若查询不到，返回search_team_error
    */
   public static SearchMember(TeamIndex: Teaminfo): Observable<any> {

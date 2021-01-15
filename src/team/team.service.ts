@@ -182,18 +182,18 @@ export class TeamService {
         }
       }
     )
-    .pipe(
-      map((result: any) => {
-        if (result.hits.total.value == 1) {
-          console.log(result.hits.hits[0]._source)
-          return (result.hits.hits[0]._source)
-        } else if (result.hits.total.value == 0) {
-          return false
-        } else {
-          // TODO:
-        }
-      }),
-    );
+      .pipe(
+        map((result: any) => {
+          if (result.hits.total.value == 1) {
+            console.log(result.hits.hits[0]._source)
+            return (result.hits.hits[0]._source)
+          } else if (result.hits.total.value == 0) {
+            return false
+          } else {
+            // TODO:
+          }
+        }),
+      );
   }
 }
 
