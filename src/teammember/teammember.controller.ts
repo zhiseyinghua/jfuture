@@ -62,7 +62,7 @@ export class TeammemberController {
   /**
    * 根据团队成员信息中的TeamKey查找所有的团队成员
    */
-  @Post('steammember')
+  @Post('searchteammember')
   teammembersearch(@Body(ValidationPipe) sendData: TeamMember): any {
     let TeamKey = {
       hash: sendData.hash,
@@ -181,14 +181,13 @@ export class TeammemberController {
         };
         return of(redata);
       })
-
     )
   }
   /**
    * 
    * @param headers 根据解析出来的idtoken查询用户所加入的团队名称
    */
-  @Post('steam')
+  @Post('searchteamname')
   teamsearch(@Headers() headers): any {
     let idtoken = headers['authorization'];
     let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
