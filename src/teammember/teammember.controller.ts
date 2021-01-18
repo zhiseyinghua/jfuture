@@ -181,7 +181,6 @@ export class TeammemberController {
         };
         return of(redata);
       })
-
     )
   }
   /**
