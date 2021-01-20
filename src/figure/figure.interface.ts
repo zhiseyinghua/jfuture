@@ -37,8 +37,6 @@ export interface OrderInterface extends Dbinterface {
     email: string;
     name: string;
   };
-  // 创建任务的人
-  userkey: Dbinterface;
   // 在哪个所属团队发的任务
   creatorkey?: Dbinterface;
 }
