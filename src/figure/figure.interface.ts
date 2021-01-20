@@ -2,7 +2,7 @@ import { Dbinterface } from 'src/common/db.elasticinterface';
 
 export interface OrderInterface extends Dbinterface {
   // 地点
-  localPlace: any;
+  localPlace: OrderlocalPlaceInterface;
   // 不动产测试   一次性测试
   type: 'realEstateTest' | 'oneTimeTest';
   // 预估时间
@@ -40,12 +40,17 @@ export interface OrderInterface extends Dbinterface {
   // 在哪个所属团队发的任务
   creatorkey?: Dbinterface;
 }
+export interface OrderlocalPlaceInterface {
+  lng: number,
+  lat: number,
+  local: string;
+}
 
 /**
  * 第一次put一个订单到数据库
  */
 export interface PutOrderOne extends Dbinterface {
-  localPlace: any;
+  localPlace: OrderlocalPlaceInterface;
   type: OrderType;
   estimatedTime: Number;
   area: any;
@@ -60,6 +65,7 @@ export interface PutOrderOne extends Dbinterface {
     name: string;
   };
 }
+
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
 // const data: PutOrderOne = {
 //   localPlace: null,
