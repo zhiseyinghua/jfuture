@@ -19,11 +19,12 @@ export class FigureService {
       localPlace: null,
       type: data.type,
       estimatedMoney:data.estimatedMoney,
-      estimatedTime: 123465789,
+      estimatedTime: data.estimatedTime,
       area: data.area,
       creatorkey: data.creatorkey,
       // 甲方信息
-      ONEinformation: data.ONEinformation
+      ONEinformation: data.ONEinformation,
+      timestamp:new Date().valueOf()
     };
     return DbElasticService.executeInEs(
       'PUT',

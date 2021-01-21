@@ -37,6 +37,7 @@ export interface OrderInterface extends Dbinterface {
     email: string;
     name: string;
   };
+  timestamp:number
   // 在哪个所属团队发的任务
   creatorkey?: Dbinterface;
 }
@@ -66,6 +67,7 @@ export interface PutOrderOne extends Dbinterface {
     email: string;
     name: string;
   };
+  timestamp:number
 }
 
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
@@ -95,5 +97,6 @@ const data: PutOrderOne = {
     // 邮箱
     email: '123',
     name: '123'
-  }
+  },
+  timestamp: 123
 }
