@@ -16,6 +16,4 @@ export const AutherrorCode = {
   server_error: 'server_error',
   // 验证码验证error
   verification_code_verification_error:'verification_code_verification_error'
-
-
 };
