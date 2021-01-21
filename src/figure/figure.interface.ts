@@ -41,8 +41,8 @@ export interface OrderInterface extends Dbinterface {
   creatorkey?: Dbinterface;
 }
 export interface OrderlocalPlaceInterface {
-  lng: number,
-  lat: number,
+  lng: number;
+  lat: number;
   local: string;
 }
 
