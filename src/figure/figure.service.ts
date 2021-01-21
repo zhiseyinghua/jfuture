@@ -15,10 +15,12 @@ export class FigureService {
       hash: DynamoDBService.computeHash(FIGURE_CONFIG.INDEX),
       range: uuid.v4(),
       index: FIGURE_CONFIG.INDEX,
+      ordername:data.ordername,
       localPlace: null,
       type: data.type,
+      estimatedMoney:data.estimatedMoney,
       estimatedTime: 123465789,
-      area: null,
+      area: data.area,
       creatorkey: data.creatorkey,
       // 甲方信息
       ONEinformation: data.ONEinformation
