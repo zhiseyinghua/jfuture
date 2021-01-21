@@ -20,7 +20,6 @@ export class FigureService {
       estimatedTime: 123465789,
       area: null,
       creatorkey: data.creatorkey,
-      technician: data.technician,
       // 甲方信息
       ONEinformation: data.ONEinformation
     };

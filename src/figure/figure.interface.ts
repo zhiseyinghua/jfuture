@@ -50,12 +50,14 @@ export interface OrderlocalPlaceInterface {
  * 第一次put一个订单到数据库
  */
 export interface PutOrderOne extends Dbinterface {
+  ordername:string;
   localPlace: OrderlocalPlaceInterface;
   type: OrderType;
   estimatedTime: Number;
   area: any;
-  creatorkey?: Dbinterface;
-  technician: Dbinterface;
+  creatorkey: Dbinterface;
+  // 预估费用
+  estimatedMoney: string;
   // 甲方信息
   ONEinformation: {
     // 电话
