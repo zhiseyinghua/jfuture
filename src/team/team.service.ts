@@ -9,6 +9,7 @@ import { TeamErrorCode } from './TeamErrorCode';
 import uuid = require('uuid');
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { Errorcode } from 'src/common/error.code';
+import { TEAMMEMBER_CONFIG } from 'src/teammember/team.config';
 
 @Injectable()
 export class TeamService {
@@ -93,7 +94,7 @@ export class TeamService {
     )
       .pipe(
         switchMap((data: Queryinterface) => {
-          if (data.hits.total.value == 1 &&
+          if (data.hits.total.value >= 1 &&
             data.hits.hits[0]._source['range']) {
             return of(data.hits.hits[0]._source.teamname)
           }
@@ -161,14 +162,39 @@ export class TeamService {
       }
     ).pipe(
       switchMap((result: DELETE) => {
-      if (result.deleted==1) {
-        return of(data);
+        if (result.deleted == 1) {
+          return of(data);
+        }
       }
-    }
-    ),
+      ),
     )
   }
-
+  public static SearchMemberByTAuth(teamauthKey: TeamInfo): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      TEAMMEMBER_CONFIG.INDEX + '/' + TEAMMEMBER_CONFIG.SEARCH,
+      {
+        "query": {
+          "bool": {
+            "must": [{ "match": { "AuthKey.range.keyword": teamauthKey.AuthKey.range } },
+            { "match": { "TeamKey.range.keyword": teamauthKey.TeamKey.range } }]
+          }
+        }
+      }
+    )
+      .pipe(
+        map((result: any) => {
+          if (result.hits.total.value == 1) {
+            console.log(result.hits.hits[0]._source)
+            return (result.hits.hits[0]._source)
+          } else if (result.hits.total.value == 0) {
+            return false
+          } else {
+            // TODO:
+          }
+        }),
+      );
+  }
 }
 
 

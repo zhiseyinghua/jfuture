@@ -13,6 +13,7 @@ import uuid = require('uuid');
 import { AuthService } from 'src/auth/auth.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TEAMMEMBER_CONFIG } from 'src/teammember/team.config';
+import { TeammemberService } from 'src/teammember/teammember.service';
 
 @Controller('team')
 export class TeamController {
@@ -24,15 +25,7 @@ export class TeamController {
    * @param headers 
    */
   @Post('insertteaminfo')
-  insertuserinfo(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
-    let idtoken = headers['authorization'];
-    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
-    console.log(TeamMemberInfo)
-    let TeamMemberKey = {
-      hash: TeamMemberInfo.hash,
-      range: TeamMemberInfo.range,
-      index: TeamMemberInfo.index,
-    }
+  insertuserinfo(@Body(ValidationPipe) sendData: TeamInfoInterface): any {
     // let TeamMemberRole = TeamMemberInfo.role
     // if (TeamMemberRole == 'admin' || TeamMemberRole == 'our') {
     return TeamService.insertteaminfo({
@@ -91,30 +84,52 @@ export class TeamController {
    * @param sendData 更新团队信息
    */
   @Post('updateteaminfo')
-  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface): any {
+  userinfoupdate(@Body(ValidationPipe) sendData: TeamInfoInterface, @Headers() headers): any {
+    let idtoken = headers['authorization'];
+    let TeamMemberInfo = AuthService.decodeIdtoken(idtoken);
+    console.log(TeamMemberInfo)
+    let TeamMemberKey = {
+      hash: TeamMemberInfo.hash,
+      range: TeamMemberInfo.range,
+      index: TeamMemberInfo.index,
+    }
     let teaminfo = {
       hash: sendData.hash,
       range: sendData.range,
       index: sendData.index,
     }
+    let teamauthdata = {
+      TeamKey: teaminfo,
+      AuthKey: TeamMemberKey,
+    }
     return TeamService.SearchTeamInfo(teaminfo).pipe(
-      switchMap((data) => {
-        if (data && data.range) {
-          return TeamService.UpdateTeamInfo({
-            hash: data.hash,
-            range: data.range,
-            index: data.index,
-            teamid: sendData.teamid,
-            teamname: sendData.teamname,
-            projectid: sendData.projectid,
-            projectname: sendData.projectname,
-            projectprogress: sendData.projectprogress,
-            description: sendData.description,
-            type: sendData.type
-          })
+      switchMap((result) => {
+        if (result) {
+          return TeamService.SearchMemberByTAuth(teamauthdata).pipe(
+            switchMap((data) => {
+              if (data) {
+                console.log(data.TeamKey.range)
+                return TeamService.UpdateTeamInfo({
+                  hash: data.TeamKey.hash,
+                  range: data.TeamKey.range,
+                  index: data.TeamKey.index,
+                  teamid: sendData.teamid,
+                  teamname: sendData.teamname,
+                  projectid: sendData.projectid,
+                  projectname: sendData.projectname,
+                  projectprogress: sendData.projectprogress,
+                  description: sendData.description,
+                  type: sendData.type
+                })
+              }
+             if(data==false) {
+                return throwError(new Error('teammember_not_exit_this_team'));
+              }
+            }),
+          )
         }
         else {
-          // TODO:
+          return throwError(new Error('team_not_found'));
         }
       }),
       catchError((err) => {
@@ -125,7 +140,13 @@ export class TeamController {
         return of(redata);
       }),
     )
+    //     else {
+    //       // TODO:
+    //     }
+    //   }),
+
   }
+
   /**
    * 
    * @param sendData 
@@ -149,10 +170,18 @@ export class TeamController {
             range: sendData.range,
             index: sendData.index,
           })
-        } else {
+        } 
+        else {
           return throwError(new Error('team_not_found'));
         }
-      }),
+      }),    
+      switchMap((data)=>{
+        return TeammemberService.SearchMemberReturn(TeamKey).pipe(
+          switchMap((data)=>{
+            return TeammemberService.DeleteTeamMemberByTeamKey(TeamKey)
+          }),
+        )
+      }),  
       catchError((err) => {
         let redata: BackCodeMessage = {
           code: Errorcode[err.message],
