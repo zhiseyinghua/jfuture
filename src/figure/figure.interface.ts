@@ -54,7 +54,7 @@ export interface PutOrderOne extends Dbinterface {
   localPlace: OrderlocalPlaceInterface;
   type: OrderType;
   estimatedTime: Number;
-  area: any;
+  area: string;
   creatorkey: Dbinterface;
   // 预估费用
   estimatedMoney: string;
@@ -69,27 +69,31 @@ export interface PutOrderOne extends Dbinterface {
 }
 
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
-// const data: PutOrderOne = {
-//   localPlace: null,
-//   type: 'oneTimeTest',
-//   estimatedTime: 123654789,
-//   area: null,
-//   creatorkey: {
-//     hash:'',
-//     range:'',
-//     index:''
-//   },
-//   technician: {
-//     hash:'',
-//     range:'',
-//     index:''
-//   },
-//   // 甲方信息
-//   ONEinformation: {
-//     // 电话
-//     phone: 'string',
-//     // 邮箱
-//     email: '123',
-//     name: '123'
-//   }
-// }
+const data: PutOrderOne = {
+  hash:'',
+  range:'',
+  index:'',
+  localPlace: {
+    lng:123,
+    lat:123,
+    local:''
+  },
+  type: 'oneTimeTest',
+  estimatedTime: 123654789,
+  area: '123',
+  creatorkey: {
+    hash:'',
+    range:'',
+    index:''
+  },
+  ordername:'123',
+  estimatedMoney:'123',
+  // 甲方信息
+  ONEinformation: {
+    // 电话
+    phone: 'string',
+    // 邮箱
+    email: '123',
+    name: '123'
+  }
+}
