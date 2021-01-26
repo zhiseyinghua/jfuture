@@ -11,10 +11,11 @@ import { FigureController } from './figure/figure.controller';
 import { FigureService } from './figure/figure.service';
 import { TeammemberService } from './teammember/teammember.service';
 import { TeammemberModule } from './teammember/teammember.module';
+import { CatsModule } from './cats/cats.module';
 
 
 @Module({
-  imports: [AuthModule, UserModule, TeamModule, AliyunModule,TeammemberModule],
+  imports: [AuthModule, UserModule, TeamModule, AliyunModule,TeammemberModule, CatsModule],
   controllers: [AppController, FigureController],
   providers: [AppService, UserService, EventsGateway, FigureService,TeammemberService],
 })
