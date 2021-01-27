@@ -3,6 +3,10 @@ import { Dbinterface } from 'src/common/db.elasticinterface';
 export interface OrderInterface extends Dbinterface {
   // 地点
   localPlace: OrderlocalPlaceInterface;
+  // 项目开始时间
+  figuetime:string;
+  // 项目的状态
+  figueState:string
   // 不动产测试   一次性测试
   type: 'realEstateTest' | 'oneTimeTest';
   // 预估时间
