@@ -3,9 +3,14 @@ import { CatsService } from './cats.service';
 
 @Controller('cats')
 export class CatsController {
+  // @Get('abc')
+  //  putOrder() {
+  //   console.log('abc start');
+  //   return CatsService.abc();
+  // }
   @Get('abc')
    putOrder() {
     console.log('abc start');
-    return CatsService.abc();
+    return CatsService.putdata();
   }
 }
