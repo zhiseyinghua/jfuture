@@ -27,7 +27,7 @@ export class FigureController {
   }
 
   @Post('/firstinformation')
-  firstinformationController(data:UpdateFirstinformation) {
-    return  FigureService.firstinformation(data)
+  firstinformationController(@Body(ValidationPipe) data:UpdateFirstinformation) {
+    return  FigureService.firstinformation(data);
   }
 }

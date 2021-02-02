@@ -109,7 +109,7 @@ const data: PutOrderOne = {
 /**
  * 更改甲方信息接口
  */
-export interface updatefirstinformation extends Dbinterface {
+export interface UpdateFirstinformation extends Dbinterface {
   ONEinformation: {
     // 电话
     phone: string;

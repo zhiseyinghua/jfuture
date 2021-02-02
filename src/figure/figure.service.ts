@@ -52,6 +52,7 @@ export class FigureService {
    * @param data 
    */
   static firstinformation(data:UpdateFirstinformation) :Observable<any>{
+    console.log(data)
     return of(12);
   }
  
