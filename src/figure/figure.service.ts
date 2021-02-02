@@ -47,14 +47,4 @@ export class FigureService {
     );
   }
 
-  //   public static getEsdbAuth(userRange: Dbinterface): Observable<any> {
-  //     return DbElasticService.executeInEs(
-  //       'get',
-  //       AUTH_CONFIG.INDEX + '/' + AUTH_CONFIG.DOC + '/' + userRange.range,
-  //     ).pipe(
-  //       map((result) => {
-  //         return result['_source'];
-  //       }),
-  //     );
-  //   }
 }
