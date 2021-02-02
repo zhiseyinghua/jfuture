@@ -4,9 +4,9 @@ export interface OrderInterface extends Dbinterface {
   // 地点
   localPlace: OrderlocalPlaceInterface;
   // 任务结束时间
-  orderendTime:Number
+  orderendTime: Number;
   // 任务开始时间
-  orderstartTime:Number;
+  orderstartTime: Number;
   // figuetime:string;
   // 不动产测试   一次性测试
   type: 'realEstateTest' | 'oneTimeTest';
@@ -42,7 +42,7 @@ export interface OrderInterface extends Dbinterface {
     email: string;
     name: string;
   };
-  timestamp:number
+  timestamp: number;
   // 在哪个所属团队发的任务
   creatorkey?: Dbinterface;
 }
@@ -56,7 +56,7 @@ export interface OrderlocalPlaceInterface {
  * 第一次put一个订单到数据库
  */
 export interface PutOrderOne extends Dbinterface {
-  ordername:string;
+  ordername: string;
   localPlace: OrderlocalPlaceInterface;
   type: OrderType;
   estimatedTime: Number;
@@ -72,36 +72,49 @@ export interface PutOrderOne extends Dbinterface {
     email: string;
     name: string;
   };
-  timestamp:number
+  timestamp: number;
 }
 
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
 const data: PutOrderOne = {
-  hash:'',
-  range:'',
-  index:'',
+  hash: '',
+  range: '',
+  index: '',
   localPlace: {
-    lng:123,
-    lat:123,
-    local:''
+    lng: 123,
+    lat: 123,
+    local: '',
   },
   type: 'oneTimeTest',
   estimatedTime: 123654789,
   area: '123',
   creatorkey: {
-    hash:'',
-    range:'',
-    index:''
+    hash: '',
+    range: '',
+    index: '',
   },
-  ordername:'123',
-  estimatedMoney:'123',
+  ordername: '123',
+  estimatedMoney: '123',
   // 甲方信息
   ONEinformation: {
     // 电话
     phone: 'string',
     // 邮箱
     email: '123',
-    name: '123'
+    name: '123',
   },
-  timestamp: 123
+  timestamp: 123,
+};
+
+/**
+ * 更改甲方信息接口
+ */
+export interface updatefirstinformation extends Dbinterface {
+  ONEinformation: {
+    // 电话
+    phone: string;
+    // 邮箱
+    email: string;
+    name: string;
+  };
 }

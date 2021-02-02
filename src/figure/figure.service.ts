@@ -4,14 +4,14 @@ import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { FIGURE_CONFIG } from './figure.config';
 import uuid = require('uuid');
-import { PutOrderOne } from './figure.interface';
+import { PutOrderOne, UpdateFirstinformation } from './figure.interface';
 import { Dbinterface } from 'src/common/db.elasticinterface';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class FigureService {
   public static logger = 'AuthService';
-  public static putOrder(data: PutOrderOne,authkey: Dbinterface) {
+  public static putOrder(data: PutOrderOne,authkey: Dbinterface) :Observable<any>{
     let createIdtoken:PutOrderOne = {
       hash: DynamoDBService.computeHash(FIGURE_CONFIG.INDEX),
       range: uuid.v4(),
@@ -47,4 +47,12 @@ export class FigureService {
     );
   }
 
+  /**
+   * 更新甲方信息
+   * @param data 
+   */
+  static firstinformation(data:UpdateFirstinformation) :Observable<any>{
+    return of(12);
+  }
+ 
 }
