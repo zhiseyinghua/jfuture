@@ -16,9 +16,9 @@ export interface DbElasticinterfacePutReturn {
   _source?: any;
   result?: string;
   _shards?: {
-    total: 2,
-    successful: 1,
-    failed: 0
+    total: number,
+    successful: number,
+    failed: number
   },
 }
 export interface DbElasticinterPutReturn {

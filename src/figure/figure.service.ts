@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { FIGURE_CONFIG } from './figure.config';
 import uuid = require('uuid');
 import { PutOrderOne, UpdateFirstinformation } from './figure.interface';
-import { Dbinterface } from 'src/common/db.elasticinterface';
+import {
+  DbElasticinterfacePutReturn,
+  Dbinterface,
+} from 'src/common/db.elasticinterface';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
@@ -73,6 +76,27 @@ export class FigureService {
       {
         doc: data.ONEinformation,
       },
+    ).pipe(
+      map((reslutdata: DbElasticinterfacePutReturn) => {
+        if(data && reslutdata._shards && reslutdata._shards && reslutdata._shards.successful>0) {
+          return data
+        } else if(data && reslutdata._shards && reslutdata._shards && reslutdata._shards.successful == 0){
+          return data
+        } else {
+          let err = {
+            code : "  000005",
+            message:"server_error"
+          }
+          return err
+        }
+      }),
+      catchError(errr=>{
+        let err = {
+          code : "  000005",
+          message:"server_error"
+        }
+        return of(err)
+      })
     );
   }
 }
