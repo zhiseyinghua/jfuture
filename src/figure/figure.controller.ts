@@ -47,6 +47,6 @@ export class FigureController {
 
   @Post('/one_message')
   oneMessage(@Body(ValidationPipe) data: UpdateOneMessage) {
-    return FigureService
+    return FigureService.updateOneMessage(data)
   }
 }

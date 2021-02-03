@@ -137,7 +137,13 @@ export class FigureService {
     );
   }
 
+  /**
+   * 更新一个信息
+   * @param data
+   */
   static updateOneMessage(data: UpdateOneMessage): Observable<any> {
+    var oneMessage = new Object();
+    oneMessage[data.which] = data.value;
     return DbElasticService.executeInEs(
       'POST',
       FIGURE_CONFIG.INDEX +
@@ -147,11 +153,9 @@ export class FigureService {
         data.range +
         '/' +
         FIGURE_CONFIG.UPDATA,
-        {
-          doc:{
-            
-          }
-        }
+      {
+        doc: oneMessage,
+      },
     );
   }
 }
