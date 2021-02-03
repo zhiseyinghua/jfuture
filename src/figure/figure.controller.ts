@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
-import { PutOrderOne, UpdateFirstinformation } from './figure.interface';
+import { PutOrderOne, UpdateFirstinformation, UpdateOtherFormation } from './figure.interface';
 import { FigureService } from './figure.service';
 
 @Controller('figure')
@@ -26,8 +26,17 @@ export class FigureController {
     });
   }
 
+  /**
+   * 向数据库更新其他信息（面积  实际费用）
+   * @param data 
+   */
   @Post('/firstinformation')
   firstinformationController(@Body(ValidationPipe) data:UpdateFirstinformation) {
     return  FigureService.firstinformation(data);
   }
+
+
+  @Post('other_information')
+  otherInformation(@Body(ValidationPipe) data: UpdateOtherFormation)
+  
 }

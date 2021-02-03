@@ -63,7 +63,6 @@ export class FigureService {
    * @param data
    */
   static firstinformation(data: UpdateFirstinformation): Observable<any> {
-    console.log(data);
     return DbElasticService.executeInEs(
       'POST',
       FIGURE_CONFIG.INDEX +
@@ -78,25 +77,43 @@ export class FigureService {
       },
     ).pipe(
       map((reslutdata: DbElasticinterfacePutReturn) => {
-        if(data && reslutdata._shards && reslutdata._shards && reslutdata._shards.successful>0) {
-          return data
-        } else if(data && reslutdata._shards && reslutdata._shards && reslutdata._shards.successful == 0){
-          return data
+        if (
+          data &&
+          reslutdata._shards &&
+          reslutdata._shards &&
+          reslutdata._shards.successful > 0
+        ) {
+          return data;
+        } else if (
+          data &&
+          reslutdata._shards &&
+          reslutdata._shards &&
+          reslutdata._shards.successful == 0
+        ) {
+          return data;
         } else {
           let err = {
-            code : "  000005",
-            message:"server_error"
-          }
-          return err
+            code: '  000005',
+            message: 'server_error',
+          };
+          return err;
         }
       }),
-      catchError(errr=>{
+      catchError((errr) => {
         let err = {
-          code : "  000005",
-          message:"server_error"
-        }
-        return of(err)
-      })
+          code: '000005',
+          message: 'server_error',
+        };
+        return of(err);
+      }),
+    );
+  }
+
+  static otherInformation(data): Observable<any> {
+    return DbElasticService.executeInEs(
+      'POST',
+      FIGURE_CONFIG.INDEX + '/' + FIGURE_CONFIG.DOC + '/' + data.range,
+      
     );
   }
 }

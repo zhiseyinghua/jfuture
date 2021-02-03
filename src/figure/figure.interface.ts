@@ -118,3 +118,10 @@ export interface UpdateFirstinformation extends Dbinterface {
     name: string;
   };
 }
+
+
+export interface UpdateOtherFormation extends Dbinterface {
+  area: string;
+   // 实际费用
+   realMoney: string;
+}
