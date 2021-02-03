@@ -4,7 +4,12 @@ import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { FIGURE_CONFIG } from './figure.config';
 import uuid = require('uuid');
-import { PutOrderOne, UpdateFirstinformation, UpdateOtherFormation } from './figure.interface';
+import {
+  PutOrderOne,
+  UpdateFirstinformation,
+  UpdateOneMessage,
+  UpdateOtherFormation,
+} from './figure.interface';
 import {
   DbElasticinterfacePutReturn,
   Dbinterface,
@@ -113,16 +118,40 @@ export class FigureService {
    * 更新其他信息接口
    * @param data
    */
-  static otherInformation(data:UpdateOtherFormation): Observable<any> {
+  static otherInformation(data: UpdateOtherFormation): Observable<any> {
     return DbElasticService.executeInEs(
       'POST',
-      FIGURE_CONFIG.INDEX + '/' + FIGURE_CONFIG.DOC + '/' + data.range,
+      FIGURE_CONFIG.INDEX +
+        '/' +
+        FIGURE_CONFIG.DOC +
+        '/' +
+        data.range +
+        '/' +
+        FIGURE_CONFIG.UPDATA,
       {
         doc: {
           area: data.area,
-          realMoney: data.realMoney
-        }
+          realMoney: data.realMoney,
+        },
       },
+    );
+  }
+
+  static updateOneMessage(data: UpdateOneMessage): Observable<any> {
+    return DbElasticService.executeInEs(
+      'POST',
+      FIGURE_CONFIG.INDEX +
+        '/' +
+        FIGURE_CONFIG.DOC +
+        '/' +
+        data.range +
+        '/' +
+        FIGURE_CONFIG.UPDATA,
+        {
+          doc:{
+            
+          }
+        }
     );
   }
 }

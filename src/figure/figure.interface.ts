@@ -119,9 +119,20 @@ export interface UpdateFirstinformation extends Dbinterface {
   };
 }
 
-
+/**
+ * 更新其他信息的接口
+ */
 export interface UpdateOtherFormation extends Dbinterface {
   area: string;
-   // 实际费用
-   realMoney: string;
+  realMoney: string;
+  // 实际费用
+}
+
+
+/**
+ * 更新那个值
+ */
+export interface UpdateOneMessage extends Dbinterface {
+  which:string;
+  value:string;
 }

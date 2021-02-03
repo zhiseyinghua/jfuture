@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
-import { PutOrderOne, UpdateFirstinformation, UpdateOtherFormation } from './figure.interface';
+import { PutOrderOne, UpdateFirstinformation, UpdateOneMessage, UpdateOtherFormation } from './figure.interface';
 import { FigureService } from './figure.service';
 
 @Controller('figure')
@@ -43,5 +43,10 @@ export class FigureController {
   @Post('other_information')
   otherInformation(@Body(ValidationPipe) data: UpdateOtherFormation) {
     return FigureService.otherInformation(data)
+  }
+
+  @Post('/one_message')
+  oneMessage(@Body(ValidationPipe) data: UpdateOneMessage) {
+    return FigureService
   }
 }
