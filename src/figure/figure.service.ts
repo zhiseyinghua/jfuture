@@ -4,7 +4,7 @@ import { DynamoDBService } from 'src/service/dynamodb.serves';
 import { DbElasticService } from 'src/service/es.service';
 import { FIGURE_CONFIG } from './figure.config';
 import uuid = require('uuid');
-import { PutOrderOne, UpdateFirstinformation } from './figure.interface';
+import { PutOrderOne, UpdateFirstinformation, UpdateOtherFormation } from './figure.interface';
 import {
   DbElasticinterfacePutReturn,
   Dbinterface,
@@ -109,11 +109,11 @@ export class FigureService {
     );
   }
 
-  static otherInformation(data): Observable<any> {
+  static otherInformation(data:UpdateOtherFormation): Observable<any> {
     return DbElasticService.executeInEs(
       'POST',
       FIGURE_CONFIG.INDEX + '/' + FIGURE_CONFIG.DOC + '/' + data.range,
-      
+
     );
   }
 }

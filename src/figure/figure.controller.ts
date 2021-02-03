@@ -36,7 +36,12 @@ export class FigureController {
   }
 
 
+  /**
+   * 更新其他信息
+   * @param data 
+   */
   @Post('other_information')
-  otherInformation(@Body(ValidationPipe) data: UpdateOtherFormation)
-  
+  otherInformation(@Body(ValidationPipe) data: UpdateOtherFormation) {
+    return FigureService.otherInformation(data)
+  }
 }
