@@ -158,4 +158,13 @@ export class FigureService {
       },
     );
   }
+
+
+  /**
+   * 更新时间信息
+   * @param data 
+   */
+  static updateTime(): Observable<any> {
+    return of('123456789')
+  }
 }

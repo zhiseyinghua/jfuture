@@ -45,8 +45,21 @@ export class FigureController {
     return FigureService.otherInformation(data)
   }
 
+  /**
+   * 更新order表中的一个数据
+   * @param data 
+   */
   @Post('/one_message')
   oneMessage(@Body(ValidationPipe) data: UpdateOneMessage) {
     return FigureService.updateOneMessage(data)
+  }
+
+  /**
+   * 更新任务的时间信息
+   * @param data 
+   */
+  @Post('/update_time')
+  updateTime(@Body(ValidationPipe) data) {
+    return FigureService.updateTime()
   }
 }
