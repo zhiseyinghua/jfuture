@@ -60,6 +60,6 @@ export class FigureController {
    */
   @Post('/update_time')
   updateTime(@Body(ValidationPipe) data) {
-    return FigureService.updateTime()
+    return FigureService.updateTime();
   }
 }
