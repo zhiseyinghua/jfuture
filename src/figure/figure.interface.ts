@@ -138,5 +138,6 @@ export interface UpdateOneMessage extends Dbinterface {
 }
 
 export interface UpdateTime extends Dbinterface {
-  
+  // 实际派发时间
+  timeAfterDistribution: Number
 }
