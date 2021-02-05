@@ -9,6 +9,7 @@ import {
   UpdateFirstinformation,
   UpdateOneMessage,
   UpdateOtherFormation,
+  UpdateTime,
 } from './figure.interface';
 import {
   DbElasticinterfacePutReturn,
@@ -163,7 +164,32 @@ export class FigureService {
    * 更新时间信息
    * @param data
    */
-  static updateTime(): Observable<any> {
-    return of(123456789);
+  static updateTime(data: UpdateTime): Observable<any> {
+    return DbElasticService.executeInEs(
+      'POST',
+      FIGURE_CONFIG.INDEX +
+        '/' +
+        FIGURE_CONFIG.DOC +
+        '/' +
+        data.range +
+        '/' +
+        FIGURE_CONFIG.UPDATA,
+      {
+        doc: {
+          // 实际派发时间
+          timeAfterDistribution: data.timeAfterDistribution,
+          // 技术员实际完成时间
+          technicianCompletionTime: data.technicianCompletionTime,
+          // 外业完成时间
+          completionTime: data.completionTime,
+          // 内业完成时间
+          insidePagesFinish: data.insidePagesFinish,
+          // 合同完成时间
+          contractCompleted: data.contractCompleted,
+          // 金额到账时间
+          timeReceiptAmount: data.timeReceiptAmount,
+        },
+      },
+    );
   }
 }

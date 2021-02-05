@@ -128,16 +128,25 @@ export interface UpdateOtherFormation extends Dbinterface {
   // 实际费用
 }
 
-
 /**
  * 更新那个值
  */
 export interface UpdateOneMessage extends Dbinterface {
-  which:string;
-  value:string;
+  which: string;
+  value: string;
 }
 
 export interface UpdateTime extends Dbinterface {
   // 实际派发时间
-  timeAfterDistribution: Number
+  timeAfterDistribution: Number;
+  // 技术员实际完成时间
+  technicianCompletionTime: Number;
+  // 外业完成时间
+  completionTime: Number;
+  // 内业完成时间
+  insidePagesFinish: Number;
+  // 合同完成时间
+  contractCompleted: Number;
+  // 金额到账时间
+  timeReceiptAmount: Number;
 }

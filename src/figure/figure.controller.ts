@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
-import { PutOrderOne, UpdateFirstinformation, UpdateOneMessage, UpdateOtherFormation } from './figure.interface';
+import { PutOrderOne, UpdateFirstinformation, UpdateOneMessage, UpdateOtherFormation, UpdateTime } from './figure.interface';
 import { FigureService } from './figure.service';
 
 @Controller('figure')
@@ -59,7 +59,7 @@ export class FigureController {
    * @param data
    */
   @Post('/update_time')
-  updateTime(@Body(ValidationPipe) data) {
-    return FigureService.updateTime();
+  updateTime(@Body(ValidationPipe) data:UpdateTime) {
+    return FigureService.updateTime(data);
   }
 }
