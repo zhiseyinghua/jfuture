@@ -136,3 +136,5 @@ export interface UpdateOneMessage extends Dbinterface {
   which:string;
   value:string;
 }
+
+export interface 
