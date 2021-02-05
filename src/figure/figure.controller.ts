@@ -56,7 +56,7 @@ export class FigureController {
 
   /**
    * 更新任务的时间信息
-   * @param data 
+   * @param data
    */
   @Post('/update_time')
   updateTime(@Body(ValidationPipe) data) {

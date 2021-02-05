@@ -137,4 +137,6 @@ export interface UpdateOneMessage extends Dbinterface {
   value:string;
 }
 
-export interface 
+export interface UpdateTime extends Dbinterface {
+  
+}
