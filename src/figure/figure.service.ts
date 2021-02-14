@@ -16,6 +16,9 @@ import {
   Dbinterface,
 } from 'src/common/db.elasticinterface';
 import { Observable, of } from 'rxjs';
+import { BackCodeMessage } from 'src/common/back.codeinterface';
+import { Errorcode } from 'src/common/error.code';
+import { FigureEerrorCode } from './figure.code';
 
 @Injectable()
 export class FigureService {
@@ -157,6 +160,28 @@ export class FigureService {
       {
         doc: oneMessage,
       },
+    ).pipe(
+      map((esresult: DbElasticinterfacePutReturn) => {
+        if (
+          esresult &&
+          esresult._shards &&
+          esresult._shards.successful &&
+          esresult._shards.successful >= 1
+        ) {
+          return data;
+        } else if (
+          esresult &&
+          esresult._shards &&
+          esresult._shards.successful &&
+          esresult._shards.successful == 0
+        ) {
+          let message: BackCodeMessage = {
+            code: Errorcode.update_figure_one_error,
+            message: FigureEerrorCode.update_figure_one_error,
+          };
+          return message;
+        }
+      }),
     );
   }
 
