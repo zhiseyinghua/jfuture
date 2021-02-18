@@ -42,10 +42,10 @@ export class DbElasticService {
         'Content-Type': 'application/json',
       },
     };
-    console.log('DbElasticService ' + 'executeInEs axiosData' + JSON.stringify(axiosData));
-    return from(
-      axios(axiosData),
-    ).pipe(
+    console.log(
+      'DbElasticService ' + 'executeInEs axiosData' + JSON.stringify(axiosData),
+    );
+    return from(axios(axiosData)).pipe(
       switchMap((result) => {
         console.log('DbElasticService ' + 'executeInEs' + result);
         return of(result['data']);

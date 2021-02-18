@@ -31,7 +31,7 @@ export class FigureController {
    * @param data 
    */
   @Post('/firstinformation')
-  firstinformationController(@Body(ValidationPipe) data:UpdateFirstinformation) {
+  firstinformationController(@Body(ValidationPipe) data:UpdateOtherFormation) {
     return  FigureService.firstinformation(data);
   }
 

@@ -32,6 +32,8 @@ export const Errorcode = {
    * 更新figure的一条信息出错
    */
   update_figure_one_error:'000201',
+  update_figure_one_update_existing:'000202',
+
 
   /**
    * 更新用户信息失败

@@ -71,7 +71,7 @@ export class FigureService {
    * 更新甲方信息
    * @param data
    */
-  static firstinformation(data: UpdateFirstinformation): Observable<any> {
+  static firstinformation(data: UpdateOtherFormation): Observable<any> {
     return DbElasticService.executeInEs(
       'POST',
       FIGURE_CONFIG.INDEX +
@@ -82,20 +82,21 @@ export class FigureService {
         '/' +
         FIGURE_CONFIG.UPDATA,
       {
-        doc: data.ONEinformation,
+        doc: {
+          area: data.area,
+          realMoney: data.realMoney
+        }
       },
     ).pipe(
       map((reslutdata: DbElasticinterfacePutReturn) => {
         if (
-          data &&
-          reslutdata._shards &&
+          reslutdata &&
           reslutdata._shards &&
           reslutdata._shards.successful > 0
         ) {
           return data;
         } else if (
-          data &&
-          reslutdata._shards &&
+          reslutdata &&
           reslutdata._shards &&
           reslutdata._shards.successful == 0
         ) {
@@ -160,8 +161,10 @@ export class FigureService {
       {
         doc: oneMessage,
       },
-    ).pipe(
+    )
+    .pipe(
       map((esresult: DbElasticinterfacePutReturn) => {
+         console.log(esresult._shards.successful)
         if (
           esresult &&
           esresult._shards &&
@@ -172,9 +175,15 @@ export class FigureService {
         } else if (
           esresult &&
           esresult._shards &&
-          esresult._shards.successful &&
           esresult._shards.successful == 0
         ) {
+          console.log("1111111111111")
+          let message: BackCodeMessage = {
+            code: Errorcode.update_figure_one_update_existing,
+            message: FigureEerrorCode.update_figure_one_update_existing,
+          };
+          return message;
+        } else {
           let message: BackCodeMessage = {
             code: Errorcode.update_figure_one_error,
             message: FigureEerrorCode.update_figure_one_error,
