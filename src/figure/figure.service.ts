@@ -286,7 +286,6 @@ export class FigureService {
       }),
     );
   }
-
   static getdbfigure(from: string, size: string) {
     return DbElasticService.executeInEs('POST', '');
   }
