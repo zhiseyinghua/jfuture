@@ -287,5 +287,7 @@ export class FigureService {
     );
   }
 
-  static getdbfigure(from: string) {}
+  static getdbfigure(from: string) {
+    
+  }
 }
