@@ -58,7 +58,6 @@ export interface Queryinterface {
 }
 
 export interface Queryface {
-  data: {
     took: number;
     timed_out: false;
     _shards: {
@@ -68,10 +67,8 @@ export interface Queryface {
       failed: number;
     };
     hits: QueryinterfaceHit;
-  };
 }
 
-export interface
 
 interface QueryinterfaceHit {
   total: {

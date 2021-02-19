@@ -14,6 +14,7 @@ import {
 import {
   DbElasticinterfacePutReturn,
   Dbinterface,
+  Queryface,
 } from 'src/common/db.elasticinterface';
 import { Observable, of } from 'rxjs';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
@@ -288,8 +289,8 @@ export class FigureService {
   }
   /**
    * 查询很多
-   * @param from 
-   * @param size 
+   * @param from
+   * @param size
    */
   static getdbfigure(from: string, size: string) {
     return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
@@ -307,6 +308,29 @@ export class FigureService {
           },
         },
       ],
-    });
+    }).pipe(
+      map((result: Queryface) => {
+        if (result._shards.successful == 1) {
+          let newresult = [];
+          result.hits.hits.forEach((item, index) => {
+            newresult.push(item['_source']);
+          });
+          return newresult;
+        } else {
+          let err = {
+            code: '000005',
+            message: 'server_error',
+          };
+          return err;
+        }
+      }),
+      catchError((errr) => {
+        let err = {
+          code: '000005',
+          message: 'server_error',
+        };
+        return of(err);
+      }),
+    );
   }
 }

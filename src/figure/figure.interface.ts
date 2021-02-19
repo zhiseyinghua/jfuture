@@ -151,7 +151,3 @@ export interface UpdateTime extends Dbinterface {
   timeReceiptAmount: Number;
 }
 
-export interface Getfigure extends Dbinterface {
-  size: string,
-  from: string,
-}
