@@ -83,7 +83,7 @@ export class FigureService {
         FIGURE_CONFIG.UPDATA,
       {
         doc: {
-          ONEinformation:data.ONEinformation
+          ONEinformation: data.ONEinformation,
         },
       },
     ).pipe(
@@ -143,7 +143,7 @@ export class FigureService {
         },
       },
     ).pipe(
-      map((esresult:DbElasticinterfacePutReturn)=>{
+      map((esresult: DbElasticinterfacePutReturn) => {
         console.log(esresult._shards.successful);
         if (
           esresult &&
@@ -170,8 +170,8 @@ export class FigureService {
           };
           return message;
         }
-      })
-    )
+      }),
+    );
   }
 
   /**
@@ -256,34 +256,36 @@ export class FigureService {
         },
       },
     ).pipe(
-        map((esresult:DbElasticinterfacePutReturn)=>{
-          console.log(esresult._shards.successful);
-          if (
-            esresult &&
-            esresult._shards &&
-            esresult._shards.successful &&
-            esresult._shards.successful >= 1
-          ) {
-            return data;
-          } else if (
-            esresult &&
-            esresult._shards &&
-            esresult._shards.successful == 0
-          ) {
-            console.log('1111111111111');
-            let message: BackCodeMessage = {
-              code: Errorcode.update_figure_one_update_existing,
-              message: FigureEerrorCode.update_figure_one_update_existing,
-            };
-            return message;
-          } else {
-            let message: BackCodeMessage = {
-              code: Errorcode.update_figure_one_error,
-              message: FigureEerrorCode.update_figure_one_error,
-            };
-            return message;
-          }
-        })
-    )
+      map((esresult: DbElasticinterfacePutReturn) => {
+        console.log(esresult._shards.successful);
+        if (
+          esresult &&
+          esresult._shards &&
+          esresult._shards.successful &&
+          esresult._shards.successful >= 1
+        ) {
+          return data;
+        } else if (
+          esresult &&
+          esresult._shards &&
+          esresult._shards.successful == 0
+        ) {
+          console.log('1111111111111');
+          let message: BackCodeMessage = {
+            code: Errorcode.update_figure_one_update_existing,
+            message: FigureEerrorCode.update_figure_one_update_existing,
+          };
+          return message;
+        } else {
+          let message: BackCodeMessage = {
+            code: Errorcode.update_figure_one_error,
+            message: FigureEerrorCode.update_figure_one_error,
+          };
+          return message;
+        }
+      }),
+    );
   }
+
+  static getdbfigure(from: string) {}
 }
