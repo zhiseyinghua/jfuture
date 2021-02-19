@@ -84,8 +84,8 @@ export class FigureService {
       {
         doc: {
           area: data.area,
-          realMoney: data.realMoney
-        }
+          realMoney: data.realMoney,
+        },
       },
     ).pipe(
       map((reslutdata: DbElasticinterfacePutReturn) => {
@@ -100,7 +100,11 @@ export class FigureService {
           reslutdata._shards &&
           reslutdata._shards.successful == 0
         ) {
-          return data;
+          let err = {
+            code: '  000203',
+            message: 'Update_figure_existing',
+          };
+          return err;
         } else {
           let err = {
             code: '  000005',
@@ -161,10 +165,9 @@ export class FigureService {
       {
         doc: oneMessage,
       },
-    )
-    .pipe(
+    ).pipe(
       map((esresult: DbElasticinterfacePutReturn) => {
-         console.log(esresult._shards.successful)
+        console.log(esresult._shards.successful);
         if (
           esresult &&
           esresult._shards &&
@@ -177,7 +180,7 @@ export class FigureService {
           esresult._shards &&
           esresult._shards.successful == 0
         ) {
-          console.log("1111111111111")
+          console.log('1111111111111');
           let message: BackCodeMessage = {
             code: Errorcode.update_figure_one_update_existing,
             message: FigureEerrorCode.update_figure_one_update_existing,

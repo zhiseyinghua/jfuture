@@ -33,7 +33,7 @@ export const Errorcode = {
    */
   update_figure_one_error:'000201',
   update_figure_one_update_existing:'000202',
-
+  Update_figure_existing: '000203',
 
   /**
    * 更新用户信息失败
