@@ -287,17 +287,7 @@ export class FigureService {
     );
   }
 
-  static getdbfigure(from: string) {
-    return DbElasticService.executeInEs(
-      'POST',
-      FIGURE_CONFIG.INDEX +
-        '/' +
-        FIGURE_CONFIG.DOC +
-        '/' +
-        FIGURE_CONFIG.SEARCH,
-      {
-        doc: 
-      },
-    );
+  static getdbfigure(from: string, size: string) {
+    return DbElasticService.executeInEs('POST', '');
   }
 }
