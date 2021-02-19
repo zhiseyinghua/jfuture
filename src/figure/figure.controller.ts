@@ -27,7 +27,7 @@ export class FigureController {
   }
 
   /**
-   * 向数据库更新其他信息（面积  实际费用）
+   * 向数据库更新甲方信息
    * @param data 
    */
   @Post('/firstinformation')
