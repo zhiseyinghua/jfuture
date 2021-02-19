@@ -102,7 +102,7 @@ export class FigureService {
         ) {
           let err = {
             code: '  000203',
-            message: 'Update_figure_existing',
+            message: 'Update_figure_existin',
           };
           return err;
         } else {
