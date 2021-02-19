@@ -286,6 +286,11 @@ export class FigureService {
       }),
     );
   }
+  /**
+   * 查询很多
+   * @param from 
+   * @param size 
+   */
   static getdbfigure(from: string, size: string) {
     return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
       query: {
@@ -293,8 +298,8 @@ export class FigureService {
           must: [],
         },
       },
-      from: 0,
-      size: 10000,
+      from: from,
+      size: size,
       sort: [
         {
           timestamp: {

@@ -16,10 +16,10 @@ export interface DbElasticinterfacePutReturn {
   _source?: any;
   result?: string;
   _shards?: {
-    total: number,
-    successful: number,
-    failed: number
-  },
+    total: number;
+    successful: number;
+    failed: number;
+  };
 }
 export interface DbElasticinterPutReturn {
   _index: string;
@@ -28,10 +28,10 @@ export interface DbElasticinterPutReturn {
   _version: string;
   result?: string;
   _shards?: {
-    total: 2,
-    successful: 1,
-    failed: 0
-  },
+    total: 2;
+    successful: 1;
+    failed: 0;
+  };
   _seq_no: number;
   _primary_term: number;
 }
@@ -42,21 +42,19 @@ export interface Dbinterface {
   index: string;
 }
 
-
 /**
  * 查询多条数据返回的接口
  */
 export interface Queryinterface {
-    took: number;
-    timed_out: false;
-    _shards: {
-      total: number;
-      successful: number;
-      skipped: number;
-      failed: number;
-    }
-    ;
-    hits: QueryinterfaceHit;
+  took: number;
+  timed_out: false;
+  _shards: {
+    total: number;
+    successful: number;
+    skipped: number;
+    failed: number;
+  };
+  hits: QueryinterfaceHit;
 }
 
 export interface Queryface {
@@ -68,18 +66,20 @@ export interface Queryface {
       successful: number;
       skipped: number;
       failed: number;
-    }
-    ;
+    };
     hits: QueryinterfaceHit;
-  }
+  };
 }
+
+export interface
+
 interface QueryinterfaceHit {
   total: {
     value: number;
     relation: string;
   };
-  max_score: number,
-  hits: QueryinterfaceHitList[]
+  max_score: number;
+  hits: QueryinterfaceHitList[];
 }
 interface QueryinterfaceHitList {
   _index: string;
@@ -89,22 +89,27 @@ interface QueryinterfaceHitList {
   _source: any;
 }
 
-export interface DELETE{
-  took: number,
-  timed_out: false,
-  total: number,
-  deleted: number,
-  batches: number,
-  version_conflicts: number,
-  noops: number,
-retries: {
-      bulk: number,
-      search: number
-  },
-  throttled_millis: number,
-  requests_per_second:number,
-  throttled_until_millis: number,
-  failures: []
+export interface DELETE {
+  took: number;
+  timed_out: false;
+  total: number;
+  deleted: number;
+  batches: number;
+  version_conflicts: number;
+  noops: number;
+  retries: {
+    bulk: number;
+    search: number;
+  };
+  throttled_millis: number;
+  requests_per_second: number;
+  throttled_until_millis: number;
+  failures: [];
+}
+
+export interface Getfigure extends Dbinterface {
+  size: string;
+  from: string;
 }
 
 /**

@@ -6,6 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
+import { Getfigure } from 'src/common/db.elasticinterface';
 import { PutOrderOne, UpdateFirstinformation, UpdateOneMessage, UpdateOtherFormation, UpdateTime } from './figure.interface';
 import { FigureService } from './figure.service';
 
@@ -64,7 +65,7 @@ export class FigureController {
   }
 
   @Post('/getfigure')
-  getfigure(@Body(ValidationPipe) data) {
-    return
-  }
+  getfigure(@Body(ValidationPipe) data:Getfigure) {
+    return FigureService.getdbfigure(data.from,data.size)
+  } 
 }

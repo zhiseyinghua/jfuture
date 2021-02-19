@@ -150,3 +150,8 @@ export interface UpdateTime extends Dbinterface {
   // 金额到账时间
   timeReceiptAmount: Number;
 }
+
+export interface Getfigure extends Dbinterface {
+  size: string,
+  from: string,
+}
