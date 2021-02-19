@@ -287,6 +287,21 @@ export class FigureService {
     );
   }
   static getdbfigure(from: string, size: string) {
-    return DbElasticService.executeInEs('POST', '');
+    return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
+      query: {
+        bool: {
+          must: [],
+        },
+      },
+      from: 0,
+      size: 10000,
+      sort: [
+        {
+          timestamp: {
+            order: 'desc',
+          },
+        },
+      ],
+    });
   }
 }
