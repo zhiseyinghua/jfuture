@@ -71,7 +71,7 @@ export class FigureService {
    * 更新甲方信息
    * @param data
    */
-  static firstinformation(data: UpdateOtherFormation): Observable<any> {
+  static firstinformation(data: UpdateFirstinformation): Observable<any> {
     return DbElasticService.executeInEs(
       'POST',
       FIGURE_CONFIG.INDEX +
@@ -83,8 +83,7 @@ export class FigureService {
         FIGURE_CONFIG.UPDATA,
       {
         doc: {
-          area: data.area,
-          realMoney: data.realMoney,
+          ONEinformation:data.ONEinformation
         },
       },
     ).pipe(
