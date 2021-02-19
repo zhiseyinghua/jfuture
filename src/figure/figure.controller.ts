@@ -62,4 +62,9 @@ export class FigureController {
   updateTime(@Body(ValidationPipe) data:UpdateTime) {
     return FigureService.updateTime(data);
   }
+
+  @Post('/getfigure')
+  getfigure(@Body(ValidationPipe) data) {
+    return
+  }
 }
