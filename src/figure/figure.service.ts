@@ -12,6 +12,7 @@ import {
   UpdateTime,
 } from './figure.interface';
 import {
+  commonqueryInterface,
   DbElasticinterfacePutReturn,
   Dbinterface,
   Queryface,
@@ -311,9 +312,12 @@ export class FigureService {
     }).pipe(
       map((result: Queryface) => {
         if (result._shards.successful == 1) {
-          let newresult = [];
+          let newresult:commonqueryInterface ={
+            list:[],
+            maxsize:result.hits.total.value
+          };
           result.hits.hits.forEach((item, index) => {
-            newresult.push(item['_source']);
+            newresult.list.push(item['_source']);
           });
           return newresult;
         } else {

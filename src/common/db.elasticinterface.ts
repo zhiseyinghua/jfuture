@@ -104,9 +104,13 @@ export interface DELETE {
   failures: [];
 }
 
-export interface Getfigure extends Dbinterface {
+export interface Getfigure {
   size: string;
   from: string;
+}
+export interface commonqueryInterface {
+  list:any[],
+  maxsize: number
 }
 
 /**
