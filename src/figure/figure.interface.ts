@@ -4,14 +4,14 @@ export interface OrderInterface extends Dbinterface {
   // 地点
   localPlace: OrderlocalPlaceInterface;
   // 任务结束时间
-  orderendTime: Number;
+  orderendTime: String;
   // 任务开始时间
-  orderstartTime: Number;
+  orderstartTime: String;
   // figuetime:string;
   // 不动产测试   一次性测试
   type: 'realEstateTest' | 'oneTimeTest';
   // 预估时间
-  estimatedTime: Number;
+  estimatedTime: String;
   // 面积
   area: any;
   // 创建者
@@ -19,17 +19,17 @@ export interface OrderInterface extends Dbinterface {
   // 技术员
   technician: Dbinterface;
   // 实际派发时间
-  timeAfterDistribution: Number;
+  timeAfterDistribution: String;
   // 技术员实际完成时间
-  technicianCompletionTime: Number;
+  technicianCompletionTime: String;
   // 外业完成时间
-  completionTime: Number;
+  completionTime: String;
   // 内业完成时间
-  insidePagesFinish: Number;
+  insidePagesFinish: String;
   // 合同完成时间
-  contractCompleted: Number;
+  contractCompleted: String;
   // 金额到账时间
-  timeReceiptAmount: Number;
+  timeReceiptAmount: String;
   // 预估费用
   estimatedMoney: string;
   // 实际费用
@@ -42,13 +42,13 @@ export interface OrderInterface extends Dbinterface {
     email: string;
     name: string;
   };
-  timestamp: number;
+  timestamp: Number;
   // 在哪个所属团队发的任务
   creatorkey?: Dbinterface;
 }
 export interface OrderlocalPlaceInterface {
-  lng: number;
-  lat: number;
+  lng: Number;
+  lat: Number;
   local: string;
 }
 
@@ -59,7 +59,7 @@ export interface PutOrderOne extends Dbinterface {
   ordername: string;
   localPlace: OrderlocalPlaceInterface;
   type: OrderType;
-  estimatedTime: Number;
+  estimatedTime: String;
   area: string;
   creatorkey: Dbinterface;
   // 预估费用
@@ -86,7 +86,7 @@ const data: PutOrderOne = {
     local: '',
   },
   type: 'oneTimeTest',
-  estimatedTime: 123654789,
+  estimatedTime: "123654789",
   area: '123',
   creatorkey: {
     hash: '',
@@ -138,16 +138,16 @@ export interface UpdateOneMessage extends Dbinterface {
 
 export interface UpdateTime extends Dbinterface {
   // 实际派发时间
-  timeAfterDistribution: Number;
+  timeAfterDistribution: String;
   // 技术员实际完成时间
-  technicianCompletionTime: Number;
+  technicianCompletionTime: String;
   // 外业完成时间
-  completionTime: Number;
+  completionTime: String;
   // 内业完成时间
-  insidePagesFinish: Number;
+  insidePagesFinish: String;
   // 合同完成时间
-  contractCompleted: Number;
+  contractCompleted: String;
   // 金额到账时间
-  timeReceiptAmount: Number;
+  timeReceiptAmount: String;
 }
 

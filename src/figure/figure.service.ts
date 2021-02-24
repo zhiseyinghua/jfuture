@@ -102,7 +102,7 @@ export class FigureService {
           reslutdata._shards.successful == 0
         ) {
           let err = {
-            code: '  000203',
+            code: '000203',
             message: 'Update_figure_existin',
           };
           return err;
@@ -159,7 +159,6 @@ export class FigureService {
           esresult._shards &&
           esresult._shards.successful == 0
         ) {
-          console.log('1111111111111');
           let message: BackCodeMessage = {
             code: Errorcode.update_figure_one_update_existing,
             message: FigureEerrorCode.update_figure_one_update_existing,
@@ -210,7 +209,6 @@ export class FigureService {
           esresult._shards &&
           esresult._shards.successful == 0
         ) {
-          console.log('1111111111111');
           let message: BackCodeMessage = {
             code: Errorcode.update_figure_one_update_existing,
             message: FigureEerrorCode.update_figure_one_update_existing,
@@ -272,7 +270,6 @@ export class FigureService {
           esresult._shards &&
           esresult._shards.successful == 0
         ) {
-          console.log('1111111111111');
           let message: BackCodeMessage = {
             code: Errorcode.update_figure_one_update_existing,
             message: FigureEerrorCode.update_figure_one_update_existing,
