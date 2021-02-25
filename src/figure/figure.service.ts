@@ -32,7 +32,6 @@ export class FigureService {
   ): Observable<any> {
     let time = new Date().valueOf();
     let createIdtoken: PutOrderOne = {
-      
       hash: DynamoDBService.computeHash(FIGURE_CONFIG.INDEX),
       range: uuid.v4(),
       index: FIGURE_CONFIG.INDEX,
@@ -46,7 +45,7 @@ export class FigureService {
       // 甲方信息
       ONEinformation: data.ONEinformation,
       timestamp: time,
-      orderstartTime:time
+      orderstartTime: time,
     };
     return DbElasticService.executeInEs(
       'PUT',
@@ -294,7 +293,7 @@ export class FigureService {
    * @param from
    * @param size
    */
-  static getdbfigure(from: string, size: string) : Observable<any>{
+  static getdbfigure(from: string, size: string): Observable<any> {
     return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
       query: {
         bool: {
@@ -313,9 +312,9 @@ export class FigureService {
     }).pipe(
       map((result: Queryface) => {
         if (result._shards.successful == 1) {
-          let newresult:commonqueryInterface ={
-            list:[],
-            maxsize:result.hits.total.value
+          let newresult: commonqueryInterface = {
+            list: [],
+            maxsize: result.hits.total.value,
           };
           result.hits.hits.forEach((item, index) => {
             newresult.list.push(item['_source']);
@@ -341,15 +340,16 @@ export class FigureService {
 
   /**
    * 根据order的key获取order
-   * @param key 
+   * @param key
    */
-  static bykeygetorder(key:Dbinterface):Observable<any>{
-    return DbElasticService.executeInEs('get', 'figure/_doc/' +key.range, {
-    })
-    .pipe(
+  static bykeygetorder(key: Dbinterface): Observable<any> {
+    return DbElasticService.executeInEs(
+      'get',
+      'figure/_doc/' + key.range,
+      key
+    ).pipe(
       map((result: QueryinterfaceHitList) => {
         if (result._source.range) {
-          
           return result._source;
         } else {
           let err = {
