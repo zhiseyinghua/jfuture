@@ -29,7 +29,9 @@ export class FigureService {
     data: PutOrderOne,
     authkey: Dbinterface,
   ): Observable<any> {
+    let time = new Date().valueOf();
     let createIdtoken: PutOrderOne = {
+      
       hash: DynamoDBService.computeHash(FIGURE_CONFIG.INDEX),
       range: uuid.v4(),
       index: FIGURE_CONFIG.INDEX,
@@ -42,7 +44,8 @@ export class FigureService {
       creatorkey: authkey,
       // 甲方信息
       ONEinformation: data.ONEinformation,
-      timestamp: new Date().valueOf(),
+      timestamp: time,
+      orderstartTime:time
     };
     return DbElasticService.executeInEs(
       'PUT',

@@ -4,14 +4,14 @@ export interface OrderInterface extends Dbinterface {
   // 地点
   localPlace: OrderlocalPlaceInterface;
   // 任务结束时间
-  orderendTime: String;
+  orderendTime: Number;
   // 任务开始时间
-  orderstartTime: String;
+  orderstartTime: Number;
   // figuetime:string;
   // 不动产测试   一次性测试
   type: 'realEstateTest' | 'oneTimeTest';
   // 预估时间
-  estimatedTime: String;
+  estimatedTime: Number;
   // 面积
   area: any;
   // 创建者
@@ -19,17 +19,17 @@ export interface OrderInterface extends Dbinterface {
   // 技术员
   technician: Dbinterface;
   // 实际派发时间
-  timeAfterDistribution: String;
+  timeAfterDistribution: Number;
   // 技术员实际完成时间
-  technicianCompletionTime: String;
+  technicianCompletionTime: Number;
   // 外业完成时间
-  completionTime: String;
+  completionTime: Number;
   // 内业完成时间
-  insidePagesFinish: String;
+  insidePagesFinish: Number;
   // 合同完成时间
-  contractCompleted: String;
+  contractCompleted: Number;
   // 金额到账时间
-  timeReceiptAmount: String;
+  timeReceiptAmount: Number;
   // 预估费用
   estimatedMoney: string;
   // 实际费用
@@ -56,10 +56,11 @@ export interface OrderlocalPlaceInterface {
  * 第一次put一个订单到数据库
  */
 export interface PutOrderOne extends Dbinterface {
+  orderstartTime?: Number;
   ordername: string;
   localPlace: OrderlocalPlaceInterface;
   type: OrderType;
-  estimatedTime: String;
+  estimatedTime: Number;
   area: string;
   creatorkey: Dbinterface;
   // 预估费用
@@ -72,11 +73,12 @@ export interface PutOrderOne extends Dbinterface {
     email: string;
     name: string;
   };
-  timestamp: number;
+  timestamp: Number;
 }
 
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
 const data: PutOrderOne = {
+  orderstartTime:123456789,
   hash: '',
   range: '',
   index: '',
@@ -86,7 +88,7 @@ const data: PutOrderOne = {
     local: '',
   },
   type: 'oneTimeTest',
-  estimatedTime: "123654789",
+  estimatedTime: 123654789,
   area: '123',
   creatorkey: {
     hash: '',
@@ -138,16 +140,16 @@ export interface UpdateOneMessage extends Dbinterface {
 
 export interface UpdateTime extends Dbinterface {
   // 实际派发时间
-  timeAfterDistribution: String;
+  timeAfterDistribution: Number;
   // 技术员实际完成时间
-  technicianCompletionTime: String;
+  technicianCompletionTime: Number;
   // 外业完成时间
-  completionTime: String;
+  completionTime: Number;
   // 内业完成时间
-  insidePagesFinish: String;
+  insidePagesFinish: Number;
   // 合同完成时间
-  contractCompleted: String;
+  contractCompleted: Number;
   // 金额到账时间
-  timeReceiptAmount: String;
+  timeReceiptAmount: Number;
 }
 
