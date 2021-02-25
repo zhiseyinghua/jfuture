@@ -49,7 +49,7 @@ export interface OrderInterface extends Dbinterface {
 export interface OrderlocalPlaceInterface {
   lng: Number;
   lat: Number;
-  address: string;
+  local: string;
 }
 
 /**
@@ -85,7 +85,7 @@ const data: PutOrderOne = {
   localPlace: {
     lng: 123,
     lat: 123,
-    address: '',
+    local: '',
   },
   type: 'oneTimeTest',
   estimatedTime: 123654789,
