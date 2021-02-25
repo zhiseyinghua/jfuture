@@ -16,6 +16,7 @@ import {
   DbElasticinterfacePutReturn,
   Dbinterface,
   Queryface,
+  QueryinterfaceHitList,
 } from 'src/common/db.elasticinterface';
 import { Observable, of } from 'rxjs';
 import { BackCodeMessage } from 'src/common/back.codeinterface';
@@ -293,7 +294,7 @@ export class FigureService {
    * @param from
    * @param size
    */
-  static getdbfigure(from: string, size: string) {
+  static getdbfigure(from: string, size: string) : Observable<any>{
     return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
       query: {
         bool: {
@@ -320,6 +321,36 @@ export class FigureService {
             newresult.list.push(item['_source']);
           });
           return newresult;
+        } else {
+          let err = {
+            code: '000005',
+            message: 'server_error',
+          };
+          return err;
+        }
+      }),
+      catchError((errr) => {
+        let err = {
+          code: '000005',
+          message: 'server_error',
+        };
+        return of(err);
+      }),
+    );
+  }
+
+  /**
+   * 根据order的key获取order
+   * @param key 
+   */
+  static bykeygetorder(key:Dbinterface):Observable<any>{
+    return DbElasticService.executeInEs('get', 'figure/_doc/' +key.range, {
+    })
+    .pipe(
+      map((result: QueryinterfaceHitList) => {
+        if (result._source.range) {
+          
+          return result._source;
         } else {
           let err = {
             code: '000005',

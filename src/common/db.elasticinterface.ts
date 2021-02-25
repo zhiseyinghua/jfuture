@@ -78,7 +78,7 @@ interface QueryinterfaceHit {
   max_score: number;
   hits: QueryinterfaceHitList[];
 }
-interface QueryinterfaceHitList {
+export interface QueryinterfaceHitList {
   _index: string;
   _type: string;
   _id: string;
