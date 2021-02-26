@@ -346,7 +346,7 @@ export class FigureService {
     return DbElasticService.executeInEs(
       'get',
       'figure/_doc/' + key.range,
-      key
+      key,
     ).pipe(
       map((result: QueryinterfaceHitList) => {
         if (result._source.range) {
@@ -367,5 +367,25 @@ export class FigureService {
         return of(err);
       }),
     );
+  }
+
+  /**
+   * 根据任务结束时间查询任务
+   */
+  public static byOrderendTimeGetOrder(): Observable<any> {
+    return DbElasticService.executeInEs('GET', 'figure/_search', {
+      query: {
+        range: {
+          orderstartTime: {
+            lt: 2613491205000,
+            gte: 0,
+          },
+        },
+      },
+    }).pipe(
+      (data=>{
+        return data
+      })
+    )
   }
 }
