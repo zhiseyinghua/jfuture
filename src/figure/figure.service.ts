@@ -296,15 +296,13 @@ export class FigureService {
   static getdbfigure(from: string, size: string): Observable<any> {
     return DbElasticService.executeInEs('POST', 'figure/_doc/_search', {
       query: {
-        bool: {
-          must: [],
-        },
+        match_all: {},
       },
       from: from,
       size: size,
       sort: [
         {
-          timestamp: {
+          orderstartTime: {
             order: 'desc',
           },
         },
@@ -382,10 +380,8 @@ export class FigureService {
           },
         },
       },
-    }).pipe(
-      (data=>{
-        return data
-      })
-    )
+    }).pipe((data) => {
+      return data;
+    });
   }
 }
