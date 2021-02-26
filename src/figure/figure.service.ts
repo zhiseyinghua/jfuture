@@ -384,4 +384,37 @@ export class FigureService {
       return data;
     });
   }
+
+  /**
+   * 根据OrderEndTime查询order
+   * @param from 
+   * @param size 
+   */
+  public static byOrderEndTimeOrder(
+    from: string,
+    size: string,
+  ): Observable<any> {
+    return DbElasticService.executeInEs('GET', 'figure/_search', {
+      query: {
+        bool: {
+          must: {
+            exists: {
+              field: 'orderendTime',
+            },
+          },
+        },
+      },
+      from: from,
+      size: size,
+      sort: [
+        {
+          timestamp: {
+            order: 'desc',
+          },
+        },
+      ],
+    }).pipe((data) => {
+      return data;
+    });
+  }
 }
