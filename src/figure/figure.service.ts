@@ -16,6 +16,7 @@ import {
   DbElasticinterfacePutReturn,
   Dbinterface,
   Queryface,
+  Queryinterface,
   QueryinterfaceHitList,
 } from 'src/common/db.elasticinterface';
 import { Observable, of } from 'rxjs';
@@ -387,8 +388,8 @@ export class FigureService {
 
   /**
    * 根据OrderEndTime查询order
-   * @param from 
-   * @param size 
+   * @param from
+   * @param size
    */
   public static byOrderEndTimeOrder(
     from: string,
@@ -413,8 +414,32 @@ export class FigureService {
           },
         },
       ],
-    }).pipe((data) => {
-      return data;
-    });
+    }).pipe(
+      map((result: Queryface) => {
+        if (result._shards.successful == 1) {
+          let newresult: commonqueryInterface = {
+            list: [],
+            maxsize: result.hits.total.value,
+          };
+          result.hits.hits.forEach((item, index) => {
+            newresult.list.push(item['_source']);
+          });
+          return newresult;
+        } else {
+          let err = {
+            code: '000005',
+            message: 'server_error',
+          };
+          return err;
+        }
+      }),
+      catchError((errr) => {
+        let err = {
+          code: '000005',
+          message: 'server_error',
+        };
+        return of(err);
+      }),
+    );
   }
 }
