@@ -436,7 +436,7 @@ export class FigureService {
       catchError((errr) => {
         let err = {
           code: '000005',
-          message: 'server_error',
+          message: ' ',
         };
         return of(err);
       }),
