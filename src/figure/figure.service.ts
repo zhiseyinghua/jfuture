@@ -392,9 +392,15 @@ export class FigureService {
    * @param size
    */
   public static byOrderEndTimeOrder(
-    from: string,
-    size: string,
+    timeWhich: string,
+    maxtime: Number,
+    mintime: Number,
   ): Observable<any> {
+    var orderstartTimedata = new Object();
+    orderstartTimedata[timeWhich] = {
+      lt: maxtime,
+      gte: mintime,
+    };
     return DbElasticService.executeInEs('GET', 'figure/_search', {
       query: {
         bool: {
@@ -403,17 +409,13 @@ export class FigureService {
               field: 'orderendTime',
             },
           },
-        },
-      },
-      from: from,
-      size: size,
-      sort: [
-        {
-          timestamp: {
-            order: 'desc',
+          filter: {
+            range: {
+              orderstartTime: orderstartTimedata,
+            },
           },
         },
-      ],
+      },
     }).pipe(
       map((result: Queryface) => {
         if (result._shards.successful == 1) {
