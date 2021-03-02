@@ -80,13 +80,17 @@ export class FigureController {
   byKeygetfigure(@Body(ValidationPipe) data: Dbinterface) {
     return FigureService.bykeygetorder(data);
   }
+  @Post('/order_end_time_order')
+  byOrderEndTime(@Body(ValidationPipe) data: Getfigure) {
+    return FigureService.byOrderEndTimeOrder(data.from, data.size);
+  }
   @Post('/order_time_order')
-  byOrderEndTime(@Body(ValidationPipe) data: ByOrderTimeInterface) {
+  byOrderTime(@Body(ValidationPipe) data: ByOrderTimeInterface) {
     // return FigureService.byOrderEndTimeOrder(data.timeWhich, data.maxtime,data.mintime);
-    return FigureService.byOrderEndTimeOrder(
+    return FigureService.byOrderTimeOrder(
       data.timeWhich,
       data.maxtime,
-      data.mintime
+      data.mintime,
     );
   }
 }

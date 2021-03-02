@@ -392,15 +392,9 @@ export class FigureService {
    * @param size
    */
   public static byOrderEndTimeOrder(
-    timeWhich: string,
-    maxtime: Number,
-    mintime: Number
+    from: string,
+    size: string,
   ): Observable<any> {
-    var orderstartTimedata = new Object();
-    orderstartTimedata[timeWhich] = {
-      lt: maxtime,
-      gte: mintime,
-    };
     return DbElasticService.executeInEs('GET', 'figure/_search', {
       query: {
         bool: {
@@ -409,13 +403,18 @@ export class FigureService {
               field: 'orderendTime',
             },
           },
-          filter: {
-            range: orderstartTimedata
-          },
         },
       },
-    })
-    .pipe(
+      from: from,
+      size: size,
+      sort: [
+        {
+          timestamp: {
+            order: 'desc',
+          },
+        },
+      ],
+    }).pipe(
       map((result: Queryface) => {
         if (result._shards.successful == 1) {
           let newresult: commonqueryInterface = {
@@ -437,7 +436,62 @@ export class FigureService {
       catchError((errr) => {
         let err = {
           code: '000005',
-          message: ' ',
+          message: 'server_error',
+        };
+        return of(err);
+      }),
+    );
+  }
+  /**
+   * 根据OrderEndTime查询order
+   * @param from
+   * @param size
+   */
+  public static byOrderTimeOrder(
+    timeWhich: string,
+    maxtime: Number,
+    mintime: Number,
+  ): Observable<any> {
+    var orderstartTimedata = new Object();
+    orderstartTimedata[timeWhich] = {
+      lt: maxtime,
+      gte: mintime,
+    };
+    return DbElasticService.executeInEs('GET', 'figure/_search', {
+      query: {
+        bool: {
+          must: {
+            exists: {
+              field: 'orderendTime',
+            },
+          },
+          filter: {
+            range: orderstartTimedata,
+          },
+        },
+      },
+    }).pipe(
+      switchMap((result) => {
+        if (result._shards.successful == 1) {
+          let rewresult: any[] = [];
+          result.hits.hits.forEach((item:any) => {
+            console.log('11111111111111', item['_source']);
+            rewresult.push(item['_source']);
+          });
+          return of(rewresult);
+        } else {
+          let err = {
+            code: '000005',
+            message: 'server _error',
+          };
+          return of(err);
+        }
+      }),
+      catchError((errr) => {
+        console.log(errr)
+        let err = {
+          code: '000005',
+          message: 'server_error',
         };
         return of(err);
       }),
