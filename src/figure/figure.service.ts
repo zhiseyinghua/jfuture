@@ -394,7 +394,7 @@ export class FigureService {
   public static byOrderEndTimeOrder(
     timeWhich: string,
     maxtime: Number,
-    mintime: Number,
+    mintime: Number
   ): Observable<any> {
     var orderstartTimedata = new Object();
     orderstartTimedata[timeWhich] = {
@@ -410,13 +410,12 @@ export class FigureService {
             },
           },
           filter: {
-            range: {
-              orderstartTime: orderstartTimedata,
-            },
+            range: orderstartTimedata
           },
         },
       },
-    }).pipe(
+    })
+    .pipe(
       map((result: Queryface) => {
         if (result._shards.successful == 1) {
           let newresult: commonqueryInterface = {

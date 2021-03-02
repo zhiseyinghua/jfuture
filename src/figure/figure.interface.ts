@@ -78,7 +78,7 @@ export interface PutOrderOne extends Dbinterface {
 
 export type OrderType = 'realEstateTest' | 'oneTimeTest';
 const data: PutOrderOne = {
-  orderstartTime:123456789,
+  orderstartTime: 123456789,
   hash: '',
   range: '',
   index: '',
@@ -153,3 +153,8 @@ export interface UpdateTime extends Dbinterface {
   timeReceiptAmount: Number;
 }
 
+export interface ByOrderTimeInterface extends Dbinterface {
+  timeWhich: string;
+  maxtime: Number;
+  mintime: Number;
+}

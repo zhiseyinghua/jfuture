@@ -8,6 +8,7 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { Dbinterface, Getfigure } from 'src/common/db.elasticinterface';
 import {
+  ByOrderTimeInterface,
   PutOrderOne,
   UpdateFirstinformation,
   UpdateOneMessage,
@@ -80,7 +81,12 @@ export class FigureController {
     return FigureService.bykeygetorder(data);
   }
   @Post('/order_end_time_order')
-  byOrderEndTime(@Body(ValidationPipe) data: Getfigure) {
-    return FigureService.byOrderEndTimeOrder(data.from, data.size);
+  byOrderEndTime(@Body(ValidationPipe) data: ByOrderTimeInterface) {
+    // return FigureService.byOrderEndTimeOrder(data.timeWhich, data.maxtime,data.mintime);
+    return FigureService.byOrderEndTimeOrder(
+      data.timeWhich,
+      data.maxtime,
+      data.mintime
+    );
   }
 }
