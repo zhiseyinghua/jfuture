@@ -80,7 +80,7 @@ export class FigureController {
   byKeygetfigure(@Body(ValidationPipe) data: Dbinterface) {
     return FigureService.bykeygetorder(data);
   }
-  @Post('/order_end_time_order')
+  @Post('/order_time_order')
   byOrderEndTime(@Body(ValidationPipe) data: ByOrderTimeInterface) {
     // return FigureService.byOrderEndTimeOrder(data.timeWhich, data.maxtime,data.mintime);
     return FigureService.byOrderEndTimeOrder(
