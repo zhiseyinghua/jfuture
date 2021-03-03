@@ -15,7 +15,7 @@ import { Errorcode } from 'src/common/error.code';
 import { UsererrorCode } from './UsererrorCode';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@Controller('user')
+@Controller('api/user')
 export class UserController {
   log = 'UserController'
   constructor(private userService: UserService) { }

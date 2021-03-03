@@ -27,7 +27,7 @@ import { AutherrorCode } from './auth.code';
 import { Errorcode } from 'src/common/error.code';
 import { AuthGuard } from './auth.guard';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   log = 'AuthController';
   constructor(private authService: AuthService) {}

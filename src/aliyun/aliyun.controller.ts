@@ -13,7 +13,7 @@ export class AliyunController {
   /**
    * 颁发sts访问权限
    */
-  @Post('/assumerole')
+  @Post('api/assumerole')
   verifysmscoderegister(): any {
     return AliyunService.TSTAllotOSSJurisdiction().pipe(
       map(data=>{

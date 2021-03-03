@@ -15,7 +15,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { TEAMMEMBER_CONFIG } from 'src/teammember/team.config';
 import { TeammemberService } from 'src/teammember/teammember.service';
 
-@Controller('team')
+@Controller('api/team')
 export class TeamController {
   log = 'TeamController';
 

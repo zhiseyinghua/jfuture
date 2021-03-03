@@ -17,7 +17,7 @@ import {
 } from './figure.interface';
 import { FigureService } from './figure.service';
 
-@Controller('figure')
+@Controller('api/figure')
 export class FigureController {
   log = 'AuthController';
   // 向数据库put一个订单

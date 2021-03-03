@@ -14,7 +14,7 @@ import { TEAMMEMBER_CONFIG } from './team.config';
 import { TeamService } from 'src/team/team.service';
 import { Dbinterface } from 'src/common/db.elasticinterface';
 
-@Controller('teammember')
+@Controller('api/teammember')
 export class TeammemberController {
 
 /**
