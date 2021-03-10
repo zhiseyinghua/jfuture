@@ -29,6 +29,10 @@ export interface OrderInterface extends Dbinterface {
   // 合同完成时间
   contractCompleted: Number;
   // 金额到账时间
+  RecordTime?:Number;
+  //备案时间
+  CollectionTime:Number;
+  //收款时间
   timeReceiptAmount: Number;
   // 预估费用
   estimatedMoney: string;
@@ -151,6 +155,10 @@ export interface UpdateTime extends Dbinterface {
   contractCompleted: Number;
   // 金额到账时间
   timeReceiptAmount: Number;
+  //备案时间
+  RecordTime?:Number;
+  //收款时间
+  CollectionTime:Number;
 }
 
 export interface ByOrderTimeInterface extends Dbinterface {
