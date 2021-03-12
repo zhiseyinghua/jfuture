@@ -33,7 +33,19 @@ export class FigureController {
       index: authdata.range,
     });
   }
-
+  //删除订单
+  @Post('/deleteorder')
+  deleteOrder(@Body(ValidationPipe) data: PutOrderOne, @Headers() headers) {
+    console.log('FigureController deleteOrder start');
+    let idtoken = headers['authorization'];
+    let authdata = AuthService.decodeIdtoken(idtoken);
+    console.log(authdata)
+    return FigureService.deleteOrder(data, {
+      hash: data.hash,
+      range: data.range,
+      index: data.range,
+    });
+  }
   /**
    * 向数据库更新甲方信息
    * @param data
