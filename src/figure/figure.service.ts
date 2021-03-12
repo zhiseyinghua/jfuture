@@ -246,17 +246,23 @@ export class FigureService {
       {
         doc: {
           // 实际派发时间
-          timeAfterDistribution: data.timeAfterDistribution,
-          // 技术员实际完成时间
-          technicianCompletionTime: data.technicianCompletionTime,
-          // 外业完成时间
-          completionTime: data.completionTime,
-          // 内业完成时间
-          insidePagesFinish: data.insidePagesFinish,
-          // 合同完成时间
-          contractCompleted: data.contractCompleted,
+        //   timeAfterDistribution: data.timeAfterDistribution,
+        //   // 技术员实际完成时间
+        //   technicianCompletionTime: data.technicianCompletionTime,
+        //   // 外业完成时间
+        //   completionTime: data.completionTime,
+        //   // 内业完成时间
+        //   insidePagesFinish: data.insidePagesFinish,
+        //   // 合同完成时间
+        //   contractCompleted: data.contractCompleted,
           // 金额到账时间
           timeReceiptAmount: data.timeReceiptAmount,
+          //收款时间
+          collectionTime: data.completionTime,
+          //备案时间
+          recordTime: data.recordTime,
+          //实际结束时间
+          endTime: data.endTime,
         },
       },
     ).pipe(
@@ -497,4 +503,55 @@ export class FigureService {
       }),
     );
   }
-}
+
+  public static deleteOrder(
+    data: PutOrderOne,
+    authkey: Dbinterface,
+  ): Observable<any> {
+    let time = new Date().valueOf();
+    let createIdtoken: PutOrderOne = {
+      hash:data.hash,
+      range: data.range,
+      index: data.index,
+      ordername: data.ordername,
+      localPlace: data.localPlace,
+      type: data.type,
+      estimatedMoney: data.estimatedMoney,
+      estimatedTime: data.estimatedTime,
+      area: data.area,
+      creatorkey: authkey,
+      // 甲方信息
+      ONEinformation: data.ONEinformation,
+      timestamp: time,
+      orderstartTime: time,
+    };
+    return DbElasticService.executeInEs(
+      'post',
+      FIGURE_CONFIG.INDEX + '/' + '_delete_by_query',
+      {
+        "query": {
+          "match": {
+            "range": createIdtoken.range
+          }
+        }
+      }
+    )
+    .pipe(
+      map((result) => {
+        // return result;
+        if (
+          result &&
+          result.deleted==1
+        ) {
+          return createIdtoken;
+        } else {
+          let err = {
+            code: '000102',
+            meaage: 'delete_error',
+          };
+          return err;
+        }
+      }),
+    );
+  }
+  }
